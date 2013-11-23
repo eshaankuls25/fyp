@@ -51,8 +51,10 @@ run apt-get install -y -q python-pcapy
 
 #Install metasploit - Source: http://samiux.blogspot.co.uk/2013/05/howto-metasploit-on-ubuntu-desktop-1204.html
 run mkdir ~/metasploitInstaller && cd ~/metasploitInstaller
-run apt-get install ruby1.9.1 build-essential
+
+run apt-get install -y -q ruby1.9.1 build-essential
 run wget http://downloads.metasploit.com/data/releases/metasploit-latest-linux-x64-installer.run
+
 run chmod +x metasploit-latest-linux-x64-installer.run
 run sudo ./metasploit-latest-linux-x64-installer.run --mode unattended
 
