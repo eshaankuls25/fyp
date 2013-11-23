@@ -54,13 +54,13 @@ run	apt-get install -y -q aufs-tools
 
 
 # git pull and install dotfiles as well
-run git clone git@github.com:Quantza/dotfiles.git
-run ln -sb dotfiles/.screenrc .
-run ln -sb dotfiles/.tmux .
-run ln -sb dotfiles/.gitmessage.txt .
-run ln -sb dotfiles/.bash_profile .
-run ln -sb dotfiles/.bashrc .
-run ln -sb dotfiles/.bashrc_custom .
-run ln -sf dotfiles/.emacs.d .
-run ln -sf dotfiles/.tmux .
-run ln -sf dotfiles/.vagrant.d .
+#run git clone git@github.com:Quantza/dotfiles.git
+#run ln -sb dotfiles/.screenrc .
+#run ln -sb dotfiles/.tmux .
+#run ln -sb dotfiles/.gitmessage.txt .
+#run ln -sb dotfiles/.bash_profile .
+#run ln -sb dotfiles/.bashrc .
+#run ln -sb dotfiles/.bashrc_custom .
+#run ln -sf dotfiles/.emacs.d .
+#run ln -sf dotfiles/.tmux .
+#run ln -sf dotfiles/.vagrant.d .
