@@ -44,7 +44,7 @@ run mkdir ~/impacket
 run cd ~/impacket
 run wget https://impacket.googlecode.com/files/impacket-0.9.10.tar.gz
 run tar -xzvf *.tar.gz
-run cd impacket* && python setup.py install
+run cd impacket* && python ~/impacket/impacket*/setup.py install
 
 # Install pcapy
 run apt-get install python-pcapy
@@ -66,7 +66,7 @@ run /etc/init.d/metasploit start
 #Clone and install social-engineer-toolkit
 run cd ~
 run git clone https://github.com/trustedsec/social-engineer-toolkit/ set/
-run cd set && python setup.py install
+run cd set && python ~/set/setup.py install
 
 #Clone fyp repo
 run git clone https://github.com/Quantza/fyp ~/fyp/
