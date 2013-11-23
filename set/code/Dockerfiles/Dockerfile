@@ -23,11 +23,11 @@ run apt-get install -y -q build-essential libsqlite3-dev
 EXPOSE 80
 
 #Install useful apps
-run apt-get install -y memcached
-run apt-get install -y python
+run apt-get install -y -q memcached
+run apt-get install -y -q python
 
 #add readline support
-run apt-get install -y rlwrap
+run apt-get install -y -q rlwrap
 
 #Install python
 run	apt-get install -y -q python-pip
@@ -47,7 +47,7 @@ run	apt-get install -y -q aufs-tools
 #run cd impacket* && python setup.py install
 
 # Install pcapy
-run apt-get install python-pcapy
+run apt-get install -y -q python-pcapy
 
 #Install metasploit - Source: http://samiux.blogspot.co.uk/2013/05/howto-metasploit-on-ubuntu-desktop-1204.html
 run mkdir ~/metasploitInstaller && cd ~/metasploitInstaller
