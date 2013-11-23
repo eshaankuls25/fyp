@@ -11,8 +11,8 @@ run echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt
 
 run apt-get update
 run apt-get upgrade -y
-
 run	apt-get update
+
 run	apt-get install -y -q curl
 run	apt-get install -y -q git
 run	apt-get install -y -q mercurial
@@ -23,23 +23,10 @@ EXPOSE 80
 
 #Install useful apps
 run apt-get install -y memcached
-run apt-get install -y tmux
 run apt-get install -y python
-run apt-get install -y python
-run apt-get install -y emacs
 
-# Install git and curl:
-run apt-get install -y git
-run apt-get install -y curl
-
-# Install rlwrap to provide libreadline features 
+#add readline support
 run apt-get install -y rlwrap
-
-# Install emacs24
-# https://launchpad.net/~cassou/+archive/emacs
-run add-apt-repository -y ppa:cassou/emacs
-run apt-get -qq update
-run apt-get install -y emacs24-nox emacs24-el emacs24-common-non-dfsg
 
 #Install python
 run	apt-get install -y -q python-pip
@@ -51,7 +38,21 @@ run	apt-get install -y -q iptables
 run	apt-get install -y -q lxc
 run	apt-get install -y -q aufs-tools
 
+# Install impacket
+run mkdir impacket
+run cd impacket
+run wget https://impacket.googlecode.com/files/impacket-0.9.10.tar.gz
+run tar -xzvf impacket*
+run cd impacket*
+run python setup.py install
 
+# Install pcapy
+run apt-get install python-pcapy
+
+#Clone and install social-engineer-toolkit
+run cd ~
+run mkdir set && cd set
+run git clone https://github.com/trustedsec/social-engineer-toolkit/
 
 # git pull and install dotfiles as well
 #run git clone git@github.com:Quantza/dotfiles.git
