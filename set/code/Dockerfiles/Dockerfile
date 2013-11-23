@@ -51,8 +51,17 @@ run apt-get install python-pcapy
 
 #Clone and install social-engineer-toolkit
 run cd ~
-run mkdir set && cd set
-run git clone https://github.com/trustedsec/social-engineer-toolkit/
+run git clone https://github.com/trustedsec/social-engineer-toolkit/ set/
+run cd set && python setup.py install
+
+#Clone fyp repo
+run git clone https://github.com/Quantza/fyp ~/fyp/
+run cp ~/fyp/set ~/set
+run cp ~/set/code/dev.sh ~
+run chmod +x dev.sh
+
+#run code
+run cd ~ && ./dev.sh
 
 # git pull and install dotfiles as well
 #run git clone git@github.com:Quantza/dotfiles.git
