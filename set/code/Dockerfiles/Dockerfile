@@ -14,6 +14,7 @@ run apt-get upgrade -y
 run	apt-get update
 
 run	apt-get install -y -q curl
+run	apt-get install -y -q wget
 run	apt-get install -y -q git
 run	apt-get install -y -q mercurial
 run apt-get install -y -q build-essential libsqlite3-dev
@@ -48,6 +49,20 @@ run python setup.py install
 
 # Install pcapy
 run apt-get install python-pcapy
+
+#Install metasploit - Source: http://samiux.blogspot.co.uk/2013/05/howto-metasploit-on-ubuntu-desktop-1204.html
+run mkdir ~/metasploitInstaller && cd ~/metasploitInstaller
+run apt-get install ruby1.9.1 build-essential
+run wget http://downloads.metasploit.com/data/releases/metasploit-latest-linux-x64-installer.run
+run chmod +x metasploit-latest-linux-x64-installer.run
+run sudo ./metasploit-latest-linux-x64-installer.run
+
+#Without registering the install, cannot update it! Remember this.
+run update-rc.d metasploit disable
+
+#Run metasploit
+run /etc/init.d/metasploit start
+run cd /opt/metasploit/app && msfconsole
 
 #Clone and install social-engineer-toolkit
 run cd ~
