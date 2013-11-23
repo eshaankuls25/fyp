@@ -16,7 +16,7 @@ run	apt-get install -y -q curl
 run	apt-get install -y -q wget
 run	apt-get install -y -q git
 run	apt-get install -y -q mercurial
-run 	apt-get install -y -q build-essential libsqlite3-dev
+run	apt-get install -y -q build-essential libsqlite3-dev
 
 #Expose http port (80)
 EXPOSE 	80
@@ -55,7 +55,7 @@ run 	apt-get install -y -q ruby1.9.1 build-essential
 run 	wget http://downloads.metasploit.com/data/releases/metasploit-latest-linux-x64-installer.run
 
 run 	chmod +x metasploit-latest-linux-x64-installer.run
-	run sudo ./metasploit-latest-linux-x64-installer.run --mode unattended
+run 	sudo ./metasploit-latest-linux-x64-installer.run --mode unattended
 
 #Without registering the install, cannot update it! Remember this.
 run 	update-rc.d metasploit disable
