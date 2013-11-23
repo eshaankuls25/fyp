@@ -9,8 +9,8 @@ MAINTAINER Quantza, <post2base@outlook.com>
 # make sure the package repository is up to date
 run echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
 
-run 	apt-get update
-run 	apt-get upgrade -y
+run	apt-get update
+run	apt-get upgrade -y
 
 run	apt-get install -y -q curl
 run	apt-get install -y -q wget
