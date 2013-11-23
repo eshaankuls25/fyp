@@ -44,7 +44,7 @@ run mkdir ~/impacket
 run cd ~/impacket
 run wget https://impacket.googlecode.com/files/impacket-0.9.10.tar.gz
 run tar -xzvf *.tar.gz
-run cd impacket* && python ~/impacket/impacket*/setup.py install
+run cd impacket* && python ~/impacket/impacket-0.9.10/setup.py install
 
 # Install pcapy
 run apt-get install python-pcapy
