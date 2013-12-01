@@ -9,6 +9,10 @@ MAINTAINER Quantza, <post2base@outlook.com>
 # make sure the package repository is up to date
 run echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
 
+run echo "deb http://archive.scrapy.org/ubuntu precise main" > /etc/apt/sources.list
+
+run curl -s http://archive.scrapy.org/ubuntu/archive.key | apt-key add -
+
 run	apt-get update
 run	apt-get upgrade -y
 
@@ -34,7 +38,7 @@ run	pip install s3cmd
 run	pip install python-magic
 run	apt-get install -y -q python-dev
 run	apt-get install -y -q libxml2-dev libxslt-dev
-run	pip install Scrapy
+run	apt-get install -y -q scrapy-0.18
 
 # Runtime dependencies
 run	apt-get install -y -q iptables
