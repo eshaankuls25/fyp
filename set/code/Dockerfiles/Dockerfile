@@ -32,6 +32,9 @@ run 	apt-get install -y -q rlwrap
 run	apt-get install -y -q python-pip
 run	pip install s3cmd
 run	pip install python-magic
+run	apt-get install -y -q python-dev
+run	apt-get install -y -q libxml2-dev libxslt-dev
+run	pip install Scrapy
 
 # Runtime dependencies
 run	apt-get install -y -q iptables
