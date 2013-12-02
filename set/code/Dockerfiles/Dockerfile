@@ -82,6 +82,18 @@ run 	cp ~/fyp/set ~/set
 run 	cp ~/set/code/dev.sh ~
 run 	chmod +x dev.sh
 
+#Configure and install mail server - dovecot
+run	 apt-get install -y -q dovecot-imapd
+run	 useradd dovecot && useradd dovenull
+run	 useradd vmail -d /home/vmail
+run	 chown vmail:vmail /home/vmail
+run	 touch /var/log/dovecot.log && touch /var/log/dovecot-info.log
+run	 chown vmail:vmail /var/log/dovecot.log
+run	 chown vmail:vmail /var/log/dovecot-info.log
+ 
+run	 cp ~/fyp/set/code/dovecot.conf /etc/dovecot/
+run	 service start dovecot
+
 #run code
 run 	cd ~ && ./dev.sh
 
