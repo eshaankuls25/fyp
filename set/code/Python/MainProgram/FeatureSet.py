@@ -11,11 +11,11 @@ class FeatureSet:
 		self.vector[featureName] = [value, scalingFunction(value)]
 
 	def setValidCategory(category, categoryDictionary):
-	if category in categoryDictionary:
-		self.documentCategory = category
-		return True
-	else:
-		return False
+		if category in categoryDictionary:
+			self.documentCategory = category
+			return True
+		else:
+			return False
 
 	def removeFeature(self, featureName):
 		del self.vector[featureName]

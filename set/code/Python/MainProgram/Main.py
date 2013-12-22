@@ -1,7 +1,7 @@
-import PreProcessor
-import ParserSelector
-import TextParser
-import FeatureSet
+from PreProcessor import PreProcessor
+from ParserSelector import ParserSelector
+from TextParser import TextParser
+from FeatureSet import FeatureSet
 
 import sys
 import getopt

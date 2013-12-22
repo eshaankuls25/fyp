@@ -1,3 +1,5 @@
+from TextParser import TextParser
+
 class ParserSelector:
 
 	categoryDictionary = {}
@@ -60,6 +62,10 @@ class ParserSelector:
 				parserName = category
 				bestParser = self.parserDictionary[category]
 				count = identifierCount
-		return (parserName, bestParser)	
+
+		if parserName is not None:
+			return (parserName, bestParser)	
+		else:
+			return (None, TextParser())
 
 
