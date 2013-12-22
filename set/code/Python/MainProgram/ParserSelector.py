@@ -7,6 +7,8 @@ class ParserSelector:
 			self.categoryDictionary[category] = set()
 	
 	def addCategory(self, category):
+		assert category not in self.categoryDictionary
+		
 		self.categoryDictionary[category] = set()
 	
 	def addIdentifierSetToCategory(self, category, identifierList):
@@ -22,7 +24,6 @@ class ParserSelector:
 			return True
 		else:
 			return False
-
 
 
 	def clearCategoryIdentifierSet(self, category):
