@@ -19,9 +19,10 @@ class TextParser:
                 print "---"
                 
                 #print self.stanfordTagger.tag('What is the airspeed of an unladen swallow ?'.split()) 
-                print("File: " + self.readFromFile("test.txt") + "\n\n") 
-                self.tagTextFile("testDocument", "test.txt")
-                print("Tagged Text: ", self.taggedText["testDocument"]) 
+                
+                #print("File: " + self.readFromFile("test.txt") + "\n\n") 
+                #self.tagTextFile("testDocument", "test.txt")
+                #print("Tagged Text: ", self.taggedText["testDocument"]) 
 
 
         def readFromFile(self, filename):
@@ -40,6 +41,4 @@ class TextParser:
                 self.taggedText[documentName] = self.stanfordTagger.tag(self.readFromFile(textFilePath).split())
 
         def tagText(self, documentName, textString):
-                self.taggedText[documentName] = self.stanfordTagger.tag(textString.split())                                
-
-TextParser()
+                self.taggedText[documentName] = self.stanfordTagger.tag(textString.split())

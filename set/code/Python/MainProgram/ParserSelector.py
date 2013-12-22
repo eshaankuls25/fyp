@@ -1,17 +1,28 @@
 class ParserSelector:
 
 	categoryDictionary = {}
+	parserDictionary = {}
 
-	def __init__(self, *categoryList):
-		for category in categoryList:
-			self.categoryDictionary[category] = set()
-	
-	def addCategory(self, category):
+	def __init__(self, categoryList, parserList):
+		for group in zip(categoryList, parserList):
+			self.categoryDictionary[group[0]] = set()
+			self.parserDictionary[group[0]] = group[1]		
+
+	def addParser(self, category, parser):
 		assert category not in self.categoryDictionary
-		
+		assert category not in self.parserDictionary
+
 		self.categoryDictionary[category] = set()
+		self.parserDictionary[category] = parser	
+
+	def removeParser(self, category):
+		assert category in self.categoryDictionary
+		assert category in self.parserDictionary
+
+		del self.categoryDictionary[category]
+		del self.parserDictionary[category]	
 	
-	def addIdentifierSetToCategory(self, category, identifierList):
+	def addParserIdentifierSet(self, category, identifierList):
 		assert category in self.categoryDictionary
 
 		currentIdentifierSet = self.categoryDictionary[category]
@@ -26,18 +37,12 @@ class ParserSelector:
 			return False
 
 
-	def clearCategoryIdentifierSet(self, category):
+	def clearParserIdentifierSet(self, category):
 		assert category in self.categoryDictionary
 		self.categoryDictionary[category] = set()
 
-	def removeCategory(self, category):
-		assert category in self.categoryDictionary
-		del self.categoryDictionary[category]
-
 	def determineBestParser(self, *identifierList):
-
 		categoryCountDict = {key:0 for key in self.categoryDictionary}
-
 		for category in categoryCountDict:
 			currentIdentifierSet = self.categoryDictionary[category]
 
@@ -45,12 +50,16 @@ class ParserSelector:
 				if identifier in currentIdentifierSet:
 					categoryCountDict[category] +=1
 
+		parserName = None
 		bestParser = None
 		count = 0
+		
 		for category in categoryCountDict:
 			identifierCount = categoryCountDict[category]
 			if identifierCount > count:
-				bestParser = category
+				parserName = category
+				bestParser = self.parserDictionary[category]
 				count = identifierCount
-		return bestParser		
+		return (parserName, bestParser)	
+
 
