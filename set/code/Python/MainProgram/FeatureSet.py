@@ -1,25 +1,21 @@
 class FeatureSet:
 	documentName = None
+	documentCategory = None
 	vector = {}
 	
-	documentTypes = None
-	documentType = None
-
-	def createCategoryDictionary(*sequential, **named):	#From StackOverflow - http://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python
-    	return dict(zip(sequential, range(len(sequential))), **named)
-
-	
-	def __init__(self, documentName, categoryList):
+	def __init__(self, documentName, documentCategory):
 		self.documentName = documentName
-		self.documentTypes = self.createCategoryDictionary(*categoryList)
-
-
-	def setDocumentType(self, category):
-		if category in self.documentTypes:
-			self.documentType = category
-			return False
-		else:
-			return True
+		self.documentCategory = documentCategory
 
 	def addFeature(self, featureName, value, scalingFunction):
 		self.vector[featureName] = [value, scalingFunction(value)]
+
+	def setValidCategory(category, categoryDictionary):
+	if category in categoryDictionary:
+		self.documentCategory = category
+		return True
+	else:
+		return False
+
+	def removeFeature(self, featureName):
+		del self.vector[featureName]
