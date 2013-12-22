@@ -2,10 +2,13 @@ class ParserSelector:
 
 	categoryDictionary = {}
 
-	def __init__(self, categoryList):
+	def __init__(self, *categoryList):
 		for category in categoryList:
 			self.categoryDictionary[category] = set()
-
+	
+	def addCategory(self, category):
+		self.categoryDictionary[category] = set()
+	
 	def addIdentifierSetToCategory(self, category, identifierList):
 		assert category in self.categoryDictionary
 
@@ -20,8 +23,17 @@ class ParserSelector:
 		else:
 			return False
 
-	def determineBestParser(self, identifierList):
+
+
+	def clearCategoryIdentifierSet(self, category):
 		assert category in self.categoryDictionary
+		self.categoryDictionary[category] = set()
+
+	def removeCategory(self, category):
+		assert category in self.categoryDictionary
+		del self.categoryDictionary[category]
+
+	def determineBestParser(self, *identifierList):
 
 		categoryCountDict = {key:0 for key in self.categoryDictionary}
 
