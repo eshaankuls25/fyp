@@ -31,10 +31,15 @@ class TextParser:
                 f.close()
                 return fileContents
 
+        def writeToFile(self, filename, data, accessType):
+                self.filepath = os.getcwd() + "/" + filename
+                with open(self.filepath, accessType) as f:
+                        f.write(data + "\n")
+
         def tagTextFile(self, documentName, textFilePath):
                 self.taggedText[documentName] = self.stanfordTagger.tag(self.readFromFile(textFilePath).split())
 
         def tagText(self, documentName, textString):
-                self.taggedText[documentName] = self.stanfordTagger.tag(textString.split())                
+                self.taggedText[documentName] = self.stanfordTagger.tag(textString.split())                                
 
 TextParser()
