@@ -3,9 +3,7 @@ from ParserSelector import ParserSelector
 from TextParser import TextParser
 from FeatureSet import FeatureSet
 
-import sys
-import os
-import getopt
+import sys, shlex, os, getopt
 
 def main():
 
@@ -14,36 +12,59 @@ def main():
 
         ###Defaults###
         documentFilePath = 'test.txt'
-        documentType = 'text'
+        documentCategory = 'text'
         categoryFileExists = False
+        indicatorFileExists = False
         
-        #Allow user to pass document types, document name/file,
-        #and parser identifier set(s) in as parameters.
+        ###User arguments###
 
-        options, extras = getopt.getopt(sys.argv[1:], 'd:t:c:', ['docpath=', 'type=', 'categoryfilepath='])
+        options, extras = getopt.getopt(sys.argv[1:], 'd:c:e:i:', ['docpath=', 'category=' 'categoriesfilepath=', 'indicatorsfilepath='])
                 
         for opt, arg in options:
                 if opt in ('-d', '--docpath'):
                         documentFilePath = arg
-                elif opt in ('-t', '--type'):
-                        documentType = arg
-                elif opt in ('-c', '--categoryfilepath'):
+                elif opt in ('-c', '--category'):
+                        documentCategory = arg
+                elif opt in ('-x', '--categoriesfilepath'):
                         categoryList = shlex.split(textParser.readFromFile(arg))
                         categoryFileExists = True
+                elif opt in ('-y', '--indicatorsfilepath'):
+                        indicatorList = shlex.split(textParser.readFromFile(arg))
+                        indicatorFileExists = True
+
+        ###Determining Parser and Config###
 
         if categoryFileExists:
                 parserSelector = ParserSelector(*categoryList)
         else:
                 parserSelector = ParserSelector('html', 'text')
 
+        if indicatorFileExists:
+                #From file
+                parserSelector.addParserIdentifierSet(documentCategory, indicatorList)
+                #Otherwise, defaults to an empty set
+                
+
         #Default text
-        documentText = textParser.readFromFile(documentFilePath)
+        documentText = textParser.readFromFile(documentFilePath)+'\x001\x034'
         print documentText
 
         #Processed text
-        documentText = PreProcessor().removeEscapeChars(documentText+'\x01')
-        print documentText
-        
+        processedText = PreProcessor().removeEscapeChars(documentText)
+        print processedText
+
+        selectedParserTuple = parserSelector.determineBestParser(processedText.split(' '))
+
+        if selectedParserTuple[0] is None:
+                #Start parsing using the 'TextParser' Class
+                selectedParser = textParser
+        else:
+                #Use the returned parser object
+                selectedParser = selectedParserTuple[1]
+
+        ###Parsing###
+
+        featureSet = selectedParser.tagText(processedText)
 
 if __name__ == "__main__":
         main()
