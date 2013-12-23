@@ -22,7 +22,7 @@ def main():
                 
         for opt, arg in options:
                 if opt in ('-d', '--docpath'):
-                        documentFilePath = arg
+                        documentFilePath = arg.replace("\\", "/")
                 elif opt in ('-c', '--category'):
                         documentCategory = arg
                 elif opt in ('-x', '--categoriesfilepath'):
@@ -64,7 +64,9 @@ def main():
 
         ###Parsing###
 
-        featureSet = selectedParser.tagText(processedText)
+        if isinstance(selectedParser, TextParser):
+                selectedParser.tagText(documentFilePath.split('/')[-1], processedText)
+                print selectedParser.taggedText[documentFilePath.split('/')[-1]]
 
 if __name__ == "__main__":
         main()

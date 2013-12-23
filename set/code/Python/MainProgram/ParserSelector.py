@@ -43,7 +43,7 @@ class ParserSelector:
 		assert category in self.categoryDictionary
 		self.categoryDictionary[category] = set()
 
-	def determineBestParser(self, *identifierList):
+	def determineBestParser(self, identifierList):
 		categoryCountDict = {key:0 for key in self.categoryDictionary}
 		for category in categoryCountDict:
 			currentIdentifierSet = self.categoryDictionary[category]
