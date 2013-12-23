@@ -3,6 +3,9 @@ import os
 
 class TextParser:
         taggedText = {}
+        tagCriteria = ('DT', 'EX', 'JJ', 'MD', 'NN',
+                       'POS', 'PRP', 'RB', 'VB', 'VBD',
+                       'VBG', '#', '$', "'", ',')
         stanfordTagger = None
 
         def __init__(self):
@@ -38,7 +41,23 @@ class TextParser:
                         f.write(data + "\n")
 
         def tagTextFile(self, documentName, textFilePath):
-                self.taggedText[documentName] = self.stanfordTagger.tag(self.readFromFile(textFilePath).split())
+                tempTaggedText = self.stanfordTagger.tag(self.readFromFile(textFilePath).split())
+                finalList = []
+                
+                for x, y in tempTaggedText:
+                        if y in self.tagCriteria:
+                                finalList.append((x, y))
+                                
+
+                self.taggedText[documentName] = finalList
 
         def tagText(self, documentName, textString):
-                self.taggedText[documentName] = self.stanfordTagger.tag(textString.split())
+                tempTaggedText = self.stanfordTagger.tag(textString.split())
+                finalList = []
+                
+                for x, y in tempTaggedText:
+                        if y in self.tagCriteria:
+                                finalList.append((x, y))
+                                
+
+                self.taggedText[documentName] = finalList
