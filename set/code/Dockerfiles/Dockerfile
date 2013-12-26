@@ -79,7 +79,7 @@ run 	cd set && python setup.py install
 #Clone fyp repo
 run 	git clone https://github.com/Quantza/fyp ~/fyp/
 run 	cp ~/fyp/set ~/set
-run 	cp ~/set/code/dev.sh ~
+run 	cp ~/set/dev.sh ~
 run 	chmod +x dev.sh
 
 #Configure and install mail server - dovecot
