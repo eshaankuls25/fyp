@@ -10,6 +10,7 @@ class SetwebscanItem(Item):
     # name = Field()
 
     title = Field()
-    count = Field()
-    desc  = Field()
+    link = Field()
+    desc = Field()
+    body = Field()
     

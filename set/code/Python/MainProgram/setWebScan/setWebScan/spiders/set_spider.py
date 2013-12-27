@@ -9,5 +9,14 @@ class SETSpider(BaseSpider):
         ]
 
     def parse(self, response):
-        filename = response.url.split("/")[-2]
-        open(filename, 'wb').write(response.body)
+    	sel = Selector(response)
+    	sites = sel.xpath('//ul/li')
+       	items = []
+       	for site in sites:
+        	item = SetwebscanItem()
+           	item['title'] = site.xpath('a/text()').extract()
+           	item['link'] = site.xpath('a/@href').extract()
+           	item['desc'] = site.xpath('text()').extract()
+           	item['body'] = response.body
+           	items.append(item)
+       	return items
