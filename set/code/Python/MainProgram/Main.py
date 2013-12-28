@@ -4,6 +4,7 @@ from TextParser import TextParser
 from FeatureSet import FeatureSet
 
 import sys, shlex, os, getopt
+from Utils import Utils
 
 def main():
 
