@@ -1,4 +1,6 @@
 from scrapy.spider import BaseSpider
+from os.path import expanduser
+from Utils import Utils
 
 class SETSpider(BaseSpider):
     name = "set"
@@ -7,6 +9,8 @@ class SETSpider(BaseSpider):
     start_urls = [
         "http://127.0.0.1/"
         ]
+
+    utils = Utils()
 
     def parse(self, response):
     	sel = Selector(response)
@@ -29,5 +33,5 @@ class SETSpider(BaseSpider):
        	filename = response.url.split("/")[-2]
        	filepath = expanduser("~") + "/tmp/scrapy/" + filename
 
-       	pickleObject(filepath, items, "wb")
+       	print "Result: %b\n" %(utils.pickleObject(filepath, items, "wb"))
        	return items

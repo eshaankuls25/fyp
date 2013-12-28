@@ -1,5 +1,4 @@
 import os, sys, pickle
-from os.path import expanduser
 
 class Utils:
 
