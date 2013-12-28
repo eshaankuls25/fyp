@@ -19,7 +19,6 @@ class Utils:
 
     def unpickleObject(self, filepath, object):
     	directory = os.path.dirname(filepath)
-
     	try:
         	with open(filepath, "rb") as f:
         		return pickle.load(object, f)
