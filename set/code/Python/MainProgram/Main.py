@@ -8,7 +8,7 @@ import sys, shlex, os, getopt
 def main():
 
         parserSelector = None
-        textParser = TextParser()
+        utils = Utils()
 
         ###Defaults###
         documentFilePath = 'test.txt'
@@ -26,10 +26,10 @@ def main():
                 elif opt in ('-c', '--category'):
                         documentCategory = arg
                 elif opt in ('-x', '--categoriesfilepath'):
-                        categoryList = shlex.split(textParser.readFromFile(arg))
+                        categoryList = shlex.split(utils.readFromFile(arg))
                         categoryFileExists = True
                 elif opt in ('-y', '--indicatorsfilepath'):
-                        indicatorList = shlex.split(textParser.readFromFile(arg))
+                        indicatorList = shlex.split(utils.readFromFile(arg))
                         indicatorFileExists = True
 
         ###Determining Parser and Config###
@@ -46,7 +46,7 @@ def main():
                 
 
         #Default text
-        documentText = textParser.readFromFile(documentFilePath)+'\x001\x034'
+        documentText = utils.readFromFile(documentFilePath)+'\x001\x034'
         print documentText
 
         #Processed text
@@ -57,7 +57,7 @@ def main():
 
         if selectedParserTuple[0] is None:
                 #Start parsing using the 'TextParser' Class
-                selectedParser = textParser
+                selectedParser = TextParser()
         else:
                 #Use the returned parser object
                 selectedParser = selectedParserTuple[1]

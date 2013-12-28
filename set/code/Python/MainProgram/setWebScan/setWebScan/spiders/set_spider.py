@@ -17,6 +17,17 @@ class SETSpider(BaseSpider):
            	item['title'] = site.xpath('a/text()').extract()
            	item['link'] = site.xpath('a/@href').extract()
            	item['desc'] = site.xpath('text()').extract()
-           	item['body'] = response.body
+           	item['body'] = None
            	items.append(item)
+
+        item = SetwebscanItem()
+        item['title'] = "response_body"
+        item['link'] = response.url
+        item['desc'] = "Webpage response"
+       	item['body'] = response.body
+
+       	filename = response.url.split("/")[-2]
+       	filepath = expanduser("~") + "/tmp/scrapy/" + filename
+
+       	pickleObject(filepath, items, "wb")
        	return items
