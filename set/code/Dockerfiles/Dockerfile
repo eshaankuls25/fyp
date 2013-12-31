@@ -36,6 +36,7 @@ run 	apt-get install -y -q rlwrap
 run	apt-get install -y -q python-pip
 run	pip install s3cmd
 run	pip install python-magic
+run pip install virtualenv
 run	apt-get install -y -q python-dev
 run	apt-get install -y -q libxml2-dev libxslt-dev
 run	apt-get install -y -q scrapy-0.18
@@ -79,6 +80,9 @@ run 	cd set && python setup.py install
 #Clone fyp repo
 run 	git clone https://github.com/Quantza/fyp ~/fyp/
 run 	cp ~/fyp/set/dev.sh ~
+run     cd ~/fyp/set/code/Python/MainProgram/libsvm/python/
+run     make
+run     cd ~
 run 	chmod +x dev.sh
 
 #Configure and install mail server - dovecot

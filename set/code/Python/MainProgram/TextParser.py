@@ -1,4 +1,5 @@
 from nltk.tag.stanford import POSTagger
+from nltk.internals import config_java
 import os
 from Utils import Utils
 
@@ -9,7 +10,8 @@ class TextParser:
                        'VBG', '#', '$', "'", ',')
         stanfordTagger = None
         utils = Utils()
-
+        #config_java("C:\Program Files\Java\jdk1.6.0_37\\bin\java.exe")
+        
         def __init__(self):
 
                 taggerLibraryPath = os.getcwd() + "/sp/jar/" + "stanford-postagger.jar"
@@ -21,7 +23,7 @@ class TextParser:
                 print "---"
                 print "Tagger library path: " + taggerLibraryPath
                 print "Tagger model path: " + taggerModelPath
-                print "---"
+                print "---" 
                 
                 #print self.stanfordTagger.tag('What is the airspeed of an unladen swallow ?'.split()) 
                 
