@@ -1,7 +1,7 @@
 from nltk.tag.stanford import POSTagger
 from nltk.internals import config_java
 import os
-from Utils import Utils
+from Utils import readFromFile
 
 class TextParser:
         taggedText = {}
@@ -9,7 +9,6 @@ class TextParser:
                        'POS', 'PRP', 'RB', 'VB', 'VBD',
                        'VBG', '#', '$', "'", ',')
         stanfordTagger = None
-        utils = Utils()
         #config_java("C:\Program Files\Java\jdk1.6.0_37\\bin\java.exe")
         
         def __init__(self):
@@ -27,12 +26,12 @@ class TextParser:
                 
                 #print self.stanfordTagger.tag('What is the airspeed of an unladen swallow ?'.split()) 
                 
-                #print("File: " + self.utils.readFromFile("test.txt") + "\n\n") 
+                #print("File: " + readFromFile("test.txt") + "\n\n") 
                 #self.tagTextFile("testDocument", "test.txt")
                 #print("Tagged Text: ", self.taggedText["testDocument"]) 
 
         def tagTextFile(self, documentName, textFilePath):
-                tempTaggedText = self.stanfordTagger.tag(self.utils.readFromFile(textFilePath).split())
+                tempTaggedText = self.stanfordTagger.tag(readFromFile(textFilePath).split())
                 finalList = []
                 
                 for x, y in tempTaggedText:

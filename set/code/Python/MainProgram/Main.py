@@ -4,12 +4,11 @@ from TextParser import TextParser
 from FeatureSet import FeatureSet
 
 import sys, shlex, os, getopt
-from Utils import Utils
+from Utils import readFromFile
 
 def main():
 
         parserSelector = None
-        utils = Utils()
 
         ###Defaults###
         documentFilePath = 'test.txt'
@@ -27,10 +26,10 @@ def main():
                 elif opt in ('-c', '--category'):
                         documentCategory = arg
                 elif opt in ('-x', '--categoriesfilepath'):
-                        categoryList = shlex.split(utils.readFromFile(arg))
+                        categoryList = shlex.split(readFromFile(arg))
                         categoryFileExists = True
                 elif opt in ('-y', '--indicatorsfilepath'):
-                        indicatorList = shlex.split(utils.readFromFile(arg))
+                        indicatorList = shlex.split(readFromFile(arg))
                         indicatorFileExists = True
 
         ###Determining Parser and Config###
@@ -47,7 +46,7 @@ def main():
                 
 
         #Default text
-        documentText = utils.readFromFile(documentFilePath)+'\x001\x034'
+        documentText = readFromFile(documentFilePath)+'\x001\x034'
         print documentText
 
         #Processed text

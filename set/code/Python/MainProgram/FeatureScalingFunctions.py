@@ -1,5 +1,7 @@
 from collections import *
 import re
+import nltk.data
+from Utils import downloadNLTKData
 
 """Scaling functions"""
 
@@ -13,17 +15,6 @@ def charCountInString(textString, char):
 		return len(textString.split(char))-1
 	else:
 		return -1
-
-def wordCountInString(textString, word):
-	#Using regular expression: [\w]+
-	#\w - word character class
-	#r - represents that the following string is in rawstrin notation
-	return Counter(re.findall(r"[\w]+", textString.lower()))[word]
-
-def averageWordLength(textString):
-	words = Counter(re.findall(r"[\w]+", textString.lower())).keys()
-	wordCount = len(words)
-	return float(sum([len(word) for word in words]))/wordCount
 
 #If charCount == 0 return value = 1
 #If charCount is far greater than 0, return value approaches 0
@@ -48,6 +39,29 @@ def lackOfApostrophes(textString):
 
 def lackOfCommas(textString):
 	return lackOfCharInString(textString, ',')
+
+def wordCountInString(textString, word):
+	#Using regular expression: [\w]+
+	#\w - word character class
+	#r - represents that the following string is in rawstrin notation
+	return Counter(re.findall(r"[\w]+", textString.lower()))[word]
+
+def averageWordLength(textString):
+	words = Counter(re.findall(r"[\w]+", textString.lower())).keys()
+	wordCount = len(words)
+	return float(sum([len(word) for word in words]))/wordCount
+
+def numberOfSentences(textString):
+	downloaded = downloadNLTKData('punkt')
+
+	if downloaded:
+		tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+		return len(tokenizer.tokenize(textString))
+	else:
+		return -1
+
+
+
 
 
 
