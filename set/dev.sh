@@ -1,14 +1,15 @@
 #!/bin/bash
 #
-# Script to set project aliases
+# Script to run tool
 #
 
-CODE_DIR = ~/fyp/set/code/Python/
-FYP_VIRTUALENV = ~/fyp/set/code/Python/fyp_virtualenv/
+CODE_DIR = ~/fyp/set/code/Python
+FYP_VIRTUALENV = ~/fyp/set/code/Python/fyp_virtualenv
 
 cd $CODE_DIR
 if [ ! -d "$FYP_VIRTUALENV" ]; then
-	virtualenv fyp_virtualenv
+	cd $CODE_DIR/utility_scripts/
+	python create_set_venv_script.py && python set_venv_script.py $FYP_VIRTUALENV"/"
 fi
 
 cd $FYP_VIRTUALENV
