@@ -58,7 +58,7 @@ def downloadNLTKData(packageList):
         sys.exit()
 
     downloader = nltk.downloader.Downloader(download_dir=directory)
-    downloader.download(packageList)
+    return downloader.download(packageList)
 
 
 
