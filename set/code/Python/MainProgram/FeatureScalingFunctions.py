@@ -81,10 +81,9 @@ def numberOfSyllablesInWord(word):
 		d = cmudict.dict()
 
 		try:
-			return [len(list(y for y in x if y[-1].isdigit())) for x in d[word.lower()]]
+			return [len(list(y for y in x if y[-1].isdigit())) for x in d[word.lower()]][0]
 		except KeyError:
 			sys.stderr.write('\n\nWord not in dictionary.\n')
 			return 0
 	else:
-		raise Exception, e
-		return -1
+		raise RuntimeError("\n\nCould not download 'cmudict' dictionary.\n")
