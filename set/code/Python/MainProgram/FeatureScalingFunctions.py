@@ -1,7 +1,10 @@
 from collections import *
-import re
-import nltk.data
 from Utils import downloadNLTKData
+from nltk.corpus import cmudict
+
+import re, sys
+import nltk.data
+
 
 """Scaling functions"""
 
@@ -34,12 +37,14 @@ def lackOfCharInString(textString, char):
 
 ###Actual Feature Scaling Functions###
 
+#Normalized - between 0 and 1
 def lackOfApostrophes(textString):
 	return lackOfCharInString(textString, '\'')
 
 def lackOfCommas(textString):
 	return lackOfCharInString(textString, ',')
 
+#Not normalized (yet)
 def wordCountInString(textString, word):
 	#Using regular expression: [\w]+
 	#\w - word character class
@@ -60,9 +65,26 @@ def numberOfSentences(textString):
 	else:
 		return -1
 
+def uniqueWordCount(textString):
+	return len(set(Counter(re.findall(r"[\w]+", textString.lower())).keys()))
 
+def averageNumberOfSyllablesPerWord(textString):
+	words = Counter(re.findall(r"[\w]+", textString.lower())).keys()
+	wordCount = len(words)
+	return float(sum([numberOfSyllablesInWord(word) for word in words]))/wordCount
 
+#Source: Stack Overflow - http://stackoverflow.com/questions/405161/detecting-syllables-in-a-word
+def numberOfSyllablesInWord(word):
+	downloaded = downloadNLTKData('cmudict')
 
+	if downloaded:
+		d = cmudict.dict()
 
-
-
+		try:
+			return [len(list(y for y in x if y[-1].isdigit())) for x in d[word.lower()]]
+		except KeyError:
+			sys.stderr.write('\n\nWord not in dictionary.\n')
+			return 0
+	else:
+		raise Exception, e
+		return -1
