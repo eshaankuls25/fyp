@@ -20,6 +20,11 @@ def wordCountInString(textString, word):
 	#r - represents that the following string is in rawstrin notation
 	return Counter(re.findall(r"[\w]+", textString.lower()))[word]
 
+def averageWordLength(textString):
+	words = Counter(re.findall(r"[\w]+", textString.lower())).keys()
+	wordCount = len(words)
+	return float(sum([len(word) for word in words]))/wordCount
+
 #If charCount == 0 return value = 1
 #If charCount is far greater than 0, return value approaches 0
 #Squared because number of special characters/punctuation per document
