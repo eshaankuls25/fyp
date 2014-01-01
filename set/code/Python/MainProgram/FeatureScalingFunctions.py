@@ -15,9 +15,16 @@ def charCountInString(textString, char):
 		return -1
 
 def wordCountInString(textString, word):
+	#Using regular expression: [\w]+
 	#\w - word character class
 	#r - represents that the following string is in rawstrin notation
-	return Counter(re.findall(r"[\w']+", textString.lower()))[word]
+	return Counter(re.findall(r"[\w]+", textString.lower()))[word]
+
+#If charCount == 0 return value = 1
+#If charCount is far greater than 0, return value approaches 0
+#Squared because number of special characters/punctuation per document
+#(which is what this function will most be used for) is likely to be small,
+#making points in range over the internal [0, 1] be spread out more evenly
 
 def lackOfCharInString(textString, char):
 	count = charCountInString(textString, char)
@@ -31,10 +38,6 @@ def lackOfCharInString(textString, char):
 
 ###Actual Feature Scaling Functions###
 
-#If apostropheCount == 0 return value = 1
-#If apostropheCount is far greater than 0, return value approaches 0
-#Squared because number of apostrophes per document is likely to be small,
-#making points in range over the internal [0, 1] be spread out more evenly
 def lackOfApostrophes(textString):
 	return lackOfCharInString(textString, '\'')
 
