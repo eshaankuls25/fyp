@@ -1,8 +1,8 @@
 from collections import *
-from Utils import downloadNLTKData
-
 import re, sys
 sys.path.append("..")
+
+from Utilities.Utils import downloadNLTKData
 
 #Use scrapy code here - items, spiders etc.
 class HTMLFeatureExtractor:
