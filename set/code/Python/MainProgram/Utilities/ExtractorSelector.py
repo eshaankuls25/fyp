@@ -1,30 +1,34 @@
-import Parsers.TextParser
+import sys
+sys.path.append("..")
 
-class ParserSelector:
+import Parsers.TextParser
+import Extractors
+
+class ExtractorSelector:
 
 	categoryDictionary = {}
-	parserDictionary = {}
+	extractorDictionary = {}
 
-	def __init__(self, categoryList, parserList):
-		for group in zip(categoryList, parserList):
+	def __init__(self, categoryList, extractorList):
+		for group in zip(categoryList, extractorList):
 			self.categoryDictionary[group[0]] = set()
-			self.parserDictionary[group[0]] = group[1]		
+			self.extractorDictionary[group[0]] = group[1]		
 
-	def addParser(self, category, parser):
+	def addextractor(self, category, extractor):
 		assert category not in self.categoryDictionary
-		assert category not in self.parserDictionary
+		assert category not in self.extractorDictionary
 
 		self.categoryDictionary[category] = set()
-		self.parserDictionary[category] = parser	
+		self.extractorDictionary[category] = extractor	
 
-	def removeParser(self, category):
+	def removeextractor(self, category):
 		assert category in self.categoryDictionary
-		assert category in self.parserDictionary
+		assert category in self.extractorDictionary
 
 		del self.categoryDictionary[category]
-		del self.parserDictionary[category]	
+		del self.extractorDictionary[category]	
 	
-	def addParserIdentifierSet(self, category, identifierList):
+	def addextractorIdentifierSet(self, category, identifierList):
 		assert category in self.categoryDictionary
 
 		currentIdentifierSet = self.categoryDictionary[category]
@@ -39,11 +43,11 @@ class ParserSelector:
 			return False
 
 
-	def clearParserIdentifierSet(self, category):
+	def clearExtractorIdentifierSet(self, category):
 		assert category in self.categoryDictionary
 		self.categoryDictionary[category] = set()
 
-	def determineBestParser(self, identifierList):
+	def determineBestExtractor(self, identifierList):
 		categoryCountDict = {key:0 for key in self.categoryDictionary}
 		for category in categoryCountDict:
 			currentIdentifierSet = self.categoryDictionary[category]
@@ -52,20 +56,20 @@ class ParserSelector:
 				if identifier in currentIdentifierSet:
 					categoryCountDict[category] +=1
 
-		parserName = None
-		bestParser = None
+		extractorName = None
+		bestExtractor = None
 		count = 0
 		
 		for category in categoryCountDict:
 			identifierCount = categoryCountDict[category]
 			if identifierCount > count:
-				parserName = category
-				bestParser = self.parserDictionary[category]
+				extractorName = category
+				bestextractor = self.extractorDictionary[category]
 				count = identifierCount
 
-		if parserName is not None:
-			return (parserName, bestParser)	
+		if extractorName is not None:
+			return (extractorName, bestExtractor)	
 		else:
-			return (None, TextParser())
+			return (None, Extractors.TextFeatureExtractor())
 
 

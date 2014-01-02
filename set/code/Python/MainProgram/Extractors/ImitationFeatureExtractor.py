@@ -1,5 +1,8 @@
+import sys
+sys.path.append("..")
+import Parsers.TextParser
+
 from collections import *
-from TextParser import TextParser
 from TextFeatureExtractor import TextFeatureExtractor
 from HTMLFeatureExtractor import HTMLFeatureExtractor
 
