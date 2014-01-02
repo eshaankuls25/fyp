@@ -1,9 +1,12 @@
-from PreProcessor import PreProcessor
-from ParserSelector import ParserSelector
-from TextParser import TextParser
-from FeatureSet import FeatureSet
-
 import sys, shlex, os, getopt
+
+import Utilities.Utils
+import Utilities.PreProcessor
+import Utilities.ParserSelector
+import Utilities.FeatureSet
+
+import Parsers.TextParser
+
 from Utils import readFromFile
 
 def main():

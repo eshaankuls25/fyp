@@ -1,4 +1,4 @@
-from TextParser import TextParser
+import Parsers.TextParser
 
 class ParserSelector:
 

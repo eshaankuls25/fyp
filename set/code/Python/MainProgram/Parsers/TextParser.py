@@ -1,7 +1,9 @@
 from nltk.tag.stanford import POSTagger
 from nltk.internals import config_java
-import os
-from Utils import readFromFile
+import os, sys
+sys.path.append("..")
+
+from Utilities.Utils import readFromFile
 
 class TextParser:
         taggedText = {}

@@ -1,5 +1,7 @@
-import os
-from FeatureSet import FeatureSet
+import os, sys
+sys.path.append("..")
+
+from Utilities.FeatureSet import FeatureSet
 sys.path.append(os.getcwd()+'/libsvm/python')
 
 from svmutil import *
@@ -57,7 +59,7 @@ class GaussianSVM(object):
 		except Exception, e:
 			raise e
 
-	def classifyDocument(featureSet, newFeatureMatrix)
+	def classifyDocument(featureSet, newFeatureMatrix):
 		if isinstance(featureSet, FeatureSet):
 			p_labels, p_acc, p_vals = svm_predict(self.labels, [featureSet.vector], self.svmModel)
 			#Do stuff with variables
