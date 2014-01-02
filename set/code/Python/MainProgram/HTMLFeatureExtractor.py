@@ -1,10 +1,10 @@
 from collections import *
 from Utils import downloadNLTKData
-from HTMLGraphParser import HTMLGraphParser
 
 import re, sys
 
-class HTMLFeatureScalng:
+#Use scrapy code here - items, spiders etc.
+class HTMLFeatureExtractor:
 
         def __init__(self):
                pass 

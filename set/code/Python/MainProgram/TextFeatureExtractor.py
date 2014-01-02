@@ -5,7 +5,7 @@ from nltk.corpus import cmudict
 import re, sys
 import nltk.data
 
-class TextFeatureScaler:
+class TextFeatureExtractor:
 
         def __init__(self):
                 pass

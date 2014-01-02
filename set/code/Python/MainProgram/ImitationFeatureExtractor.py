@@ -1,11 +1,15 @@
 from collections import *
 from TextParser import TextParser
-from TextFeatureScaler import TextFeatureScaler
+from TextFeatureExtractor import TextFeatureExtractor
+from HTMLFeatureExtractor import HTMLFeatureExtractor
 
-class ImitationFeatureScaler(TextFeatureScaler):
+class ImitationFeatureExtractor(TextFeatureExtractor, HTMLFeatureExtractor):
 
-        def __init__(self):
-                TextFeatureScaler.__init__(self)
+        def __init__(self, string):
+                TextFeatureExtractor.__init__(self)
+                HTMLFeatureExtractor.__init__(self)
+
+                self.string = string                
 
         #Normalized - between 0 and 1
         def lackOfFullStops(self, textString):
@@ -20,7 +24,6 @@ class ImitationFeatureScaler(TextFeatureScaler):
                 tp.tagText("temp", textString)
 
                 count = 0
-                print tp.taggedText
                 for x, y in tp.taggedText["temp"]:
                         if y == 'PRP':
                                 count+=1

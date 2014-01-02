@@ -1,16 +1,18 @@
 from collections import *
 from Utils import downloadNLTKData
-from TextFeatureScaler import TextFeatureScaler
+from TextFeatureExtractor import TextFeatureExtractor
+from HTMLFeatureExtractor import HTMLFeatureExtractor
 
-import re, nltk.data
+import nltk.data
 
-class ObfuscationFeatureScaler(TextFeatureScaler):
+class ObfuscationFeatureExtractor(TextFeatureExtractor, HTMLFeatureExtractor):
 
-        def __init__(self):
-                TextFeatureScaler.__init__(self)
-
-        ##Obfuscation-Specific functions
+        def __init__(self, string):
+                TextFeatureExtractor.__init__(self)
+                HTMLFeatureExtractor.__init__(self)
                 
+                self.string = string
+
         #Normalized - between 0 and 1
         def lackOfCommas(self, textString):
                 return self.lackOfCharInString(textString, ',')
