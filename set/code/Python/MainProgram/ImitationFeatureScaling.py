@@ -40,6 +40,22 @@ def lackOfCharInString(textString, char):
         else:
                 return count
 
+#Source: Stack Overflow - http://stackoverflow.com/questions/405161/detecting-syllables-in-a-word
+def numberOfSyllablesInWord(word):
+        downloaded = downloadNLTKData('cmudict')
+
+        if downloaded:
+                d = cmudict.dict()
+
+                try:
+                        return [len(list(y for y in x if y[-1].isdigit())) for x in d[word.lower()]][0]
+                except KeyError:
+                        sys.stderr.write('\n\nWord not in dictionary.\n')
+                        return 0
+        else:
+                raise RuntimeError("\n\nCould not download 'cmudict' dictionary.\n")
+
+
 ###Actual Feature Scaling Functions###
 
 ##Obfuscation and Imitation functions
@@ -64,21 +80,6 @@ def averageNumberOfSyllablesPerWord(textString):
         words = Counter(re.findall(r"[\w]+", textString.lower())).keys()
         wordCount = len(words)
         return float(sum([numberOfSyllablesInWord(word) for word in words]))/wordCount
-
-#Source: Stack Overflow - http://stackoverflow.com/questions/405161/detecting-syllables-in-a-word
-def numberOfSyllablesInWord(word):
-        downloaded = downloadNLTKData('cmudict')
-
-        if downloaded:
-                d = cmudict.dict()
-
-                try:
-                        return [len(list(y for y in x if y[-1].isdigit())) for x in d[word.lower()]][0]
-                except KeyError:
-                        sys.stderr.write('\n\nWord not in dictionary.\n')
-                        return 0
-        else:
-                raise RuntimeError("\n\nCould not download 'cmudict' dictionary.\n")
 
 ##Obfuscation-Specific functions
         

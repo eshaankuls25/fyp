@@ -1,6 +1,6 @@
 from FeatureSet import FeatureSet
 
-class HTML_GraphParser:
+class HTMLGraphParser:
 	featureSet = None
 
 	

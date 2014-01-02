@@ -1,4 +1,4 @@
-class HTML_Graph:
+class HTMLGraph:
 	
 	rootNode = {}
 
