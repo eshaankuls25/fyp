@@ -56,6 +56,10 @@ run	apt-get install -y -q aufs-tools
 # Install pcapy
 run 	apt-get install -y -q python-pcapy
 
+##MIGHT NEED TO REMOVE LATER, SINCE NOT IN USE YET
+# Install numpy
+run 	apt-get install -y -q python-numpy
+
 #Install metasploit - Source: http://samiux.blogspot.co.uk/2013/05/howto-metasploit-on-ubuntu-desktop-1204.html
 run 	mkdir ~/metasploitInstaller && cd ~/metasploitInstaller
 
