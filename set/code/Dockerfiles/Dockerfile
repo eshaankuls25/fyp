@@ -60,6 +60,14 @@ run 	apt-get install -y -q python-pcapy
 # Install numpy
 run 	apt-get install -y -q python-numpy
 
+#Install libsvm
+run 	git clone git@github.com:cjlin1/libsvm.git ~/tmp/libsvm/
+run 	cd ~/tmp/libsvm/
+
+#Compile libsvm - Might use /usr/local/ instead...
+run 	mkdir ~/optbin
+run 	./configure --prefix=$HOME/optbin && make && make install
+
 #Install metasploit - Source: http://samiux.blogspot.co.uk/2013/05/howto-metasploit-on-ubuntu-desktop-1204.html
 run 	mkdir ~/metasploitInstaller && cd ~/metasploitInstaller
 

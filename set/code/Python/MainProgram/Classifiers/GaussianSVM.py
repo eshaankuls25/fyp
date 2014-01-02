@@ -2,8 +2,6 @@ import os, sys
 sys.path.append("..")
 
 from Utilities.FeatureSet import FeatureSet
-sys.path.append(os.getcwd()+'/libsvm/python')
-
 from svmutil import *
 
 class GaussianSVM(object):
