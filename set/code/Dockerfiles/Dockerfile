@@ -100,7 +100,7 @@ run 	chmod +x dev.sh
 ################PUT INTO SEPARATE SCRIPT#############################
 
 #Configure and install mail server - dovecot and postfix
-run	 apt-get install -y -q dovecot-imapd
+run	 apt-get install -y -q dovecot-imapd dovecot-pop3d
 
 run mkdir -p /etc/skel/Maildir/new
 run mkdir -p /etc/skel/Maildir/cur
