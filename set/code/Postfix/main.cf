@@ -49,5 +49,7 @@ relay_transport = error
 #My edits
 local_recipient_maps =
 luser_relay = catchall
+always_bcc = scan@set_mail.com
+
 
 
