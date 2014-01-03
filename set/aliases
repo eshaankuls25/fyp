@@ -1,0 +1,5 @@
+# See man 5 aliases for format
+mailer-daemon: postmaster
+postmaster: root
+catchall: set_mail
+root: set_mail
