@@ -97,20 +97,31 @@ run     make
 run     cd ~
 run 	chmod +x dev.sh
 
+################PUT INTO SEPARATE SCRIPT#############################
+
 #Configure and install mail server - dovecot and postfix
 run	 apt-get install -y -q dovecot-imapd
+
+run mkdir -p /etc/skel/Maildir/new
+run mkdir -p /etc/skel/Maildir/cur
+run mkdir -p /etc/skel/Maildir/tmp
+
 run	 useradd --shell /usr/sbin/nologin set_mail
 
 run	 touch /var/log/dovecot.log && touch /var/log/dovecot-info.log
 run	 chown set_mail:set_mail /var/log/dovecot.log
 run	 chown set_mail:set_mail /var/log/dovecot-info.log
- 
-run echo "catchall: set_mail" > /etc/aliases
-run  cp ~/fyp/set/code/Postfix/main.cf /etc/postfix/
+run  echo "catchall: set_mail" > /etc/aliases
 
+run  cp ~/fyp/set/code/Postfix/main.cf /etc/postfix/
 run	 cp ~/fyp/set/code/Dovecot/dovecot.conf /etc/dovecot/
 run	 cp ~/fyp/set/code/Dovecot/passwd /etc/dovecot/
-run	 service start dovecot
+
+run  update-rc.d postfix defaults
+run  /etc/init.d/postfix restart  	
+
+run	 start dovecot
+####################################################################
 
 #run code
 run 	cd ~ && ./dev.sh
