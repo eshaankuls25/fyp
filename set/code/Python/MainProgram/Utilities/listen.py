@@ -3,9 +3,7 @@
 # Original Source: http://muffinresearch.co.uk/archives/2010/10/15/fake-smtp-server-with-python/
 """A noddy fake smtp server."""
 
-import smtpd
-import asyncore
-import time
+import smtpd, asyncore, time, os
 
 class FakeSMTPServer(smtpd.SMTPServer):
     """A Fake smtp server"""
