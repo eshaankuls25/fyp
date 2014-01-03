@@ -113,10 +113,10 @@ run	 chown set_mail:set_mail /var/log/dovecot.log
 run	 chown set_mail:set_mail /var/log/dovecot-info.log
 
 run  cp ~/fyp/set/aliases /etc/
-run  cp ~/fyp/set/code/Postfix/main.cf /etc/postfix/
-run	 cp ~/fyp/set/code/Dovecot/dovecot.conf /etc/dovecot/
-run	 cp ~/fyp/set/code/Dovecot/passwd /etc/dovecot/
+run  cp ~/fyp/set/code/Postfix/* /etc/postfix/
+run	 cp ~/fyp/set/code/Dovecot/* /etc/dovecot/
 
+run  postmap /etc/postfix/virtual-regexp
 run  new aliases
 run  update-rc.d postfix defaults
 run  /etc/init.d/postfix restart  	

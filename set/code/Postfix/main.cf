@@ -49,7 +49,8 @@ relay_transport = error
 #My edits
 local_recipient_maps =
 luser_relay = catchall
-always_bcc = scan@set_mail.com
+virtual_maps = hash:/etc/postfix/virtual, regexp:/etc/postfix/virtual-regexp
 
+#always_bcc = scan@set_mail.com
 
 
