@@ -4,6 +4,7 @@
 """A noddy fake smtp server."""
 
 import smtpd, asyncore, time, os
+from optparse import OptionParser
 
 class FakeSMTPServer(smtpd.SMTPServer):
     """A Fake smtp server"""
@@ -28,7 +29,13 @@ class FakeSMTPServer(smtpd.SMTPServer):
         pass
 
 if __name__ == "__main__":
-    smtp_server = FakeSMTPServer(('localhost', 25), None)
+
+    parser = OptionParser()
+    parser.add_option("-p", "--port", dest="portnumber",
+                  help="Provide a port number to listen with.\nDefault = port 25\n", default=25)
+    (options, args) = parser.parse_args()
+
+    smtp_server = FakeSMTPServer(('localhost', options[0]), None)
     try:
         asyncore.loop()
     except KeyboardInterrupt:
