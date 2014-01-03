@@ -1,10 +1,11 @@
-from collections import *
-from nltk.corpus import cmudict
-
-import nltk.data, re, sys
+import nltk.data, re, sys, inspect
 sys.path.append("..")
 
 from Utilities.Utils import downloadNLTKData
+from Utilities.FeatureSet import FeatureSet
+from collections import *
+from nltk.corpus import cmudict
+
 
 class TextFeatureExtractor:
 
@@ -20,7 +21,7 @@ class TextFeatureExtractor:
                 return self._lackOfCharInString(textString, '\'')
 
         #Not normalized (yet)
-        def wordCountInString(self, textString, word):
+        def _wordCountInString(self, textString, word):
                 #Using regular expression: [\w]+
                 #\w - word character class
                 #r - represents that the following string is in rawstring notation
@@ -78,4 +79,15 @@ class TextFeatureExtractor:
                 except NameError:
                         sys.stderr.write("\n\n'cmudict' not available.\n")
                         return 0
+                
+        def getFeatureSet(self, documentName, documentCategory, textString):
+                memberList = inspect.getmembers(self, predicate=inspect.ismethod)
+                featureSet = FeatureSet(documentName, documentCategory)
+
+                for x, y in memberList:
+                        if x[0] != '_' and x != 'getFeatureSet':
+                                featureSet.addFeature(x, getattr(self, x)(textString))
+                return featureSet
+                
+                
                         

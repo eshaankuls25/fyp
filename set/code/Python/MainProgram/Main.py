@@ -1,17 +1,13 @@
 import sys, shlex, os, getopt
 
-import Utilities.Utils
-import Utilities.PreProcessor
-import Utilities.ParserSelector
-import Utilities.FeatureSet
-
-import Parsers.TextParser
-
-from Utils import readFromFile
+from Utilities.PreProcessor import PreProcessor
+from Utilities.ExtractorSelector import ExtractorSelector
+from Extractors.TextFeatureExtractor import TextFeatureExtractor
+from Utilities.Utils import readFromFile
 
 def main():
 
-        parserSelector = None
+        extractorSelector = None
 
         ###Defaults###
         documentFilePath = 'test.txt'
@@ -38,13 +34,13 @@ def main():
         ###Determining Parser and Config###
 
         if categoryFileExists:
-                parserSelector = ParserSelector(*categoryList)
+                extractorSelector = ExtractorSelector(*categoryList)
         else:
-                parserSelector = ParserSelector('html', 'text')
+                extractorSelector = ExtractorSelector('html', 'text')
 
         if indicatorFileExists:
                 #From file
-                parserSelector.addParserIdentifierSet(documentCategory, indicatorList)
+                extractorSelector.addExtractorIdentifierSet(documentCategory, indicatorList)
                 #Otherwise, defaults to an empty set
                 
 
@@ -56,20 +52,20 @@ def main():
         processedText = PreProcessor().removeEscapeChars(documentText)
         print processedText
 
-        selectedParserTuple = parserSelector.determineBestParser(processedText.split(' '))
+        selectedExtractorTuple = extractorSelector.determineBestExtractor(processedText.split(' '))
 
-        if selectedParserTuple[0] is None:
-                #Start parsing using the 'TextParser' Class
-                selectedParser = TextParser()
+        if selectedExtractorTuple[0] is None:
+                #Start parsing using the 'TextFeatureExtractor' Class
+                selectedExtractor = TextFeatureExtractor()
         else:
                 #Use the returned parser object
-                selectedParser = selectedParserTuple[1]
+                selectedExtractor = selectedExtractorTuple[1]
 
-        ###Parsing###
+        ###Extracting###
 
-        if isinstance(selectedParser, TextParser):
-                selectedParser.tagText(documentFilePath.split('/')[-1], processedText)
-                print selectedParser.taggedText[documentFilePath.split('/')[-1]]
+        featureSet = selectedExtractor.getFeatureSet(processedText, documentFilePath, documentCategory)
+        print featureSet.documentName, ":  ", featureSet.documentCategory, "\n\n", featureSet.vector
 
+        
 if __name__ == "__main__":
         main()

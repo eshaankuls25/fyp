@@ -7,8 +7,8 @@ class FeatureSet:
 		self.documentName = documentName
 		self.documentCategory = documentCategory
 
-	def addFeature(self, featureName, value, scalingFunction):
-		self.vector[featureName] = [value, scalingFunction(value)]
+	def addFeature(self, featureName, value):
+		self.vector[featureName] = value
 
 	def setValidCategory(category, categoryDictionary):
 		if category in categoryDictionary:

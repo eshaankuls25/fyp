@@ -32,6 +32,26 @@ class TextParser:
                 #self.tagTextFile("testDocument", "test.txt")
                 #print("Tagged Text: ", self.taggedText["testDocument"]) 
 
+        def __init__(self, pathToParser):
+
+                taggerLibraryPath = pathToParser + "/sp/jar/" + "stanford-postagger.jar"
+                taggerModelPath = pathToParser + "/sp/models/" + "english-bidirectional-distsim.tagger"
+
+                self.stanfordTagger = POSTagger(taggerModelPath,
+                        taggerLibraryPath)
+
+                print "---"
+                print "Tagger library path: " + taggerLibraryPath
+                print "Tagger model path: " + taggerModelPath
+                print "---" 
+                
+                #print self.stanfordTagger.tag('What is the airspeed of an unladen swallow ?'.split()) 
+                
+                #print("File: " + readFromFile("test.txt") + "\n\n") 
+                #self.tagTextFile("testDocument", "test.txt")
+                #print("Tagged Text: ", self.taggedText["testDocument"]) 
+
+
         def tagTextFile(self, documentName, textFilePath):
                 tempTaggedText = self.stanfordTagger.tag(readFromFile(textFilePath).split())
                 finalList = []

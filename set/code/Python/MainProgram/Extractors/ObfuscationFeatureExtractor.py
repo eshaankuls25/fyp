@@ -2,18 +2,17 @@ from collections import *
 from TextFeatureExtractor import TextFeatureExtractor
 from HTMLFeatureExtractor import HTMLFeatureExtractor
 
-import nltk.data, sys
+import nltk.data, sys, re
 sys.path.append("..")
 
 from Utilities.Utils import downloadNLTKData
 
 class ObfuscationFeatureExtractor(TextFeatureExtractor, HTMLFeatureExtractor):
 
-        def __init__(self, string):
+        def __init__(self):
                 TextFeatureExtractor.__init__(self)
                 HTMLFeatureExtractor.__init__(self)
-                self.string = string
-
+                
                 downloaded = downloadNLTKData('punkt')
 
                 if not downloaded:
@@ -21,7 +20,7 @@ class ObfuscationFeatureExtractor(TextFeatureExtractor, HTMLFeatureExtractor):
 
         #Normalized - between 0 and 1
         def lackOfCommas(self, textString):
-                return self.lackOfCharInString(textString, ',')
+                return self._lackOfCharInString(textString, ',')
 
         #Not normalized (yet)
         def numberOfSentences(self, textString):

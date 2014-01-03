@@ -33,7 +33,7 @@ def readFromFile(filename):
         return fileContents
     except IOError:
         sys.stderr.write("Could not read file.\n")
-        return False
+        return None
 
 def writeToFile(filename, data, accessType):
     filepath = os.getcwd() + "/" + filename

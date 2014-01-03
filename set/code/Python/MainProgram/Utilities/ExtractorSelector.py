@@ -1,8 +1,7 @@
 import sys
 sys.path.append("..")
 
-import Parsers.TextParser
-import Extractors
+from Extractors.TextFeatureExtractor import TextFeatureExtractor
 
 class ExtractorSelector:
 
@@ -14,21 +13,21 @@ class ExtractorSelector:
 			self.categoryDictionary[group[0]] = set()
 			self.extractorDictionary[group[0]] = group[1]		
 
-	def addextractor(self, category, extractor):
+	def addExtractor(self, category, extractor):
 		assert category not in self.categoryDictionary
 		assert category not in self.extractorDictionary
 
 		self.categoryDictionary[category] = set()
 		self.extractorDictionary[category] = extractor	
 
-	def removeextractor(self, category):
+	def removeExtractor(self, category):
 		assert category in self.categoryDictionary
 		assert category in self.extractorDictionary
 
 		del self.categoryDictionary[category]
 		del self.extractorDictionary[category]	
 	
-	def addextractorIdentifierSet(self, category, identifierList):
+	def addExtractorIdentifierSet(self, category, identifierList):
 		assert category in self.categoryDictionary
 
 		currentIdentifierSet = self.categoryDictionary[category]
@@ -70,6 +69,7 @@ class ExtractorSelector:
 		if extractorName is not None:
 			return (extractorName, bestExtractor)	
 		else:
-			return (None, Extractors.TextFeatureExtractor())
+			return (None, TextFeatureExtractor())
+
 
 
