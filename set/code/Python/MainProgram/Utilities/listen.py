@@ -15,7 +15,15 @@ class FakeSMTPServer(smtpd.SMTPServer):
         smtpd.SMTPServer.__init__(*args, **kwargs)
 
     def process_message(*args, **kwargs):
-        mail = open("mails/"+str(time.time())+".eml", "w")
+
+        directory = "mails/"
+
+        try:
+            os.stat(directory)
+        except:
+            os.mkdir(directory)
+
+        mail = open(directory+str(time.time())+".eml", "w")
         print "New mail from " + args[2]
         mail.write(args[4])
         mail.close
