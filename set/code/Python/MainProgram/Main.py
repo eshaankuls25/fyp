@@ -1,20 +1,29 @@
 import sys, shlex, os, getopt
 
+from Extractors.TextFeatureExtractor import TextFeatureExtractor
+from Extractors.HTMLFeatureExtractor import HTMLFeatureExtractor
+
 from Utilities.PreProcessor import PreProcessor
 from Utilities.ExtractorSelector import ExtractorSelector
-from Extractors.TextFeatureExtractor import TextFeatureExtractor
 from Utilities.Utils import readFromFile
 from Utilities.Utils import startProcess
+from Utilities.Utils import listFilesInDirWithExtension
+from Parsers.TextParser import TextParser
 
 def main():
 
         extractorSelector = None
 
         ###Defaults###
-        documentFilePath = 'test.txt'
+        documentFilePath = 'test_email'
         documentCategory = 'text'
-        categoryFileExists = False
-        indicatorFileExists = False
+
+        categoryList = ['html', 'text']
+        extractorList = [TextFeatureExtractor(), HTMLFeatureExtractor()]
+        indicatorDictionary = {'text':['From:', 'Date:', 'Message-ID', 'In-Reply-To:'],\
+                              'html':['http://', 'www', '.com', '.co.uk']}
+
+        featureMatrix = []
         
         ###User arguments###
 
@@ -29,43 +38,59 @@ def main():
                         categoryList = shlex.split(readFromFile(arg))
                         categoryFileExists = True
                 elif opt in ('-y', '--indicatorsfilepath'):
+                        #Must change to allow file to contain
+                        #multiple document names, which map to multiple indicators
+                        #use 'indicatorDictionary' - maps docname to text features
                         indicatorList = shlex.split(readFromFile(arg))
                         indicatorFileExists = True
 
-        ###Determining Parser and Config###
+        extractorSelector = ExtractorSelector(categoryList, extractorList)
 
-        if categoryFileExists:
-                extractorSelector = ExtractorSelector(*categoryList)
-        else:
-                extractorSelector = ExtractorSelector('html', 'text')
-
-        if indicatorFileExists:
-                #From file
-                extractorSelector.addExtractorIdentifierSet(documentCategory, indicatorList)
-                #Otherwise, defaults to an empty set
-                
-
-        #Default text
-        documentText = readFromFile(documentFilePath)+'\x001\x034'
-        print documentText
-
-        #Processed text
-        processedText = PreProcessor().removeEscapeChars(documentText)
-        print processedText
-
-        selectedExtractorTuple = extractorSelector.determineBestExtractor(processedText.split(' '))
-
-        if selectedExtractorTuple[0] is None:
-                #Start parsing using the 'TextFeatureExtractor' Class
-                selectedExtractor = TextFeatureExtractor()
-        else:
-                #Use the returned parser object
-                selectedExtractor = selectedExtractorTuple[1]
+        for category in categoryList:
+                extractorSelector.addExtractorIdentifierSet(category, indicatorDictionary[category])                   
 
         ###Extracting###
 
-        featureSet = selectedExtractor.getFeatureSet(processedText, documentFilePath, documentCategory)
-        print featureSet.documentName, ":  ", featureSet.documentCategory, "\n\n", featureSet.vector
+        ###Email Test###
+
+        emailList = []
+
+        parser = TextParser(os.getcwd()+"/Parsers")
+        filePrefix = "./Emails/"
+        
+        for filepath in listFilesInDirWithExtension(filePrefix, ".eml"):
+                emailString = readFromFile(filePrefix+filepath)
+                emailList.append(parser.getEmailFromString(emailString));
+                i = 0
+                
+                for email, isMultipart in emailList:
+                        payload = email.get_payload()
+                        
+                        print "Email no: "+str(i)+": "
+
+                        print "---"
+                        for header in email.keys():
+                                print "\n"+header+": "+email.get(header)
+                        print "\nPayload: "+email.get_payload()
+                        print "---"
+                        
+                        processedEmail = PreProcessor().removeEscapeChars(emailString)
+                        processedPayload = PreProcessor().removeEscapeChars(payload)
+                        selectedExtractorTuple = extractorSelector.determineBestExtractor(processedEmail.split(' '))
+
+                        if selectedExtractorTuple[0] is None:
+                                #Start parsing using the 'TextFeatureExtractor' Class
+                                selectedExtractor = TextFeatureExtractor()
+                        else:
+                                #Use the returned parser object
+                                selectedExtractor = selectedExtractorTuple[1]
+
+                        featureSet = selectedExtractor.getFeatureSet(processedPayload, documentFilePath, documentCategory)
+                        featureMatrix.append(featureSet.vector)
+                        i+=1
+
+        for vector in featureMatrix:
+                print vector
 
         if sys.platform == 'win32':
                 startProcess("python ./Utilities/listen.py")

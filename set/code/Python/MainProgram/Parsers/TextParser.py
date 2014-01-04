@@ -1,5 +1,6 @@
 from nltk.tag.stanford import POSTagger
 from nltk.internals import config_java
+from email.parser import Parser
 import os, sys
 sys.path.append("..")
 
@@ -11,31 +12,16 @@ class TextParser:
                        'POS', 'PRP', 'RB', 'VB', 'VBD',
                        'VBG', '#', '$', "'", ',')
         stanfordTagger = None
-        #config_java("C:\Program Files\Java\jdk1.6.0_37\\bin\java.exe")
-        
-        def __init__(self):
+        #config_java("C:\Program Files\Java\jdk1.6.0_37\\bin\java.exe") 
 
-                taggerLibraryPath = os.getcwd() + "/sp/jar/" + "stanford-postagger.jar"
-                taggerModelPath = os.getcwd() + "/sp/models/" + "english-bidirectional-distsim.tagger"
+        def __init__(self, pathToParser=None):
 
-                self.stanfordTagger = POSTagger(taggerModelPath,
-                        taggerLibraryPath)
-
-                print "---"
-                print "Tagger library path: " + taggerLibraryPath
-                print "Tagger model path: " + taggerModelPath
-                print "---" 
-                
-                #print self.stanfordTagger.tag('What is the airspeed of an unladen swallow ?'.split()) 
-                
-                #print("File: " + readFromFile("test.txt") + "\n\n") 
-                #self.tagTextFile("testDocument", "test.txt")
-                #print("Tagged Text: ", self.taggedText["testDocument"]) 
-
-        def __init__(self, pathToParser):
-
-                taggerLibraryPath = pathToParser + "/sp/jar/" + "stanford-postagger.jar"
-                taggerModelPath = pathToParser + "/sp/models/" + "english-bidirectional-distsim.tagger"
+                if pathToParser is None:
+                        taggerLibraryPath = os.getcwd() + "/sp/jar/" + "stanford-postagger.jar"
+                        taggerModelPath = os.getcwd() + "/sp/models/" + "english-bidirectional-distsim.tagger"
+                else:
+                        taggerLibraryPath = pathToParser + "/sp/jar/" + "stanford-postagger.jar"
+                        taggerModelPath = pathToParser + "/sp/models/" + "english-bidirectional-distsim.tagger"
 
                 self.stanfordTagger = POSTagger(taggerModelPath,
                         taggerLibraryPath)
@@ -73,3 +59,7 @@ class TextParser:
                                 
 
                 self.taggedText[documentName] = finalList
+
+        def getEmailFromString(self, emailString):
+                message = Parser().parsestr(emailString)
+                return (message, message.is_multipart())

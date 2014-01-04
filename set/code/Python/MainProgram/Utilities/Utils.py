@@ -1,4 +1,4 @@
-import os, sys, pickle, nltk, shlex
+import os, sys, pickle, nltk, shlex, glob
 
 from subprocess import Popen, PIPE
 from threading import Thread
@@ -153,6 +153,29 @@ def _threadPrinter(process, blockingTimeout):
 
 def _threadStreamPrinter(process, blockingTimeout=1):
     Thread(target=_threadPrinter, name='printer', args=(process, blockingTimeout)).start()
+
+def listFilesInDir(directoryPath):
+    fileList = []
+    
+    if not isinstance(directoryPath, basestring) or \
+        directoryPath is None:
+        raise TypeError("ERROR: The parameter must be a string.")
+
+    for file_ in os.listdir(directoryPath):
+        fileList.append(file_)
+    return fileList
+
+def listFilesInDirWithExtension(directoryPath, extension):
+    fileList = []
+    
+    if not isinstance(directoryPath, basestring) or \
+        directoryPath is None:
+        raise TypeError("ERROR: The parameter must be a string.")
+
+    for file_ in os.listdir(directoryPath):
+        if file_.endswith(extension):
+            fileList.append(file_)
+    return fileList
 
 "Source: Jython - https://fisheye3.atlassian.com/browse/jython/trunk/jython/Lib/subprocess.py?r=6636#to566"
 def _cmdline2list(cmdline):
