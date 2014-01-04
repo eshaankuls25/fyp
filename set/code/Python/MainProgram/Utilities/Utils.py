@@ -80,7 +80,7 @@ def stream_watcher(identifier, stream):
 
 def startProcess(programNameAndArgsString):
 
-    argsList = None
+    argsList = []
 
     if not isinstance(programNameAndArgsString, basestring) or \
         programNameAndArgsString is None:
