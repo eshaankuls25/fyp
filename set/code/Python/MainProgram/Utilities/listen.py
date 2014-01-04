@@ -34,8 +34,8 @@ if __name__ == "__main__":
     parser.add_option("-p", "--port", dest="portnumber",
                   help="Provide a port number to listen with.\nDefault = port 25\n", default=25)
     (options, args) = parser.parse_args()
-
-    smtp_server = FakeSMTPServer(('localhost', options[0]), None)
+    
+    smtp_server = FakeSMTPServer(('localhost', options.portnumber), None)
     try:
         asyncore.loop()
     except KeyboardInterrupt:
