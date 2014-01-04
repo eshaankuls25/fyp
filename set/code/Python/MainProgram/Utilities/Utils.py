@@ -2,7 +2,11 @@ import os, sys, pickle, nltk, shlex
 
 from subprocess import Popen, PIPE
 from threading import Thread
-from Queue import Queue, Empty
+
+try:
+    from Queue import Queue, Empty
+except ImportError:
+    from queue import Queue, Empty  #Python 3.x
 
 io_q = Queue()
 
@@ -52,23 +56,36 @@ def writeToFile(filename, data, accessType):
         sys.stderr.write("Could not write file.\n")
         return False
 
+def addToNLTKPath(directoryPath):
+  if not isinstance(directoryPath, basestring) or \
+        directoryPath is None:
+        raise TypeError("ERROR: The parameter must be a string.")
+  nltk.data.path.append(directoryPath)
+
 #Source: Stack Overflow - http://stackoverflow.com/questions/5843817/programmatically-install-nltk-corpora-models-i-e-without-the-gui-downloader
 def downloadNLTKData(packageList):
+
+    isDirectoryInPath = None
     directory = ''
+
     if sys.platform == 'win32':
         directory = r'C:\nltk_data'
     elif sys.platform.startswith('linux') or sys.platform == 'darwin':
-        directory = r'/usr/share/nltk_data'
+        directory = os.path.expanduser('~')+r'/nltk_data'
     else:
         print 'ERROR: Operating System Not Supported'
         sys.exit()
+
+    isDirectoryInPath = any((directory in item) for item in nltk.data.path)
+    if not isDirectoryInPath: nltk.data.path.append(directory)
 
     downloader = nltk.downloader.Downloader(download_dir=directory)
     return downloader.download(packageList)
 
 #'startProcess' method uses Threaded printing of stdout and stderr, frome here:
 #http://sharats.me/the-ever-useful-and-neat-subprocess-module.html#popen-class
-
+# And here:
+#http://stackoverflow.com/questions/375427/non-blocking-read-on-a-subprocess-pipe-in-python
 def stream_watcher(identifier, stream):
     global io_q
     
@@ -89,21 +106,32 @@ def startProcess(programNameAndArgsString):
     if " " in programNameAndArgsString:
         if sys.platform == 'win32':
             argsList = _cmdline2list(programNameAndArgsString)
-        else:
+        elif sys.platform.startswith('linux') or sys.platform == 'darwin':
             argsList = shlex.split(programNameAndArgsString)
             argsList[1] = os.path.normpath(argsList[1])
+        else:
+            print 'ERROR: Operating System Not Supported'
+            sys.exit()  
     else:
         argsList = [programNameAndArgsString]
+
+    ON_POSIX = 'posix' in sys.builtin_module_names
     
-    process = Popen(argsList, shell=False, stdout=PIPE, stderr=PIPE)
+    process = Popen(argsList, shell=False, stdout=PIPE, stderr=PIPE, close_fds=ON_POSIX)
 
     #Start stdout and stderr reading threads
 
-    Thread(target=stream_watcher, name='stdout-watcher',
-        args=('STDOUT', process.stdout)).start()
+    t1 = Thread(target=stream_watcher, name='stdout-watcher',
+        args=('STDOUT', process.stdout))
 
-    Thread(target=stream_watcher, name='stderr-watcher',
-        args=('STDERR', process.stderr)).start()
+    t1.daemon = True
+    t1.start()
+
+    t2 = Thread(target=stream_watcher, name='stderr-watcher',
+        args=('STDERR', process.stderr))
+
+    t2.daemon = True
+    t2.start()
 
     _threadStreamPrinter(process)
 
@@ -118,6 +146,7 @@ def _threadPrinter(process, blockingTimeout):
             # No output in either streams for a second. Are we done?
             if process.poll() is not None:
                 break
+            #print 'Nothing yet.'
         else:
             identifier, line = item
             print identifier + ':', line
