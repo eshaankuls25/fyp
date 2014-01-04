@@ -70,6 +70,7 @@ def main():
         if sys.platform == 'win32':
                 startProcess("python ./Utilities/listen.py -p 333")
         else:
-                startProcess("sudo python ./Utilities/listen.py -p 333")
+		startProcess("sudo chmod +x ./Utilities/listen.py")
+                startProcess("sudo ./Utilities/listen.py -p 333")
 if __name__ == "__main__":
         main()
