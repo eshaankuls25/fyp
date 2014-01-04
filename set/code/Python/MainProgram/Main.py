@@ -81,11 +81,12 @@ def main():
                         if selectedExtractorTuple[0] is None:
                                 #Start parsing using the 'TextFeatureExtractor' Class
                                 selectedExtractor = TextFeatureExtractor()
+                                featureSet = selectedExtractor.getFeatureSet(email.get("Message-Id"), documentCategory, processedPayload)
                         else:
                                 #Use the returned parser object
                                 selectedExtractor = selectedExtractorTuple[1]
-
-                        featureSet = selectedExtractor.getFeatureSet(processedPayload, documentFilePath, documentCategory)
+                                featureSet = selectedExtractor.getFeatureSet(email.get("Message-Id"), selectedExtractorTuple[0], processedPayload)
+                                
                         featureMatrix.append(featureSet.vector)
                         i+=1
 
