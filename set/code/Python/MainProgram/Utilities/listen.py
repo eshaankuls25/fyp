@@ -34,7 +34,7 @@ if __name__ == "__main__":
     parser.add_option("-p", "--port", dest="portnumber",
                   help="Provide a port number to listen with.\nDefault = port 25\n", default=25)
     (options, args) = parser.parse_args()
-    
+    print int(options.portnumber)
     smtp_server = FakeSMTPServer(('localhost', int(options.portnumber)), None)
     try:
         asyncore.loop()

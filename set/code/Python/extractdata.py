@@ -17,7 +17,7 @@ class ExtractData:
         self.filename = "auto.dat"
                 
 
-    #From here: http://jimmyg.org/blog/2009/working-with-python-subprocess.html#id13
+    #Source: http://jimmyg.org/blog/2009/working-with-python-subprocess.html#id13
     def whereis(self, program):
         for path in os.environ.get('PATH', '').split(':'):
             if os.path.exists(os.path.join(path, program)) and \
