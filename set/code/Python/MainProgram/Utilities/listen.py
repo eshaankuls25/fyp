@@ -15,7 +15,7 @@ class FakeSMTPServer(smtpd.SMTPServer):
 
     def process_message(*args, **kwargs):
 
-        directory = "mails/"
+        directory = "Emails/"
 
         try:
             os.stat(directory)
