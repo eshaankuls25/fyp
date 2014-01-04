@@ -78,20 +78,22 @@ def main():
                         processedPayload = PreProcessor().removeEscapeChars(payload)
                         selectedExtractorTuple = extractorSelector.determineBestExtractor(processedEmail.split(' '))
 
-                        if selectedExtractorTuple[0] is None:
+                        if selectedExtractorTuple[0] is None or 'text':
                                 #Start parsing using the 'TextFeatureExtractor' Class
                                 selectedExtractor = TextFeatureExtractor()
                                 featureSet = selectedExtractor.getFeatureSet(email.get("Message-Id"), documentCategory, processedPayload)
                         else:
                                 #Use the returned parser object
                                 selectedExtractor = selectedExtractorTuple[1]
-                                featureSet = selectedExtractor.getFeatureSet(email.get("Message-Id"), selectedExtractorTuple[0], processedPayload)
+                                featureSet = selectedExtractor.getFeatureSet("DEFAULT - MUST_REPLACE_FOR_HTML_DOCS", selectedExtractorTuple[0], processedPayload)
                                 
-                        featureMatrix.append(featureSet.vector)
+                        featureMatrix.append(featureSet)
                         i+=1
-
-        for vector in featureMatrix:
-                print vector
+        print "---"
+        for featureSet in featureMatrix:
+                print featureSet.documentName
+                print featureSet.vector
+                print "---"
 
         if sys.platform == 'win32':
                 startProcess("python ./Utilities/listen.py")
