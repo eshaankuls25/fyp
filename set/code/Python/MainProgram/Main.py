@@ -67,7 +67,9 @@ def main():
         featureSet = selectedExtractor.getFeatureSet(processedText, documentFilePath, documentCategory)
         print featureSet.documentName, ":  ", featureSet.documentCategory, "\n\n", featureSet.vector
 
-        startProcess("python ./Utilities/listen.py -p 333")
-        
+        if sys.platform == 'win32':
+                startProcess("python ./Utilities/listen.py -p 333")
+        else:
+                startProcess("sudo python ./Utilities/listen.py -p 333")
 if __name__ == "__main__":
         main()
