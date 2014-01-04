@@ -4,6 +4,7 @@ from Utilities.PreProcessor import PreProcessor
 from Utilities.ExtractorSelector import ExtractorSelector
 from Extractors.TextFeatureExtractor import TextFeatureExtractor
 from Utilities.Utils import readFromFile
+from Utilities.Utils import startProcess
 
 def main():
 
@@ -66,6 +67,7 @@ def main():
         featureSet = selectedExtractor.getFeatureSet(processedText, documentFilePath, documentCategory)
         print featureSet.documentName, ":  ", featureSet.documentCategory, "\n\n", featureSet.vector
 
+        startProcess("python ./Utilities/listen.py -p 333")
         
 if __name__ == "__main__":
         main()
