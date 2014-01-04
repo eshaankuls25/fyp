@@ -68,9 +68,9 @@ def main():
         print featureSet.documentName, ":  ", featureSet.documentCategory, "\n\n", featureSet.vector
 
         if sys.platform == 'win32':
-                startProcess("python ./Utilities/listen.py -p 333")
+                startProcess("python ./Utilities/listen.py")
         else:
 		startProcess("sudo chmod +x ./Utilities/listen.py")
-                startProcess("sudo ./Utilities/listen.py -p 333")
+                startProcess("sudo ./Utilities/listen.py")
 if __name__ == "__main__":
         main()
