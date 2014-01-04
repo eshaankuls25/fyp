@@ -80,7 +80,7 @@ def stream_watcher(identifier, stream):
 
 def startProcess(programNameAndArgsString):
 
-    argsList = []
+    argsList = None 
 
     if not isinstance(programNameAndArgsString, basestring) or \
         programNameAndArgsString is None:
@@ -90,7 +90,7 @@ def startProcess(programNameAndArgsString):
         if sys.platform == 'win32':
             argsList = _cmdline2list(programNameAndArgsString)
         else:
-            argsList = programNameAndArgsString
+            argsList = shlex.split(programNameAndArgsString)
             argsList[1] = os.path.normpath(argsList[1])
     else:
         argsList = [programNameAndArgsString]
