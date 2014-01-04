@@ -10,7 +10,7 @@ class FakeSMTPServer(smtpd.SMTPServer):
     """A Fake smtp server"""
 
     def __init__(*args, **kwargs):
-        print "Running fake smtp server on port 25"
+        print "Running fake smtp server on port "+str(args[1][1])
         smtpd.SMTPServer.__init__(*args, **kwargs)
 
     def process_message(*args, **kwargs):
@@ -35,7 +35,7 @@ if __name__ == "__main__":
                   help="Provide a port number to listen with.\nDefault = port 25\n", default=25)
     (options, args) = parser.parse_args()
     
-    smtp_server = FakeSMTPServer(('localhost', options.portnumber), None)
+    smtp_server = FakeSMTPServer(('localhost', int(options.portnumber)), None)
     try:
         asyncore.loop()
     except KeyboardInterrupt:
