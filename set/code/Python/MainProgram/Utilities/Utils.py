@@ -91,7 +91,7 @@ def startProcess(programNameAndArgsString):
             argsList = _cmdline2list(programNameAndArgsString)
         else:
             argsList = programNameAndArgsString
-            argsList[1] = os.path.normpath(programNameAndArgsString[1])
+            argsList[1] = os.path.normpath(argsList[1])
     else:
         argsList = [programNameAndArgsString]
     
