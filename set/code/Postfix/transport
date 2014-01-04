@@ -1,0 +1,4 @@
+#postfix /etc/postfix/transport
+
+#Redirects all emails to SMTP_Server
+*	   smtp:[localhost]:333
