@@ -1,6 +1,0 @@
-This is a wonderfully simple test.
-Results are in: you've won nothing.
-The weather is quite dreary outside today, but hopefully things will brighten up tomorrow.
-There's a 3.5% chance of rain on the 19th of December 2013.
-
-Goodbye, Mr Thompson. Call me once you've completed the task I set you.

@@ -56,10 +56,10 @@ def main():
         emailList = []
 
         parser = TextParser(os.getcwd()+"/Parsers")
-        filePrefix = "./Emails/"
+        filepathPrefix = "./Emails/"
         
-        for filepath in listFilesInDirWithExtension(filePrefix, ".eml"):
-                emailString = readFromFile(filePrefix+filepath)
+        for filepath in listFilesInDirWithExtension(filepathPrefix, ".eml"):
+                emailString = readFromFile(filepathPrefix+filepath)
                 emailList.append(parser.getEmailFromString(emailString));
                 i = 0
                 
