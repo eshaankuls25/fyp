@@ -8,6 +8,7 @@ from Utilities.ExtractorSelector import ExtractorSelector
 from Utilities.Utils import readFromFile
 from Utilities.Utils import startProcess
 from Utilities.Utils import listFilesInDirWithExtension
+from Utilities.listen import startFakeSMTPServer
 from Parsers.TextParser import TextParser
 
 def main():
@@ -95,10 +96,17 @@ def main():
                 print featureSet.vector
                 print "---"
 
+        startFakeSMTPServer()
+
+        """
         if sys.platform == 'win32':
-                startProcess("python ./Utilities/listen.py")
+                #startProcess("python ./Utilities/listen.py")
+                startFakeSMTPServer()
         else:
-                startProcess("sudo chmod +x ./Utilities/listen.py")
-                startProcess("./Utilities/listen.py")
+                #startProcess("sudo chmod +x ./Utilities/listen.py")
+                #startProcess("./Utilities/listen.py")
+                startFakeSMTPServer()
+        """
+        
 if __name__ == "__main__":
         main()

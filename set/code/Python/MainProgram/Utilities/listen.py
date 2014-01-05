@@ -10,7 +10,6 @@ class FakeSMTPServer(smtpd.SMTPServer):
     """A Fake smtp server"""
 
     def __init__(*args, **kwargs):
-        print "Running fake smtp server on port "+str(args[1][1])
         smtpd.SMTPServer.__init__(*args, **kwargs)
 
     def process_message(*args, **kwargs):
@@ -28,14 +27,27 @@ class FakeSMTPServer(smtpd.SMTPServer):
         mail.close
         pass
 
+#A function
+def startFakeSMTPServer(options=None, args=None):
+
+    if (options is None) or (args is None):
+        smtp_server = FakeSMTPServer(('localhost', 3333), None)
+        print "Running fake smtp server on port 3333"
+    else:
+        portnum = int(options.portnumber)
+        smtp_server = FakeSMTPServer(('localhost', portnum), None)
+        print "Running fake smtp server on port ", portnum 
+    try:
+        asyncore.loop()
+    except KeyboardInterrupt:
+        smtp_server.close()
+
 if __name__ == "__main__":
 
     parser = OptionParser()
     parser.add_option("-p", "--port", dest="portnumber",
                   help="Provide a port number to listen with.\nDefault = port 3333\n", default=3333)
     (options, args) = parser.parse_args()
-    smtp_server = FakeSMTPServer(('localhost', int(options.portnumber)), None)
-    try:
-        asyncore.loop()
-    except KeyboardInterrupt:
-        smtp_server.close()
+    startFakeSMTPServer(options, args)
+    
+

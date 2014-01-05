@@ -87,7 +87,6 @@ def downloadNLTKData(packageList):
 # And here:
 #http://stackoverflow.com/questions/375427/non-blocking-read-on-a-subprocess-pipe-in-python
 def stream_watcher(identifier, stream):
-    global io_q
     
     for line in stream:
         io_q.put((identifier, line))
@@ -96,7 +95,6 @@ def stream_watcher(identifier, stream):
         stream.close()
 
 def startProcess(programNameAndArgsString):
-
     argsList = None 
 
     if not isinstance(programNameAndArgsString, basestring) or \
@@ -136,17 +134,17 @@ def startProcess(programNameAndArgsString):
     _threadStreamPrinter(process)
 
 def _threadPrinter(process, blockingTimeout):
-    global io_q
-    
+
     while True:
+        
         try:
             # Block for 1 second.
-            item = io_q.get(True, 1)
+            item = io_q.get(True, blockingTimeout)
         except Empty:
             # No output in either streams for a second. Are we done?
             if process.poll() is not None:
                 break
-            #print 'Nothing yet.'
+            print 'Nothing yet.'
         else:
             identifier, line = item
             print identifier + ':', line
