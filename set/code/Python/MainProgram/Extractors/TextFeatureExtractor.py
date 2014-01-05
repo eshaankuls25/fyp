@@ -1,18 +1,21 @@
-import nltk.data, re, sys, inspect
+import nltk.data, re, sys
 sys.path.append("..")
 
 from Utilities.Utils import downloadNLTKData
-from Utilities.FeatureSet import FeatureSet
+from BaseExtractor import BaseExtractor
 from collections import *
 from nltk.corpus import cmudict
 
 
-class TextFeatureExtractor:
+class TextFeatureExtractor(BaseExtractor):
 
         def __init__(self):
+                BaseExtractor.__init__(self) 
+
                 downloaded = downloadNLTKData('cmudict')
                 if not downloaded:
                         raise RuntimeError("\n\nCould not download 'cmudict' dictionary.\n")
+                
                 self.featureSet = None
         ##Obfuscation and Imitation methods
                         
@@ -79,15 +82,6 @@ class TextFeatureExtractor:
                 except NameError:
                         sys.stderr.write("\n\n'cmudict' not available.\n")
                         return 0
-                
-        def getFeatureSet(self, documentName, documentCategory, textString):
-                memberList = inspect.getmembers(self, predicate=inspect.ismethod)
-                self.featureSet = FeatureSet(documentName, documentCategory)
-
-                for x, y in memberList:
-                        if x[0] != '_' and x != 'getFeatureSet':
-                                self.featureSet.addFeature(x, getattr(self, x)(textString))
-                return self.featureSet
                 
                 
                         

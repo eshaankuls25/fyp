@@ -97,7 +97,6 @@ def main():
 
                         #Start parsing using the chosen extractor(s)
                         extractorTuple = selectedExtractorTuple[1]
-                        print selectedExtractorTuple[0], "---", extractorTuple
                         
                         for extractor in extractorTuple:
                                 featureSet = extractor.getFeatureSet(documentName+": "+extractor.__class__.__name__,\
