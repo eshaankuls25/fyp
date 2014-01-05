@@ -34,3 +34,5 @@ class ObfuscationFeatureExtractor(TextFeatureExtractor, HTMLFeatureExtractor):
         def uniqueWordCount(self, textString):
                 return len(set(Counter(re.findall(r"[\w]+", textString.lower())).keys()))
 
+        
+

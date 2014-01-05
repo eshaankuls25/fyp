@@ -84,6 +84,9 @@ class TextFeatureExtractor:
                 memberList = inspect.getmembers(self, predicate=inspect.ismethod)
                 featureSet = FeatureSet(documentName, documentCategory)
 
+                for member in memberList:
+                        print member[0]
+
                 for x, y in memberList:
                         if x[0] != '_' and x != 'getFeatureSet':
                                 featureSet.addFeature(x, getattr(self, x)(textString))

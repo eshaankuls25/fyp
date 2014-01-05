@@ -94,10 +94,15 @@ def main():
                                 documentName = "DEFAULT - HTML "+str(i)
                                 documentCategory = "html"
 
-                        for extractor in extractorTuple:
-                                featureSet = extractor.getFeatureSet(documentName, documentCategory, processedPayload)
+                        print selectedExtractorTuple[0], "---", selectedExtractorTuple[1]
+
+                        
+                        for extNum in range(len(extractorTuple)):
+                                featureSet = extractorTuple[extNum].getFeatureSet(\
+                                        documentName+": "+str(extNum), documentCategory, processedPayload)
                                 featureMatrix.append(featureSet)
                         i+=1
+                        
         print "---"
         for featureSet in featureMatrix:
                 print featureSet.documentName
