@@ -68,6 +68,11 @@ run 	cd ~/tmp/libsvm/
 run 	mkdir ~/optbin
 run 	./configure --prefix=$HOME/optbin && make && make install
 
+#Install Java
+run	add-apt-repository ppa:webupd8team/java
+run	apt-get update
+run	apt-get install oracle-java7-installer
+
 #Install metasploit - Source: http://samiux.blogspot.co.uk/2013/05/howto-metasploit-on-ubuntu-desktop-1204.html
 run 	mkdir ~/metasploitInstaller && cd ~/metasploitInstaller
 
