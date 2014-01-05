@@ -62,27 +62,27 @@ def main():
         
         for filepath in listFilesInDirWithExtension(filepathPrefix, ".eml"):
                 emailString = readFromFile(filepathPrefix+filepath)
-                emailList.append(parser.getEmailFromString(emailString));
-                i = 0
+                emailList.append(parser.getEmailFromString(emailString))
+                i=0
                 
                 for email, isMultipart in emailList:
                         payload = email.get_payload()
                         
-                        print "Email no: "+str(i)+": "
+                        print "Email no. "+str(i)+": "
 
                         print "---"
                         for header in email.keys():
                                 print "\n"+header+": "+email.get(header)
                         print "\nPayload: "+email.get_payload()
                         print "---"
-                        
-                        processedEmail = PreProcessor().removeEscapeChars(emailString)
-                        processedPayload = PreProcessor().removeEscapeChars(payload)
-                        
-                        selectedExtractorTuple = extractorSelector.determineBestExtractor(processedEmail.split())
 
-                        #Start parsing using the chosen extractor(s)
-                        extractorTuple = selectedExtractorTuple[1]
+                        preProcessor = PreProcessor()
+                        
+                        processedEmail = preProcessor.removeEscapeChars(emailString)
+                        processedPayload = preProcessor.removeEscapeChars(payload)
+                        
+                        selectedExtractorTuple = extractorSelector.\
+                                                 determineBestExtractor(processedEmail.split())
 
                         if selectedExtractorTuple[0] is None:
                                 documentName = "DEFAULT - TEXT "+str(i)
@@ -94,13 +94,17 @@ def main():
                                 documentName = "DEFAULT - HTML "+str(i)
                                 documentCategory = "html"
 
-                        print selectedExtractorTuple[0], "---", selectedExtractorTuple[1]
+
+                        #Start parsing using the chosen extractor(s)
+                        extractorTuple = selectedExtractorTuple[1]
+                        print selectedExtractorTuple[0], "---", extractorTuple
 
                         
                         for extNum in range(len(extractorTuple)):
                                 featureSet = extractorTuple[extNum].getFeatureSet(\
                                         documentName+": "+str(extNum), documentCategory, processedPayload)
                                 featureMatrix.append(featureSet)
+                                print featureSet
                         i+=1
                         
         print "---"
@@ -114,11 +118,9 @@ def main():
         """
         if sys.platform == 'win32':
                 #startProcess("python ./Utilities/listen.py")
-                startFakeSMTPServer()
         else:
                 #startProcess("sudo chmod +x ./Utilities/listen.py")
                 #startProcess("./Utilities/listen.py")
-                startFakeSMTPServer()
         """
         
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ class TextFeatureExtractor:
                 downloaded = downloadNLTKData('cmudict')
                 if not downloaded:
                         raise RuntimeError("\n\nCould not download 'cmudict' dictionary.\n")
-                
+                self.featureSet = None
         ##Obfuscation and Imitation methods
                         
         #Normalized - between 0 and 1
@@ -82,15 +82,12 @@ class TextFeatureExtractor:
                 
         def getFeatureSet(self, documentName, documentCategory, textString):
                 memberList = inspect.getmembers(self, predicate=inspect.ismethod)
-                featureSet = FeatureSet(documentName, documentCategory)
-
-                for member in memberList:
-                        print member[0]
+                self.featureSet = FeatureSet(documentName, documentCategory)
 
                 for x, y in memberList:
                         if x[0] != '_' and x != 'getFeatureSet':
-                                featureSet.addFeature(x, getattr(self, x)(textString))
-                return featureSet
+                                self.featureSet.addFeature(x, getattr(self, x)(textString))
+                return self.featureSet
                 
                 
                         
