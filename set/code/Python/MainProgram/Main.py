@@ -20,7 +20,7 @@ def main():
         documentFilePath = 'test_email'
         documentCategory = 'text'
 
-        categoryList = ['html', 'text']
+        categoryList = ['text', 'html']
         extractorList = [(ImitationFeatureExtractor(), ObfuscationFeatureExtractor()), HTMLFeatureExtractor()]
         indicatorDictionary = {'text':['From:', 'Date:', 'Message-ID', 'In-Reply-To:'],\
                               'html':['http://', 'www', '.com', '.co.uk']}
@@ -78,23 +78,25 @@ def main():
                         
                         processedEmail = PreProcessor().removeEscapeChars(emailString)
                         processedPayload = PreProcessor().removeEscapeChars(payload)
-                        selectedExtractorTuple = extractorSelector.determineBestExtractor(processedEmail.split(' '))
+                        
+                        selectedExtractorTuple = extractorSelector.determineBestExtractor(processedEmail.split())
 
                         #Start parsing using the chosen extractor(s)
                         extractorTuple = selectedExtractorTuple[1]
 
                         if selectedExtractorTuple[0] is None:
-                                documentName = "DEFAULT - TEXT"+str(i)
+                                documentName = "DEFAULT - TEXT "+str(i)
+                                documentCategory = "DEFAULT - TEXT"
                         elif selectedExtractorTuple[0] is 'text':
                                 documentName = email.get("Message-Id")
+                                documentCategory = "text"
                         elif selectedExtractorTuple[0] is 'html':
-                                documentName = "DEFAULT - HTML"+str(i)
+                                documentName = "DEFAULT - HTML "+str(i)
+                                documentCategory = "html"
 
                         for extractor in extractorTuple:
                                 featureSet = extractor.getFeatureSet(documentName, documentCategory, processedPayload)
                                 featureMatrix.append(featureSet)
-                                
-                        featureMatrix.append(featureSet)
                         i+=1
         print "---"
         for featureSet in featureMatrix:

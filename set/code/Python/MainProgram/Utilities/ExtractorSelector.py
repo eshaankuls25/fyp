@@ -64,11 +64,14 @@ class ExtractorSelector:
 			identifierCount = categoryCountDict[category]
 			if identifierCount > count:
 				extractorName = category
-				bestextractor = self.extractorDictionary[category]
+				bestExtractor = self.extractorDictionary[category]
 				count = identifierCount
 
 		if extractorName is not None:
-			return (extractorName, (bestExtractor,))	
+			if isinstance(bestExtractor, (list, tuple)):
+				return (extractorName, bestExtractor)
+			else:
+				return (extractorName, (bestExtractor,))	
 		else:
 			return (None,  (ImitationFeatureExtractor(), ObfuscationFeatureExtractor()))
 
