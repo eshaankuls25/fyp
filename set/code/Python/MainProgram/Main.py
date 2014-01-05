@@ -98,14 +98,11 @@ def main():
                         #Start parsing using the chosen extractor(s)
                         extractorTuple = selectedExtractorTuple[1]
                         print selectedExtractorTuple[0], "---", extractorTuple
-
                         
-                        for extNum in range(len(extractorTuple)):
-                                featureSet = extractorTuple[extNum].getFeatureSet(\
-                                        documentName+": "+str(extNum), documentCategory, processedPayload)
+                        for extractor in extractorTuple:
+                                featureSet = extractor.getFeatureSet(documentName+": "+extractor.__class__.__name__,\
+                                                                     documentCategory, processedPayload)
                                 featureMatrix.append(featureSet)
-                                print featureSet
-                        i+=1
                         
         print "---"
         for featureSet in featureMatrix:
