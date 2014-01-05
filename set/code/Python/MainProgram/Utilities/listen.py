@@ -36,7 +36,8 @@ def startFakeSMTPServer(options=None, args=None):
     else:
         portnum = int(options.portnumber)
         smtp_server = FakeSMTPServer(('localhost', portnum), None)
-        print "Running fake smtp server on port ", portnum 
+        print "Running fake smtp server on port", portnum
+        
     try:
         asyncore.loop()
     except KeyboardInterrupt:
