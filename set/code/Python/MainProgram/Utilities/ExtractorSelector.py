@@ -1,7 +1,8 @@
 import sys
 sys.path.append("..")
 
-from Extractors.TextFeatureExtractor import TextFeatureExtractor
+from Extractors.ObfuscationFeatureExtractor import ObfuscationFeatureExtractor
+from Extractors.ImitationFeatureExtractor import ImitationFeatureExtractor
 
 class ExtractorSelector:
 
@@ -67,9 +68,10 @@ class ExtractorSelector:
 				count = identifierCount
 
 		if extractorName is not None:
-			return (extractorName, bestExtractor)	
+			return (extractorName, (bestExtractor,))	
 		else:
-			return (None, TextFeatureExtractor())
+			return (None,  (ImitationFeatureExtractor(), ObfuscationFeatureExtractor()))
 
+		
 
 

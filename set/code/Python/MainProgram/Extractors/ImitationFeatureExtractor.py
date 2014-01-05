@@ -21,7 +21,7 @@ class ImitationFeatureExtractor(TextFeatureExtractor, HTMLFeatureExtractor):
                 return len(textString)
 
         def numberOfPersonalPronouns(self, textString):
-                pathToParser = os.path.dirname(os.getcwd())+"/Parsers"
+                pathToParser = os.getcwd()+"/Parsers"
                 
                 tp = TextParser(os.path.normpath(pathToParser))
                 tp.tagText("temp", textString)

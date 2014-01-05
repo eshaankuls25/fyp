@@ -1,6 +1,7 @@
 import sys, shlex, os, getopt
 
-from Extractors.TextFeatureExtractor import TextFeatureExtractor
+from Extractors.ObfuscationFeatureExtractor import ObfuscationFeatureExtractor
+from Extractors.ImitationFeatureExtractor import ImitationFeatureExtractor
 from Extractors.HTMLFeatureExtractor import HTMLFeatureExtractor
 
 from Utilities.PreProcessor import PreProcessor
@@ -20,7 +21,7 @@ def main():
         documentCategory = 'text'
 
         categoryList = ['html', 'text']
-        extractorList = [TextFeatureExtractor(), HTMLFeatureExtractor()]
+        extractorList = [(ImitationFeatureExtractor(), ObfuscationFeatureExtractor()), HTMLFeatureExtractor()]
         indicatorDictionary = {'text':['From:', 'Date:', 'Message-ID', 'In-Reply-To:'],\
                               'html':['http://', 'www', '.com', '.co.uk']}
 
@@ -79,14 +80,19 @@ def main():
                         processedPayload = PreProcessor().removeEscapeChars(payload)
                         selectedExtractorTuple = extractorSelector.determineBestExtractor(processedEmail.split(' '))
 
-                        if selectedExtractorTuple[0] is None or 'text':
-                                #Start parsing using the 'TextFeatureExtractor' Class
-                                selectedExtractor = TextFeatureExtractor()
-                                featureSet = selectedExtractor.getFeatureSet(email.get("Message-Id"), documentCategory, processedPayload)
-                        else:
-                                #Use the returned parser object
-                                selectedExtractor = selectedExtractorTuple[1]
-                                featureSet = selectedExtractor.getFeatureSet("DEFAULT - MUST_REPLACE_FOR_HTML_DOCS", selectedExtractorTuple[0], processedPayload)
+                        #Start parsing using the chosen extractor(s)
+                        extractorTuple = selectedExtractorTuple[1]
+
+                        if selectedExtractorTuple[0] is None:
+                                documentName = "DEFAULT - TEXT"+str(i)
+                        elif selectedExtractorTuple[0] is 'text':
+                                documentName = email.get("Message-Id")
+                        elif selectedExtractorTuple[0] is 'html':
+                                documentName = "DEFAULT - HTML"+str(i)
+
+                        for extractor in extractorTuple:
+                                featureSet = extractor.getFeatureSet(documentName, documentCategory, processedPayload)
+                                featureMatrix.append(featureSet)
                                 
                         featureMatrix.append(featureSet)
                         i+=1
