@@ -22,8 +22,7 @@ class HTMLParser:
         		TypeError("\nUnpickled data must be an instance of list or tuple.\n")
 
         	for item in dataObject:
-        		if isinstance(item, HTMLScraperItem):
-        			tagList.append((item[k] if k != 'body' else\
-        				getTagsFromString(item[k]) for k in item))
+        		if isinstance(item, dict):
+        			tagList.append(getTagsFromString(item['body']))        			       				item[k]) for k in item))
         	return tagList
                 
