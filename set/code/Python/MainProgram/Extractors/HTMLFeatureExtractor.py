@@ -9,7 +9,7 @@ sys.path.append("..")
 
 from Utilities.Utils import downloadNLTKData
 from BaseExtractor import BaseExtractor
-from Extractors.HTMLScraper.spiders.SETSpider import SETSpider
+from HTMLScraper.spiders.SETSpider import SETSpider
 
 #Use scrapy code here - items, spiders etc.
 #Source - Stack Overflow: http://stackoverflow.com/questions/14777910/scrapy-crawl-from-script-always-blocks-script-execution-after-scraping/19060485
