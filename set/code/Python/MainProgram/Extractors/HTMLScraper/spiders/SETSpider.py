@@ -1,7 +1,10 @@
+import re, sys
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from os.path import expanduser
-from Utilities.Utils import pickleObject
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
+
+sys.path.append("..")
+from Utilities.Utils import pickleObject
 
 class SETSpider(CrawlSpider):
     name = "setSpider"
@@ -10,7 +13,7 @@ class SETSpider(CrawlSpider):
     start_urls = [
         "http://127.0.0.1/"
         ]
-
+    """
     rules = (
         # Extract links matching 'category.php' (but not matching 'subsection.php')
         # and follow links from them (since no callback means follow=True by default).
@@ -19,7 +22,8 @@ class SETSpider(CrawlSpider):
         # Extract links matching 'item.php' and parse them with the spider's method parse_item
         Rule(SgmlLinkExtractor(allow=('item\.php', )), callback='parse_item'),
     )
-
+    """
+    
     def __init__(domainList=["localhost"],\
         urlList = ["http://127.0.0.1/"]):
         allowed_domains = domainList
@@ -60,11 +64,11 @@ class SETSpider(CrawlSpider):
        	item['body'] = response.body
         items.append(item)
 
-        """
+        
        	filename = response.url.split("/")[-2]
        	filepath = expanduser("~") + "/tmp/scrapy/" + filename
 
        	print "Result: %b\n" %(pickleObject(filepath, items, "wb"))
-        """
+        
 
         return items
