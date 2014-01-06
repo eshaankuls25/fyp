@@ -6,7 +6,7 @@ from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.selector import HtmlXPathSelector
 
 sys.path.append("..")
-from Utilities.Utils import pickleObject, writeToFile
+from Utilities.Utils import pickleObject
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
 class SETSpider(CrawlSpider):
