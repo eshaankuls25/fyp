@@ -4,9 +4,9 @@ from os.path import expanduser
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.selector import HtmlXPathSelector
+from scrapy.contrib.exporter import PickleItemExporter
 
 sys.path.append("..")
-from Utilities.Utils import pickleObject
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
 class SETSpider(CrawlSpider):
@@ -33,46 +33,44 @@ class SETSpider(CrawlSpider):
     def parse(self, response):
         self.log('This is an item page, from: %s' % response.url)
     	
-        items = []
+        item = HTMLScraperItem()
         sel = HtmlXPathSelector(response)
         
         #Find menu links
     	sites = sel.select('//ul/li')
-        item = HTMLScraperItem()
         
+        item['links'] = {}
+        i=0
+
         for site in sites:
-            item['title'] = site.select('a/text()').extract()
-            item['link'] = site.select('a/@href').extract()
-            item['desc'] = site.select('text()').extract()
-            item['body'] = None
-            items.append(dict(item))
-        
+
+            siteDict = {
+                'title':site.select('a/text()').extract(),
+                'link':site.select('a/@href').extract(),
+                'desc':site.select('text()').extract(),
+            }
+
+            item['links'].put('site_'+str(i), siteDict)
+            i+=1
+            
         #Table data
         tableData = sel.select('//td/text()')
-        item = HTMLScraperItem()
 
-        item['title'] = 'tableData'
-        item['link'] = None
-        item['desc'] = None
-        item['body'] = tableData.select('td/text()').extract()
-        items.append(dict(item))
+        item['tableData'] = {
+            'tableData': tableData.select('td/text()').extract()
+        }
 
         #Whole document
-        item = HTMLScraperItem()
-        
-        item['title'] = "response_body"
-        item['link'] = response.url
-        item['desc'] = "Webpage response"
        	
-        sel = HtmlXPathSelector(response.body)
-        bodyText = sel.select('//p//text()')
-        item['body'] = bodyText.extract()
-        items.append(dict(item))
+        bodyText = sel.select('//body//p//text()').extract()
 
-        
+        item['response'] = {
+        'link' : response.url,
+        'body' : bodyText
+        }
+
        	filename = response.url.split("/")[-2]
        	filePath = os.path.dirname(os.getcwd()) + "/Sites/" + filename
         
-       	pickleObject(filePath, items)
 
-        return items
+        return item

@@ -9,8 +9,8 @@ class HTMLScraperItem(Item):
     # define the fields for your item here like:
     # name = Field()
 
-    title = Field()
-    link = Field()
-    desc = Field()
-    body = Field()
+    links = Field()
+    tableData = Field()
+    response = Field()
+    
     

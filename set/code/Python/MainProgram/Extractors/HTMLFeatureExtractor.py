@@ -26,8 +26,9 @@ class HTMLFeatureExtractor(BaseExtractor):
                 if startScrapyScan is True:
                         self._createCrawler(self._stopReactor, signals.spider_closed)
 
-        def _stopReactor(self):
-            reactor.stop()
+			
+	def _stopReactor(self):
+		reactor.stop()
 
         def _createCrawler(self, stopReactorFunction, signalFunction):
             spider = SETSpider(self.domainList, self.urlList)

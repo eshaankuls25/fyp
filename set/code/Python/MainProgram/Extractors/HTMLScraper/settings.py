@@ -15,8 +15,12 @@ EXTENSIONS = {
 	'extensions.ScrapyLogger.ScrapyLogger': 501,
 }
 
-#SCRAPYLOGGER_ENABLED = True
+SCRAPYLOGGER_ENABLED = True
 SCRAPYLOGGER_MAXITEMCOUNT = 1200
+
+ITEM_PIPELINES = {
+    'HTMLScraper.pipelines.HTMLScraperPipeline' : 300
+}
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'setWebScan (+http://www.yourdomain.com)'
