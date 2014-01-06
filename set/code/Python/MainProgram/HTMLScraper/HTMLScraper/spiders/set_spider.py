@@ -22,8 +22,8 @@ class SETSpider(CrawlSpider):
 
     def parse_item(self, response):
         self.log('This is an item page, from: %s' % response.url)
-    	items = []
-        
+    	
+        items = []
         sel = Selector(response)
         
         #Find menu links
