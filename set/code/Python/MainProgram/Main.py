@@ -102,6 +102,7 @@ def main():
                                 featureSet = extractor.getFeatureSet(documentName+": "+extractor.__class__.__name__,\
                                                                      documentCategory, processedPayload)
                                 featureMatrix.append(featureSet)
+                        i+=1
                         
         print "---"
         for featureSet in featureMatrix:
