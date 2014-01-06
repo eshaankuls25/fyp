@@ -15,15 +15,21 @@ from HTMLScraper.spiders.SETSpider import SETSpider
 #Source - Stack Overflow: http://stackoverflow.com/questions/14777910/scrapy-crawl-from-script-always-blocks-script-execution-after-scraping/19060485
 class HTMLFeatureExtractor(BaseExtractor):
 
-        def __init__(self):
-        	BaseExtractor.__init__(self)
-        	self.createCrawler(self.stopReactor, signals.spider_closed)
+        def __init__(self, startScrapyScan=False, domainList=["localhost"],\
+        urlList=["http://127.0.0.1/"]):
+        	BaseExtractor.__init__(self) 
 
-        def stopReactor(self):
+		self.domainList = domainList
+		self.urlList = urlList
+
+		if startScrapyScan is True:
+			self._createCrawler(self._stopReactor, signals.spider_closed)
+
+        def _stopReactor(self):
             reactor.stop()
 
-        def createCrawler(self, stopReactorFunction, signalFunction):
-                spider = SETSpider()
+        def _createCrawler(self, stopReactorFunction, signalFunction):
+                spider = SETSpider(self.domainList, self.urlList)
                 crawler = Crawler(get_project_settings())
                 crawler.signals.connect(stopReactorFunction, signal=signalFunction)
                 crawler.configure()
@@ -31,6 +37,9 @@ class HTMLFeatureExtractor(BaseExtractor):
                 crawler.start()
                 log.start()
                 reactor.run() # the script will block here until the spider_closed signal was sent
-                
 
-HTMLFeatureExtractor()
+	#Define private methods as utilities for actual text parsing, instance methods, which will produce features, via inherited 'getFeatureSet' function
+
+	
+
+

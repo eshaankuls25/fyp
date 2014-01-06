@@ -7,7 +7,7 @@ from scrapy.selector import HtmlXPathSelector
 
 sys.path.append("..")
 from Utilities.Utils import pickleObject, writeToFile
-from HTMLScraper.items import HTMLScraperItem
+from Extractors.HTMLScraper.items import HTMLScraperItem
 
 class SETSpider(CrawlSpider):
     name = "setSpider"
@@ -26,10 +26,7 @@ class SETSpider(CrawlSpider):
         #Rule(SgmlLinkExtractor(allow=('item\.php', )), callback='parse_item'),
     )
     
-    
-    
-    def __init__(domainList=["localhost"],\
-        urlList = ["http://127.0.0.1/"]):
+    def __init__(domainList=None, urlList=None):
         allowed_domains = domainList
         start_urls = urlList
         
