@@ -45,7 +45,7 @@ class SETSpider(CrawlSpider):
             item['link'] = site.select('a/@href').extract()
             item['desc'] = site.select('text()').extract()
             item['body'] = None
-            items.append(item)
+            items.append(dict(item))
         
         #Table data
         tableData = sel.select('//td/text()')
@@ -55,7 +55,7 @@ class SETSpider(CrawlSpider):
         item['link'] = None
         item['desc'] = None
         item['body'] = tableData.select('td/text()').extract()
-        items.append(item)
+        items.append(dict(item))
 
         #Whole document
         item = HTMLScraperItem()
@@ -67,7 +67,7 @@ class SETSpider(CrawlSpider):
         sel = HtmlXPathSelector(response.body)
         bodyText = sel.select('//p//text()')
         item['body'] = bodyText.extract()
-        items.append(item)
+        items.append(dict(item))
 
         
        	filename = response.url.split("/")[-2]

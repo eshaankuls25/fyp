@@ -10,7 +10,7 @@ except ImportError:
 
 io_q = Queue()
 
-def pickleObject(filepath, object):
+def pickleObject(filepath, outputObject):
     directory = os.path.dirname(filepath)
 
     try:
@@ -19,8 +19,8 @@ def pickleObject(filepath, object):
         os.makedirs(directory, 0664)
 
     try:
-        with open(filepath, "wb") as f:
-            pickle.dump(object, f)
+        with open(filepath, 'wb') as out_f:
+            pickle.dump(outputObject, out_f)
     except IOError:
         sys.stderr.write("Could not pickle object.\n")
         return False
@@ -28,8 +28,8 @@ def pickleObject(filepath, object):
 def unpickleObject(filepath):
     directory = os.path.dirname(filepath)
     try:
-        with open(filepath, "rb") as f:
-            return pickle.load(f)
+        with open(filepath, 'rb') as in_f:
+            return pickle.load(in_f)
     except IOError:
         sys.stderr.write("Could not load object.\n")
         return False

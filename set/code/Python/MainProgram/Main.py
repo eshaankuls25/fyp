@@ -98,7 +98,6 @@ def main():
                         documentName = "DEFAULT - HTML "+str(i)
                         documentCategory = "html"
 
-
                 #Start parsing using the chosen extractor(s)
                 extractorTuple = selectedExtractorTuple[1]
                 
