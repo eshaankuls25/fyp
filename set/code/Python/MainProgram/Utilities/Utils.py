@@ -1,5 +1,5 @@
-import os, sys, pickle, nltk, shlex, glob
-
+import os, sys, nltk, shlex, glob
+import cPickle as pickle
 from subprocess import Popen, PIPE
 from threading import Thread
 
@@ -25,11 +25,11 @@ def pickleObject(filepath, object):
         sys.stderr.write("Could not pickle object.\n")
         return False
 
-def unpickleObject(filepath, object):
+def unpickleObject(filepath):
     directory = os.path.dirname(filepath)
     try:
         with open(filepath, "rb") as f:
-            return pickle.load(object, f)
+            return pickle.load(f)
     except IOError:
         sys.stderr.write("Could not load object.\n")
         return False

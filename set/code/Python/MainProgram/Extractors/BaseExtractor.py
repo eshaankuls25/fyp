@@ -3,7 +3,7 @@ from Utilities.FeatureSet import FeatureSet
 
 class BaseExtractor():
 	def __init__(self):
-		pass
+		self.featureSet = None
 
 	def getFeatureSet(self, documentName, documentCategory, textString):
                 memberList = inspect.getmembers(self, predicate=inspect.ismethod)

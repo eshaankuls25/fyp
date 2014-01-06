@@ -15,8 +15,7 @@ class TextFeatureExtractor(BaseExtractor):
                 downloaded = downloadNLTKData('cmudict')
                 if not downloaded:
                         raise RuntimeError("\n\nCould not download 'cmudict' dictionary.\n")
-                
-                self.featureSet = None
+                        
         ##Obfuscation and Imitation methods
                         
         #Normalized - between 0 and 1

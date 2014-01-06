@@ -63,7 +63,10 @@ class SETSpider(CrawlSpider):
         item['title'] = "response_body"
         item['link'] = response.url
         item['desc'] = "Webpage response"
-       	item['body'] = response.body
+       	
+        sel = HtmlXPathSelector(response.body)
+        bodyText = sel.select('//p//text()')
+        item['body'] = bodyText.extract()
         items.append(item)
 
         
