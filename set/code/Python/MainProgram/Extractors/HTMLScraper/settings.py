@@ -12,10 +12,10 @@ SPIDER_MODULES = ['HTMLScraper.spiders']
 NEWSPIDER_MODULE = 'HTMLScraper.spiders'
 
 EXTENSIONS = {
-	'spiders.extensions.ScrapyLogger.ScrapyLogger': 500  
+	'extensions.ScrapyLogger.ScrapyLogger': 501,
 }
 
-SCRAPYLOGGER_ENABLED = True
+#SCRAPYLOGGER_ENABLED = True
 SCRAPYLOGGER_MAXITEMCOUNT = 1200
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

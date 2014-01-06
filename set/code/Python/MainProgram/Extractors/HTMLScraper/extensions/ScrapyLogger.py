@@ -1,3 +1,6 @@
+from scrapy import signals
+from scrapy.exceptions import NotConfigured
+
 class ScrapyLogger(object):
 	"""docstring for ScrapyLogger"""
 	def __init__(self, maxItemCounter):
@@ -13,7 +16,7 @@ class ScrapyLogger(object):
         maxItemCount = crawler.settings.getint('SCRAPYLOGGER_MAXITEMCOUNT', 1000)
 
         # instantiate the extension object
-        extension = cls(item_count)
+        extension = cls(maxItemCount)
 
         # connect the extension object to signals
         crawler.signals.connect(extension.spiderOpened, signal=signals.spider_opened)
