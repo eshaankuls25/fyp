@@ -17,12 +17,12 @@ class HTMLFeatureExtractor(BaseExtractor):
 
         def __init__(self):
         	BaseExtractor.__init__(self)
-        	self.createCrawler(stopReactor, signals.spider_closed)
+        	self.createCrawler(self.stopReactor, signals.spider_closed)
 
-        def stopReactor(self, reactor):
+        def stopReactor(self):
             reactor.stop()
 
-        def createCrawler(stopReactorFunction, signalFunction):
+        def createCrawler(self, stopReactorFunction, signalFunction):
                 spider = SETSpider()
                 crawler = Crawler(get_project_settings())
                 crawler.signals.connect(stopReactorFunction, signal=signalFunction)
@@ -33,4 +33,4 @@ class HTMLFeatureExtractor(BaseExtractor):
                 reactor.run() # the script will block here until the spider_closed signal was sent
                 
 
-        
+HTMLFeatureExtractor()

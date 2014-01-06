@@ -16,7 +16,7 @@ def pickleObject(filepath, object):
     try:
         os.stat(directory)
     except:
-        os.mkdir(directory)   
+        os.makedirs(directory, 0664)
 
     try:
         with open(filepath, "wb") as f:
@@ -45,8 +45,14 @@ def readFromFile(filename):
         sys.stderr.write("Could not read file.\n")
         return None
 
-def writeToFile(filename, data, accessType):
-    filepath = os.getcwd() + "/" + filename
+def writeToFile(filepath, data, accessType):
+    directory = os.path.dirname(filepath)
+
+    try:
+        os.stat(directory)
+    except:
+        os.makedirs(directory, 0664)
+
     try:
         with open(filepath, accessType) as f:
             f.write(data + "\n")
