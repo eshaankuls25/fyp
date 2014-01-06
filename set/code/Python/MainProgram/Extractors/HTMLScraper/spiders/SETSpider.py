@@ -20,6 +20,11 @@ class SETSpider(CrawlSpider):
         Rule(SgmlLinkExtractor(allow=('item\.php', )), callback='parse_item'),
     )
 
+    def __init__(domainList=["localhost"],\
+        urlList = ["http://127.0.0.1/"]):
+        allowed_domains = domainList
+        start_urls = urlList
+        
     def parse_item(self, response):
         self.log('This is an item page, from: %s' % response.url)
     	
