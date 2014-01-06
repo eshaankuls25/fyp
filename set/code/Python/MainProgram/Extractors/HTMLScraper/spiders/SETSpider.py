@@ -26,7 +26,7 @@ class SETSpider(CrawlSpider):
         #Rule(SgmlLinkExtractor(allow=('item\.php', )), callback='parse_item'),
     )
     
-    def __init__(domainList=None, urlList=None):
+    def __init__(self, domainList=None, urlList=None):
         allowed_domains = domainList
         start_urls = urlList
         
