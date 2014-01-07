@@ -1,5 +1,6 @@
 import os
 from scrapy.contrib.exporter import PickleItemExporter
+from scrapy import signals
 
 # Define your item pipelines here
 #
@@ -10,22 +11,22 @@ class HTMLScraperPipeline(object):
     
     def __init__(self):
         self.files = {}
-       	self.dirPath = os.path.dirname(os.getcwd()) + "/Sites/"
-
+       	self.dirPath = os.getcwd() + "/Sites/"
+        self.exporter = None
     @classmethod
     def from_crawler(cls, crawler):
         pipeline = cls()
-        crawler.signals.connect(pipeline.spider_opened, signals.spider_opened)
-        crawler.signals.connect(pipeline.spider_closed, signals.spider_closed)
+        crawler.signals.connect(pipeline.spiderOpened, signals.spider_opened)
+        crawler.signals.connect(pipeline.spiderClosed, signals.spider_closed)
         return pipeline
 
-    def spider_opened(self, spider):
-        file = open(dirPath+spider.name+'_website.obj', 'wb')
+    def spiderOpened(self, spider):
+        file = open(self.dirPath+spider.name+'_website.obj', 'wb')
         self.files[spider] = file
         self.exporter = PickleItemExporter(file, protocol=2)
         self.exporter.start_exporting()
 
-    def spider_closed(self, spider):
+    def spiderClosed(self, spider):
         self.exporter.finish_exporting()
         file = self.files.pop(spider)
         file.close()
