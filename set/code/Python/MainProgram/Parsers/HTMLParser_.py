@@ -15,6 +15,7 @@ class HTMLParser:
         	return re.findall('<.*?>', textString)
 
         def getTagsFromPickledObject(self, filePath):
+		print filePath
         	dataObject = unpickleObject(filePath)
         	tagList = []
 
@@ -23,6 +24,6 @@ class HTMLParser:
 
         	for item in dataObject:
 			if isinstance(item, dict):
-				tagList.append(getTagsFromString(item['body']))
+				tagList.append(getTagsFromString(item['response']['body']))
         	return tagList
                 
