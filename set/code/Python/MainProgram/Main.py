@@ -3,6 +3,7 @@ import sys, shlex, os, getopt
 from Extractors.ObfuscationFeatureExtractor import ObfuscationFeatureExtractor
 from Extractors.ImitationFeatureExtractor import ImitationFeatureExtractor
 from Extractors.HTMLFeatureExtractor import HTMLFeatureExtractor
+from Extractors.HTMLScraper.items import HTMLScraperItem
 
 from Utilities.PreProcessor import PreProcessor
 from Utilities.ExtractorSelector import ExtractorSelector
@@ -27,7 +28,7 @@ def main():
         categoryList = ['text', 'html']
 
         extractorList = [(ImitationFeatureExtractor(), ObfuscationFeatureExtractor()), HTMLFeatureExtractor(False)]
-	
+    
         indicatorDictionary = {'text':['From:', 'Date:', 'Message-ID', 'In-Reply-To:'],\
                               'html':['http://', 'www', '.com', '.co.uk']}
 
@@ -121,12 +122,12 @@ def main():
 
         hparser = HTMLParser()
 
-	tagDict = {}
+        tagDict = {}
         for websitePath in websiteList:
                 tagDict[websitePath] = hparser.getTagsFromPickledObject(filepathPrefix+websitePath)
-		print "---"
-		print tagDict[websitePath]
-		print "---"
+        print "---"
+        print tagDict[websitePath]
+        print "---"
             
 
         startFakeSMTPServer()

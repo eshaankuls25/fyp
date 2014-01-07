@@ -20,12 +20,13 @@ def pickleObject(filepath, outputObject):
 
     try:
         with open(filepath, 'wb') as out_f:
-            pickle.dump(outputObject, out_f)
+            pickle.dump(outputObject, out_f, pickle.HIGHEST_PROTOCOL)
     except IOError:
         sys.stderr.write("Could not pickle object.\n")
         return False
 
 def unpickleObject(filepath):
+    directory = os.path.dirname(filepath)
     try:
         with open(filepath, 'rb') as in_f:
             return pickle.load(in_f)
