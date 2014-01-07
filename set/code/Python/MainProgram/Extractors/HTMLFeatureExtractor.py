@@ -6,7 +6,6 @@ from twisted.internet.error import ConnectionRefusedError
 from scrapy import log, signals
 from scrapy.crawler import Crawler
 from scrapy.settings import CrawlerSettings
-from scrapy.utils.project import get_project_settings
 
 sys.path.append("..")
 
@@ -25,23 +24,26 @@ class HTMLFeatureExtractor(BaseExtractor):
                 self.urlList = urlList
 
                 if startScrapyScan is True:
-                        self._createCrawler(self._stopReactor, signals.spider_closed)
+                        self._createCrawler(self.stopReactor, signals.spider_closed)
 
 			
-	def _stopReactor(self):
+	def stopReactor(self):
 		reactor.stop()
+        
 
         def _createCrawler(self, stopReactorFunction, signalFunction):
 		spider = SETSpider(self.domainList, self.urlList)
 		settings_module = importlib.import_module('Extractors.HTMLScraper.settings')
 		settings = CrawlerSettings(settings_module)
 		crawler = Crawler(settings)
-		crawler.signals.connect(stopReactorFunction, signal=signalFunction)
 		crawler.configure()
+		crawler.signals.connect(stopReactorFunction, signal=signalFunction)
 		crawler.crawl(spider)
 		crawler.start()
 		log.start()
 		reactor.run() # the script will block here until the spider_closed signal was sent
+
+   
 
 
     #Define private methods as utilities for actual text parsing, instance methods, which will produce features, via inherited 'getFeatureSet' function

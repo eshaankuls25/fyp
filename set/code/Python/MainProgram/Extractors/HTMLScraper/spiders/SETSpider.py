@@ -1,13 +1,13 @@
 import re, sys
 
-from scrapy.contrib.spiders import CrawlSpider, Rule
+from scrapy.spider import BaseSpider
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.selector import HtmlXPathSelector
 
 sys.path.append("..")
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
-class SETSpider(CrawlSpider):
+class SETSpider(BaseSpider):
     name = "setSpider"
     allowed_domains = ["localhost"]
 
@@ -15,6 +15,8 @@ class SETSpider(CrawlSpider):
         "http://127.0.0.1/"
         ]
     
+    """ 
+    #Use 'from scrapy.contrib.spiders import CrawlSpider, Rule'
     rules = (
         # Extract links matching 'category.php' (but not matching 'subsection.php')
         # and follow links from them (since no callback means follow=True by default).
@@ -23,7 +25,8 @@ class SETSpider(CrawlSpider):
         # Extract links matching 'item.php' and parse them with the spider's method parse_item
         #Rule(SgmlLinkExtractor(allow=('item\.php', )), callback='parse_item'),
     )
-    
+    """
+
     def __init__(self, domainList=None, urlList=None):
         allowed_domains = domainList
         start_urls = urlList

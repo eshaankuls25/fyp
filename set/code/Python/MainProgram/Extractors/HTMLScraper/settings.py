@@ -22,5 +22,6 @@ ITEM_PIPELINES = {
     'Extractors.HTMLScraper.pipelines.HTMLScraperPipeline': 300, 
 }
 
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'HTMLScraper (+http://www.yourdomain.com)'
