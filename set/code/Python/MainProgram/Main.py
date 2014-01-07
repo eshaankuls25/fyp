@@ -115,10 +115,13 @@ def main():
 
         #Website testing
         filepathPrefix = "./Sites/"
-        websiteList = listFilesInDir(filepathPrefix)
+        websiteList = listFilesInDirWithExtension(filepathPrefix, '.obj')
 
         hparser = HTMLParser()
 
+        for websitePath in websiteList:
+                print websitePath
+        
         for websitePath in websiteList:
                 for itemElem in hparser.getTagsFromPickledObject(filepathPrefix+websitePath):
                         print "---"

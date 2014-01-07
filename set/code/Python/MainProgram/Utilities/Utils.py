@@ -20,7 +20,7 @@ def pickleObject(filepath, outputObject):
 
     try:
         with open(filepath, 'wb') as out_f:
-            pickle.dump(outputObject, out_f)
+            pickle.dump(outputObject, out_f, 2)
     except IOError:
         sys.stderr.write("Could not pickle object.\n")
         return False
