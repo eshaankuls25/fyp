@@ -1,4 +1,4 @@
-# Scrapy settings for setWebScan project
+# Scrapy settings for HTMLScraper  project
 #
 # For simplicity, this file contains only the most important settings by
 # default. All the other settings are documented here:
@@ -8,19 +8,19 @@
 
 BOT_NAME = 'HTMLScraper'
 
-SPIDER_MODULES = ['HTMLScraper.spiders']
-NEWSPIDER_MODULE = 'HTMLScraper.spiders'
+SPIDER_MODULES = ['Extractors.HTMLScraper.spiders']
+NEWSPIDER_MODULE = 'Extractors.HTMLScraper.spiders'
 
 EXTENSIONS = {
-	'extensions.ScrapyLogger.ScrapyLogger': 501,
+    'Extractors.HTMLScraper.ScrapyLogger.ScrapyLogger': 501,
 }
 
 SCRAPYLOGGER_ENABLED = True
 SCRAPYLOGGER_MAXITEMCOUNT = 1200
 
 ITEM_PIPELINES = {
-    'HTMLScraper.pipelines.HTMLScraperPipeline' : 300
+    'Extractors.HTMLScraper.pipelines.HTMLScraperPipeline': 300, 
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'setWebScan (+http://www.yourdomain.com)'
+#USER_AGENT = 'HTMLScraper (+http://www.yourdomain.com)'

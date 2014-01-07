@@ -1,10 +1,8 @@
-import re, sys, os
-from os.path import expanduser
+import re, sys
 
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.selector import HtmlXPathSelector
-from scrapy.contrib.exporter import PickleItemExporter
 
 sys.path.append("..")
 from Extractors.HTMLScraper.items import HTMLScraperItem
@@ -43,7 +41,6 @@ class SETSpider(CrawlSpider):
         i=0
 
         for site in sites:
-
             siteDict = {
                 'title':site.select('a/text()').extract(),
                 'link':site.select('a/@href').extract(),
@@ -60,17 +57,12 @@ class SETSpider(CrawlSpider):
             'tableData': tableData.select('td/text()').extract()
         }
 
-        #Whole document
-       	
+        #Whole document body
         bodyText = sel.select('//body//p//text()').extract()
 
         item['response'] = {
         'link' : response.url,
         'body' : bodyText
         }
-
-       	filename = response.url.split("/")[-2]
-       	filePath = os.path.dirname(os.getcwd()) + "/Sites/" + filename
-        
 
         return item
