@@ -62,8 +62,10 @@ class SETSpider(BaseSpider):
 
         #Whole document body
         bodyText = sel.select('//body//p//text()').extract()
-
+        tags = sel.select('//html/*').re('<.*?>')
         item['response'] = {
+        'all' : sel.select('//html/*').extract(),
+        'tags' : tags,
         'link' : response.url,
         'body' : bodyText
         }

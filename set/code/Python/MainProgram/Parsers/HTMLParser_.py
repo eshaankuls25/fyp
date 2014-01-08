@@ -22,5 +22,9 @@ class HTMLParser:
 		if isinstance(item, dict):
 			unicodeBody = item['response']['body']
 			responseBody = ''.join([x.encode('utf8') for x in unicodeBody])
-		return self.getTagsFromString(responseBody)
+			responseAll = item['response']['tags']
+			return [x.encode('utf8') for x in responseAll]
+	
+		if isinstance(item, basestring):
+			return getTagsFromString(item)
                 

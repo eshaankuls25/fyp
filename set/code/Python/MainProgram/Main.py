@@ -27,7 +27,7 @@ def main():
 
         categoryList = ['text', 'html']
 
-        extractorList = [(ImitationFeatureExtractor(), ObfuscationFeatureExtractor()), HTMLFeatureExtractor(True)]
+        extractorList = [(ImitationFeatureExtractor(), ObfuscationFeatureExtractor()), HTMLFeatureExtractor(False)]
     
         indicatorDictionary = {'text':['From:', 'Date:', 'Message-ID', 'In-Reply-To:'],\
                               'html':['http://', 'www', '.com', '.co.uk']}
