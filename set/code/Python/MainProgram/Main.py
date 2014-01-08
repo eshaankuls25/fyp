@@ -16,6 +16,79 @@ from Extractors.HTMLScraper.items import HTMLScraperItem
 from Parsers.HTMLParser_ import HTMLParser
 from Parsers.TextParser import TextParser
 
+def extractFromEmails():
+        emailList = []
+        featureSetList = []
+        filepathPrefix = "./Emails/"
+        parser = TextParser(os.getcwd()+"/Parsers")
+        
+        for filepath in listFilesInDirWithExtension(filepathPrefix, ".eml"):
+                emailString = readFromFile(filepathPrefix+filepath)
+                emailList.append(parser.getEmailFromString(emailString))
+
+        i=0        
+        for email, isMultipart in emailList:
+                payload = email.get_payload()
+                
+                print "Email no. "+str(i)+": "
+
+                print "---"
+                for header in email.keys():
+                        print "\n"+header+": "+email.get(header)
+                print "\nPayload: "+payload
+                print "---"
+
+                preProcessor = PreProcessor()
+                
+                processedEmail = preProcessor.removeEscapeChars(emailString)
+                processedPayload = preProcessor.removeEscapeChars(payload)
+                
+                selectedExtractorTuple = extractorSelector.\
+                                         determineBestExtractor(processedEmail.split())
+
+                if selectedExtractorTuple[0] is None:
+                        documentName = "DEFAULT - TEXT "+str(i)
+                        documentCategory = "DEFAULT - TEXT"
+                elif selectedExtractorTuple[0] is 'text':
+                        documentName = email.get("Message-Id")
+                        documentCategory = "text"
+                elif selectedExtractorTuple[0] is 'html':
+                        documentName = "DEFAULT - HTML "+str(i)
+                        documentCategory = "html"
+
+                #Start parsing using the chosen extractor(s)
+                extractorTuple = selectedExtractorTuple[1]
+                
+                for extractor in extractorTuple:
+                        featureSet = extractor.getFeatureSet(documentName+": "+extractor.__class__.__name__,\
+                                                             documentCategory, processedPayload)
+                        featureSetList.append(featureSet)
+                i+=1
+                
+        return featureSetList
+
+def extractFromWebsites():
+        filepathPrefix = "./Sites/"
+        websiteList = listFilesInDirWithExtension(filepathPrefix, '.obj')
+
+        hparser = HTMLParser()
+        tagDict = {}
+        tagCounter = {}
+
+        for websitePath in websiteList:
+
+                item = unpickleObject(filepathPrefix+websitePath)
+                tagDict[websitePath] = hparser._getTagsFromString(item)
+                tagCounterDict[websitePath] = hparser.getTagCountDictionary(item)
+
+                print "---"
+                print tagDict[websitePath]
+                print "---"
+                print tagCounterDict[websitePath]
+                print "---"
+
+        #Must return a list of feature set objects, later on
+
 def main():
 
         extractorSelector = None
@@ -59,87 +132,14 @@ def main():
 
         ###Extracting###
 
-        ###Email Test###
-
-        emailList = []
-
-        parser = TextParser(os.getcwd()+"/Parsers")
-        filepathPrefix = "./Emails/"
-        
-        for filepath in listFilesInDirWithExtension(filepathPrefix, ".eml"):
-                emailString = readFromFile(filepathPrefix+filepath)
-                emailList.append(parser.getEmailFromString(emailString))
-
-        i=0        
-        for email, isMultipart in emailList:
-                payload = email.get_payload()
-                
-                print "Email no. "+str(i)+": "
-
-                print "---"
-                for header in email.keys():
-                        print "\n"+header+": "+email.get(header)
-                print "\nPayload: "+payload
-                print "---"
-
-                preProcessor = PreProcessor()
-                
-                processedEmail = preProcessor.removeEscapeChars(emailString)
-                processedPayload = preProcessor.removeEscapeChars(payload)
-                
-                selectedExtractorTuple = extractorSelector.\
-                                         determineBestExtractor(processedEmail.split())
-
-                if selectedExtractorTuple[0] is None:
-                        documentName = "DEFAULT - TEXT "+str(i)
-                        documentCategory = "DEFAULT - TEXT"
-                elif selectedExtractorTuple[0] is 'text':
-                        documentName = email.get("Message-Id")
-                        documentCategory = "text"
-                elif selectedExtractorTuple[0] is 'html':
-                        documentName = "DEFAULT - HTML "+str(i)
-                        documentCategory = "html"
-
-                #Start parsing using the chosen extractor(s)
-                extractorTuple = selectedExtractorTuple[1]
-                
-                for extractor in extractorTuple:
-                        featureSet = extractor.getFeatureSet(documentName+": "+extractor.__class__.__name__,\
-                                                             documentCategory, processedPayload)
-                        featureMatrix.append(featureSet)
-                i+=1
+        featureMatrix.extend(extractFromEmails())
+        featureMatrix.extend(extractFromWebsites())
                         
         print "---"
         for featureSet in featureMatrix:
                 print featureSet.documentName
                 print featureSet.vector
                 print "---"
-
-        #Website testing
-        filepathPrefix = "./Sites/"
-        websiteList = listFilesInDirWithExtension(filepathPrefix, '.obj')
-
-        hparser = HTMLParser()
-
-        tagDict = {}
-        responseDict = {}
-        bodyDict = {}
-        
-        for websitePath in websiteList:
-
-                item = unpickleObject(filepathPrefix+websitePath)
-                tagDict[websitePath] = hparser.getTagsFromString(item)
-                responseDict[websitePath] = hparser.getResponseAllText(item)
-                bodyDict[websitePath] = hparser.getResponseBodyText(item)
-
-                print "---"
-                print tagDict[websitePath]
-                print "---"
-                print responseDict[websitePath]
-                print "---"
-                print bodyDict[websitePath]
-                print "---"
-            
 
         startFakeSMTPServer()
 
