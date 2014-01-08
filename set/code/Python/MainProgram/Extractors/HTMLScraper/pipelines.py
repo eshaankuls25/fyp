@@ -1,4 +1,4 @@
-import os
+import os, datetime
 from scrapy.contrib.exporter import PickleItemExporter
 from scrapy import signals
 
@@ -21,7 +21,8 @@ class HTMLScraperPipeline(object):
         return pipeline
 
     def spiderOpened(self, spider):
-        file = open(self.dirPath+spider.name+'_website.obj', 'wb')
+        file = open(self.dirPath+spider.name+'_website_%s.obj'\
+%datetime.datetime.utcnow().strftime("%d-%m-%Y-%H%M%S"), 'wb')
         self.files[spider] = file
         self.exporter = PickleItemExporter(file, protocol=2)
         self.exporter.start_exporting()

@@ -16,6 +16,8 @@ class HTMLParser:
 
         def getTagsFromPickledObject(self, filePath):
         	item = unpickleObject(filePath)
+		print filePath
+		print item
 
 		if isinstance(item, dict):
 			unicodeBody = item['response']['body']

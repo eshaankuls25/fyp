@@ -50,7 +50,7 @@ class SETSpider(BaseSpider):
                 'desc':site.select('text()').extract(),
             }
 
-            item['links'].put('site_'+str(i), siteDict)
+            item['links']['site_'+str(i)] = siteDict
             i+=1
             
         #Table data
