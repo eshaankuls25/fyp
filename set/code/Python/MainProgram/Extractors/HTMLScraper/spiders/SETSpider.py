@@ -67,6 +67,7 @@ class SETSpider(BaseSpider):
         'all' : sel.select('//html/*').extract(),
         'tags' : tags,
         'link' : response.url,
+        'headers' : response.headers,
         'body' : response.body,
         'para' : paragraphText
         }

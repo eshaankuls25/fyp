@@ -74,17 +74,18 @@ def extractFromWebsites():
         hparser = HTMLParser()
         tagDict = {}
         tagCounter = {}
+        headersDict = {}
 
         for websitePath in websiteList:
 
                 item = unpickleObject(filepathPrefix+websitePath)
-                tagDict[websitePath] = hparser._getTagsFromString(item)
                 tagCounterDict[websitePath] = hparser.getTagCountDictionary(item)
+                headersDict[websitePath] = hparser._getResponseAttribute(item, 'headers')
 
                 print "---"
-                print tagDict[websitePath]
-                print "---"
                 print tagCounterDict[websitePath]
+                print "---"
+                print headersDict[websitePath]
                 print "---"
 
         #Must return a list of feature set objects, later on
