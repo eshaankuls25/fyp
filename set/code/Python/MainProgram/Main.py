@@ -10,6 +10,7 @@ from Utilities.ExtractorSelector import ExtractorSelector
 from Utilities.Utils import readFromFile
 from Utilities.Utils import listFilesInDirWithExtension
 from Utilities.Utils import unpickleObject
+from Utilities.Utils import unpickleHTMLScraperItem
 from Utilities.listen import startFakeSMTPServer
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
@@ -60,8 +61,9 @@ def extractFromEmails():
                 extractorTuple = selectedExtractorTuple[1]
                 
                 for extractor in extractorTuple:
-                        featureSet = extractor.getFeatureSet(documentName+": "+extractor.__class__.__name__,\
-                                                             documentCategory, processedPayload)
+                        featureSet = extractor.getFeatureSet(\
+				documentName+": "+extractor.__class__.__name__,\
+					documentCategory, processedPayload)
                         featureSetList.append(featureSet)
                 i+=1
                 
@@ -72,13 +74,12 @@ def extractFromWebsites():
         websiteList = listFilesInDirWithExtension(filepathPrefix, '.obj')
 
         hparser = HTMLParser()
-        tagDict = {}
-        tagCounter = {}
+        tagCounterDict = {}
         headersDict = {}
 
         for websitePath in websiteList:
 
-                item = unpickleObject(filepathPrefix+websitePath)
+                item = unpickleHTMLScraperItem(filepathPrefix+websitePath)
                 tagCounterDict[websitePath] = hparser.getTagCountDictionary(item)
                 headersDict[websitePath] = hparser._getResponseAttribute(item, 'headers')
 
@@ -88,6 +89,7 @@ def extractFromWebsites():
                 print headersDict[websitePath]
                 print "---"
 
+	return None
         #Must return a list of feature set objects, later on
 
 def main():
@@ -100,7 +102,7 @@ def main():
 
         categoryList = ['text', 'html']
 
-        extractorList = [(ImitationFeatureExtractor(), ObfuscationFeatureExtractor()), HTMLFeatureExtractor(False)]
+        extractorList = [(ImitationFeatureExtractor(), ObfuscationFeatureExtractor()), HTMLFeatureExtractor(True)]
     
         indicatorDictionary = {'text':['From:', 'Date:', 'Message-ID', 'In-Reply-To:'],\
                               'html':['http://', 'www', '.com', '.co.uk']}

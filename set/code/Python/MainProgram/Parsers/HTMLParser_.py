@@ -24,14 +24,14 @@ class HTMLParser:
 
 	#Choices: 'all', 'headers', 'body', 'para', 'url'
 	def _getResponseAttribute(self, item, attributeString):
-		if isinstance(item, dict) and\
-                   isinstance(attributeString, basestring):
+		if isinstance(attributeString, basestring)\
+			    and isinstance(item, dict):
 			unicodeBody = item['response'][attributeString]
 			return ''.join([x.encode('utf8') for x in unicodeBody])
-		else:
+		elif isinstance(item, dict):
                         raise TypeError("The attribute must be a string.")
 	
 	def getTagCountDictionary(self, item):
-		return(Counter(self.getTagsFromString(item)))
+		return(Counter(self._getTagsFromString(item)))
 
                 

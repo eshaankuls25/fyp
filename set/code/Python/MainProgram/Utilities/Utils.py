@@ -3,6 +3,9 @@ import cPickle as pickle
 from subprocess import Popen, PIPE
 from threading import Thread
 
+sys.path.append("..")
+from Extractors.HTMLScraper.items import HTMLScraperItem
+
 try:
     from Queue import Queue, Empty
 except ImportError:
@@ -16,7 +19,7 @@ def pickleObject(filepath, outputObject):
     try:
         os.stat(directory)
     except:
-        os.makedirs(directory, 0664)
+        os.makedirs(directory, 0755)
 
     try:
         with open(filepath, 'wb') as out_f:
@@ -30,9 +33,16 @@ def unpickleObject(filepath):
     try:
         with open(filepath, 'rb') as in_f:
             return pickle.load(in_f)
-    except IOError:
+    except (IOError, EOFError):
         sys.stderr.write("Could not load object.\n")
         return False
+
+def unpickleHTMLScraperItem(filepath):
+    item = unpickleObject(filepath)
+
+    if item is not isinstance(item, HTMLScraperItem):
+        raise IOError("Item is corrupted/not valid.\nIt has been deleted. Please try again.")
+    return item
 
 def readFromFile(filename):
     filepath = os.getcwd() + "/" + filename
@@ -51,7 +61,7 @@ def writeToFile(filepath, data, accessType):
     try:
         os.stat(directory)
     except:
-        os.makedirs(directory, 0664)
+        os.makedirs(directory, 0755)
 
     try:
         with open(filepath, accessType) as f:
