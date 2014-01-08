@@ -122,21 +122,23 @@ def main():
         hparser = HTMLParser()
 
         tagDict = {}
-	responseDict = {}
-	bodyDict = {}
+        responseDict = {}
+        bodyDict = {}
         
-	for websitePath in websiteList:
-		item = unpickleObject(filepathPrefix+websitePath)
+        for websitePath in websiteList:
+
+                item = unpickleObject(filepathPrefix+websitePath)
                 tagDict[websitePath] = hparser.getTagsFromString(item)
-		responseDict[websitePath] = hparser.getResponseAllText(item)
-		bodyDict[websitePath] = hparser.getResponseBodyText(item)
-		print "---"
-		print tagDict[websitePath]
-		print "---"
-		print responseDict[websitePath]
-		print "---"
-		print bodyDict[websitePath]
-		print "---"
+                responseDict[websitePath] = hparser.getResponseAllText(item)
+                bodyDict[websitePath] = hparser.getResponseBodyText(item)
+
+                print "---"
+                print tagDict[websitePath]
+                print "---"
+                print responseDict[websitePath]
+                print "---"
+                print bodyDict[websitePath]
+                print "---"
             
 
         startFakeSMTPServer()
