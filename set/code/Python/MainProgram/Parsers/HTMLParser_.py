@@ -15,15 +15,10 @@ class HTMLParser:
         	return re.findall('<.*?>', textString)
 
         def getTagsFromPickledObject(self, filePath):
-		print filePath
-        	dataObject = unpickleObject(filePath)
-        	tagList = []
+        	item = unpickleObject(filePath)
 
-        	if not isinstance(dataObject, (list, tuple)):
-        		TypeError("\nUnpickled data must be an instance of list or tuple.\n")
-
-        	for item in dataObject:
-			if isinstance(item, dict):
-				tagList.append(getTagsFromString(item['response']['body']))
-        	return tagList
+		if isinstance(item, dict):
+			unicodeBody = item['response']['body']
+			responseBody = ''.join([x.encode('utf8') for x in unicodeBody])
+		return self.getTagsFromString(responseBody)
                 
