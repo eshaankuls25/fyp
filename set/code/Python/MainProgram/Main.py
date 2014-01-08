@@ -8,9 +8,8 @@ from Extractors.HTMLScraper.items import HTMLScraperItem
 from Utilities.PreProcessor import PreProcessor
 from Utilities.ExtractorSelector import ExtractorSelector
 from Utilities.Utils import readFromFile
-from Utilities.Utils import startProcess
 from Utilities.Utils import listFilesInDirWithExtension
-from Utilities.Utils import listFilesInDir
+from Utilities.Utils import unpickleObject
 from Utilities.listen import startFakeSMTPServer
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
@@ -123,11 +122,21 @@ def main():
         hparser = HTMLParser()
 
         tagDict = {}
-        for websitePath in websiteList:
-                tagDict[websitePath] = hparser.getTagsFromPickledObject(filepathPrefix+websitePath)
-        print "---"
-        print tagDict[websitePath]
-        print "---"
+	responseDict = {}
+	bodyDict = {}
+        
+	for websitePath in websiteList:
+		item = unpickleObject(filepathPrefix+websitePath)
+                tagDict[websitePath] = hparser.getTagsFromString(item)
+		responseDict[websitePath] = hparser.getResponseAllText(item)
+		bodyDict[websitePath] = hparser.getResponseBodyText(item)
+		print "---"
+		print tagDict[websitePath]
+		print "---"
+		print responseDict[websitePath]
+		print "---"
+		print bodyDict[websitePath]
+		print "---"
             
 
         startFakeSMTPServer()

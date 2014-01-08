@@ -2,7 +2,6 @@ import os, sys, re
 sys.path.append("..")
 
 from Extractors.HTMLScraper.items import HTMLScraperItem
-from Utilities.Utils import unpickleObject
 
 class HTMLParser:
         parsedText = {}
@@ -11,13 +10,10 @@ class HTMLParser:
         	pass
 
         #Source: StackOverflow - http://stackoverflow.com/questions/4436008/how-to-get-html-tags
-        def getTagsFromString(self, textString):
+        def _findTagsInString(self, textString):
         	return re.findall('<.*?>', textString)
 
-        def getTagsFromPickledObject(self, filePath):
-        	item = unpickleObject(filePath)
-		print filePath
-		print item
+        def getTagsFromString(self, item):
 
 		if isinstance(item, dict):
 			unicodeBody = item['response']['body']
@@ -26,5 +22,14 @@ class HTMLParser:
 			return [x.encode('utf8') for x in responseAll]
 	
 		if isinstance(item, basestring):
-			return getTagsFromString(item)
-                
+			return _findTagsInString(item)
+	
+	def getResponseAllText(self, item):
+		if isinstance(item, dict):
+			unicodeBody = item['response']['all']
+			return ''.join([x.encode('utf8') for x in unicodeBody])
+	
+	def getResponseBodyText(self, item):
+		if isinstance(item, dict):
+			unicodeBody = item['response']['body']
+			return ''.join([x.encode('utf8') for x in unicodeBody])
