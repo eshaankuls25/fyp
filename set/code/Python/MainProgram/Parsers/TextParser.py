@@ -30,13 +30,6 @@ class TextParser:
                 print "Tagger library path: " + taggerLibraryPath
                 print "Tagger model path: " + taggerModelPath
                 print "---" 
-                
-                #print self.stanfordTagger.tag('What is the airspeed of an unladen swallow ?'.split()) 
-                
-                #print("File: " + readFromFile("test.txt") + "\n\n") 
-                #self.tagTextFile("testDocument", "test.txt")
-                #print("Tagged Text: ", self.taggedText["testDocument"]) 
-
 
         def tagTextFile(self, documentName, textFilePath):
                 tempTaggedText = self.stanfordTagger.tag(readFromFile(textFilePath).split())
@@ -63,3 +56,5 @@ class TextParser:
         def getEmailFromString(self, emailString):
                 message = Parser().parsestr(emailString)
                 return (message, message.is_multipart())
+
+	

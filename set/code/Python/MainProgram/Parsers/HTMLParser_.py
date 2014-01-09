@@ -31,7 +31,6 @@ class HTMLParser:
 		elif isinstance(item, dict):
                         raise TypeError("The attribute must be a string.")
 	
-	def getTagCountDictionary(self, item):
+	def getTagCounter(self, item):
 		return(Counter(self._getTagsFromString(item)))
 
-                
