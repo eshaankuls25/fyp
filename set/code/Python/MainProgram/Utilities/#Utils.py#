@@ -5,32 +5,33 @@ from threading import Thread
 
 sys.path.append("..")
 
-try:
-    from Queue import Queue, Empty
-except ImportError:
-    from queue import Queue, Empty  #Python 3.x
 
-io_q = Queue()
+TRY:
+    FROM QUEUE IMPORT QUEUE, EMPTY
+EXCEPT IMPORTERROR:
+    FROM QUEUE IMPORT QUEUE, EMPTY  #PYTHON 3.X
 
-def pickleObject(filepath, outputObject):
-    directory = os.path.dirname(filepath)
+IO_Q = QUEUE()
 
-    try:
-        os.stat(directory)
-    except:
-        os.makedirs(directory, 0755)
+DEF PICKLEOBJECT(FILEPATH, OUTPUTOBJECT):
+    DIRECTORY = OS.PATH.DIRNAME(FILEPATH)
 
-    try:
-        with open(filepath, 'wb') as out_f:
-            pickle.dump(outputObject, out_f, pickle.HIGHEST_PROTOCOL)
-    except IOError:
-        sys.stderr.write("Could not pickle object.\n")
-        return False
+    TRY:
+        OS.STAT(DIRECTORY)
+    EXCEPT:
+        OS.MAKEDIRS(DIRECTORY, 0755)
 
-def unpickleObject(filepath):
-    directory = os.path.dirname(filepath)
-    try:
-        with open(filepath, 'rb') as in_f:
+    TRY:
+        WITH OPEN(FILEPATH, 'WB') AS OUT_F:
+            PICKLE.DUMP(OUTPUTOBJECT, OUT_F, PICKLE.HIGHEST_PROTOCOL)
+    EXCEPT IOERROR:
+        SYS.STDERR.WRITE("COULD NOT PICKLE OBJECT.\N")
+        RETURN FALSE
+
+DEF UNPICKLEOBJECT(FILEPATH):
+    DIRECTORY = OS.PATH.DIRNAME(FILEPATH)
+    TRY:
+        WITH OPEN(FILEPATH, 'RB') AS IN_F:
             return pickle.load(in_f)
     except (IOError, EOFError):
         sys.stderr.write("Could not load object.\n")
@@ -38,8 +39,8 @@ def unpickleObject(filepath):
 
 def unpickleHTMLScraperItem(filepath):
     item = unpickleObject(filepath)
-    print item
-    if not isinstance(item, dict):
+
+    if item is not isinstance(item, dict):
         raise IOError("Item is corrupted/not valid.\nIt has been deleted. Please try again.")
     return item
 
