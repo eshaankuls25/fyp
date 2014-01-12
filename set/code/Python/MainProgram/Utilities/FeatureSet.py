@@ -2,20 +2,21 @@ from collections import OrderedDict
 import numpy as np
 
 class FeatureSet:
-    def __init__(self, documentName, documentCategory):
+    def __init__(self, documentName, documentCategory, documentClass):
         self.documentName = documentName
         self.documentCategory = documentCategory
-        self.vector = OrderedDict()
+        self.documentClass = documentClass
+        self._vector = OrderedDict()
 
     def addFeature(self, featureName, value):
-        if featureName in self.vector:
+        if featureName in self._vector:
             raise AssertionError('Feature value already set.')
         else:
-            self.vector[featureName] = value
+            self._vector[featureName] = value
 
     def replaceFeatureValue(self, featureName, value):
-        assert featureName in self.vector
-        self.vector[featureName] = value
+        assert featureName in self._vector
+        self._vector[featureName] = value
 
     def setValidCategory(category, categoryDictionary):
         if category in categoryDictionary:
@@ -25,8 +26,11 @@ class FeatureSet:
             return False
 
     def removeFeature(self, featureName):
-        del self.vector[featureName]
+        del self._vector[featureName]
 
-    def getLabelsAndValuesTuple(self):
-                labels = self.vector.keys()
-                return(labels, np.array(self.vector.values()))
+    def getLabels(self):
+                return self._vector.keys()
+            
+    def getVector(self):
+                #return np.array(self._vector.values())
+                return {k:v for k, v in enumerate(self._vector.values())}

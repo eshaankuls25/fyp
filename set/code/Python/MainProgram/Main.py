@@ -12,10 +12,46 @@ from Utilities.Utils import listFilesInDirWithExtension
 from Utilities.Utils import unpickleObject
 from Utilities.Utils import unpickleHTMLScraperItem
 from Utilities.listen import startFakeSMTPServer
-from Extractors.HTMLScraper.items import HTMLScraperItem
 
 from Parsers.HTMLParser_ import HTMLParser
 from Parsers.TextParser import TextParser
+
+from Classifiers.GaussianSVM import GaussianSVM
+
+def selectExtractorAndProcess(extractorSelector, processedText,\
+                              email_ID=None, emailPayload=None):
+        currentFeatureSetList = []
+        selectedExtractorTuple = extractorSelector.\
+                                         determineBestExtractor(processedText.split())
+
+        if selectedExtractorTuple[0] is None:
+                documentName = "DEFAULT - TEXT"
+                documentCategory = 'text'
+                documentClass = 0
+        elif selectedExtractorTuple[0] is 'text':
+                documentName = "DEFAULT - TEXT"
+                documentCategory = 'text'
+                documentClass = 1
+        elif selectedExtractorTuple[0] is 'html':
+                documentName = "DEFAULT - HTML"
+                documentCategory = "html"
+                documentClass = 2
+
+        if email_ID is None or emailPayload is None:
+                textString = processedText
+        else:
+                documentName = email_ID
+                textString = emailPayload
+
+        #Start parsing using the chosen extractor(s)
+        extractorTuple = selectedExtractorTuple[1]
+                
+        for extractor in extractorTuple:
+                featureSet = extractor.getFeatureSet(\
+                        documentName+": "+extractor.__class__.__name__,\
+                        documentCategory, textString, documentClass)
+                currentFeatureSetList.append(featureSet)
+        return currentFeatureSetList
 
 def extractFromEmails(extractorSelector):
         emailList = []
@@ -40,31 +76,12 @@ def extractFromEmails(extractorSelector):
                 print "---"
 
                 preProcessor = PreProcessor()
-                
                 processedEmail = preProcessor.removeEscapeChars(emailString)
                 processedPayload = preProcessor.removeEscapeChars(payload)
                 
-                selectedExtractorTuple = extractorSelector.\
-                                         determineBestExtractor(processedEmail.split())
-
-                if selectedExtractorTuple[0] is None:
-                        documentName = "DEFAULT - TEXT "+str(i)
-                        documentCategory = "DEFAULT - TEXT"
-                elif selectedExtractorTuple[0] is 'text':
-                        documentName = email.get("Message-Id")
-                        documentCategory = "text"
-                elif selectedExtractorTuple[0] is 'html':
-                        documentName = "DEFAULT - HTML "+str(i)
-                        documentCategory = "html"
-
-                #Start parsing using the chosen extractor(s)
-                extractorTuple = selectedExtractorTuple[1]
+                tempFeatureSetList = selectExtractorAndProcess(extractorSelector, processedEmail, email.get("Message-Id"), processedPayload)
+                featureSetList.extend(tempFeatureSetList)
                 
-                for extractor in extractorTuple:
-                        featureSet = extractor.getFeatureSet(\
-                documentName+": "+extractor.__class__.__name__,\
-                    documentCategory, processedPayload)
-                        featureSetList.append(featureSet)
                 i+=1
                 
         return featureSetList
@@ -135,13 +152,22 @@ def main():
 
         featureMatrix.extend(extractFromEmails(extractorSelector))
         #featureMatrix.extend(extractFromWebsites())
+
+        labelMat = []
+        valueMat = []
                         
         print "---"
         for featureSet in featureMatrix:
                 print featureSet.documentName
-                print featureSet.vector
-                print featureSet.getLabelsAndValuesTuple()
+                print featureSet.documentCategory
+                print featureSet._vector
+                valueMat.append(featureSet.getVector())
+                valueMat.append(featureSet.getClass())
                 print "---"
+        ###Testing Gaussian SVM###
+        gSVM = GaussianSVM(labelMat, valueMat)
+
+
 
         startFakeSMTPServer()
 

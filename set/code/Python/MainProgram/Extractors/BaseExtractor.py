@@ -5,9 +5,9 @@ class BaseExtractor():
 	def __init__(self):
 		self.featureSet = None
 
-	def getFeatureSet(self, documentName, documentCategory, textString):
+	def getFeatureSet(self, documentName, documentCategory, textString, documentClass=-1):
                 memberList = inspect.getmembers(self, predicate=inspect.ismethod)
-                self.featureSet = FeatureSet(documentName, documentCategory)
+                self.featureSet = FeatureSet(documentName, documentCategory, documentClass)
 
                 for x, y in memberList:
                         if x[0] != '_' and x != 'getFeatureSet':

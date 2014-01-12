@@ -5,64 +5,52 @@ from Utilities.FeatureSet import FeatureSet
 from svmutil import *
 
 class GaussianSVM(object):
-	"""docstring for GaussianSVM"""
-	param_C = 5
-	svmModel = None
-	labels = None
-	featureMatrix = None
+    """docstring for GaussianSVM"""
+    svmModel = None
+    labels = None
+    featureMatrix = None
 
-	#featureMatrix is a list of featureSet vectors:
-	##e.g. [featureSet1.vector, featureSet2.vector, fe5.vector ...]
+    #featureMatrix is an iterable (list, tuple etc.) of numpy arrays/vectors:
+    ##e.g. [featureSet1.getVector(), featureSet2.getVector(), fe5.getVector() ...]
 
-	def __init__(self, labelList, featureMatrix):
-		super(GaussianSVM, self).__init__()
-		self.labels = labelList
-		self.featureMatrix = featureMatrix
+    #Use like this:
+    #gSVM = GaussianSVM(costParam=your_chosen_number)
+    def __init__(self, labelList=None, featureMatrix=None,\
+                     pathToModel='./Classifiers/gaussianSVM_model.bak', costParam=5):
+        super(GaussianSVM, self).__init__()
 
-		svmProb = svm_problem(self.labels, self.featureMatrix)
+        if labelList is None or featureMatrix is None:     
+                self.svmModel = self.loadModel(pathToModel)
+        else:
+                self.labels = labelList
+                self.featureMatrix = featureMatrix
+                svmProb = svm_problem(self.labels, self.featureMatrix)
 
-		#t = 2 model type Gaussian/RBF
-		#s = 0 C-SVC multi-class classifier
-		#c = cost parameter of C-SVC
-		params 	= svm_parameter('-s 0 -t 2 -c '+str(param_C)+' -b 1')
-		self.svmModel = svm_train(svmProb, params)
+                #t = 2 model type Gaussian/RBF
+                #s = 0 C-SVC multi-class classifier
+                #c = cost parameter of C-SVC
+                params  = svm_parameter('-s 0 -t 2 -c '+str(costParam)+' -b 1')
+                self.svmModel = svm_train(svmProb, params)
+                self.saveModel(pathToModel, svmModel)
 
-		self.saveModel('gaussianSVM_model.bak', svmModel)
+    def saveModel(filename, model):
+        try:
+            svm_save_model(filename, model)
+        except IOError:
+            sys.stderr.write("\nCould not save model.\n")
 
-	def __init__(self, labelList, featureMatrix, costParam):
-		super(GaussianSVM, self).__init__()
-		self.param_C = costParam
-		self.labels = labelList
-		self.featureMatrix = featureMatrix
+    def loadModel(filename):
+        try:
+            return svm_load_model(filename)
+        except IOError:
+            sys.stderr.write("\nCould not load model.\n")
 
-		svmProb = svm_problem(self.labels, self.featureMatrix)
+    def classifyDocument(label, featureSet):
+        vector = featureSet.getVector()
+        if isinstance(featureSet, FeatureSet):
+            p_labels, p_acc, p_vals = svm_predict([0]*len(vector), [vector], self.svmModel)
+            #Do stuff with variables
+        else:
+            raise TypeError("Feature set is not of the correct type.\nMust be of type 'FeatureSet'.\n")
 
-		#t = 2 model type Gaussian/RBF
-		#s = 0 C-SVC multi-class classifier
-		#c = cost parameter of C-SVC
-		params 	= svm_parameter('-s 0 -t 2 -c '+str(self.param_C)+' -b 1')
-		self.svmModel = svm_train(svmProb, params)
-
-		self.saveModel('gaussianSVM_model.bak', svmModel)
-
-	def saveModel(filename, model):
-		try:
-			svm_save_model(filename, model)
-		except Exception, e:
-			raise e
-
-	def loadModel(filename):
-		try:
-			svm_load_model(filename)
-		except Exception, e:
-			raise e
-
-	def classifyDocument(featureSet, newFeatureMatrix):
-		if isinstance(featureSet, FeatureSet):
-			p_labels, p_acc, p_vals = svm_predict(self.labels, [featureSet.vector], self.svmModel)
-			#Do stuff with variables
-			return True
-		else:
-			return False
-
-		
+        
