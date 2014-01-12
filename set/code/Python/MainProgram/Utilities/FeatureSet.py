@@ -29,4 +29,4 @@ class FeatureSet:
 
     def getLabelsAndValuesTuple(self):
                 labels = self.vector.keys()
-                return(labels, np.array(self.vector.items()))
+                return(labels, np.array(self.vector.values()))
