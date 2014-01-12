@@ -3,8 +3,8 @@
 # Script to run tool
 #
 
-CODE_DIR = "~/fyp/set/code/Python"
-FYP_VIRTUALENV = "~/fyp/set/code/Python/fyp_virtualenv"
+CODE_DIR="~/fyp/set/code/Python"
+FYP_VIRTUALENV="~/fyp/set/code/Python/fyp_virtualenv"
 
 cd $CODE_DIR
 if [ ! -d "$FYP_VIRTUALENV" ]; then
