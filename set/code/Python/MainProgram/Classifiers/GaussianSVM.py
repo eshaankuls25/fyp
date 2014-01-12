@@ -29,23 +29,23 @@ class GaussianSVM(object):
                 #t = 2 model type Gaussian/RBF
                 #s = 0 C-SVC multi-class classifier
                 #c = cost parameter of C-SVC
-                params  = svm_parameter('-s 0 -t 2 -c '+str(costParam)+' -b 1')
+                params = svm_parameter('-s 0 -t 2 -c %s -b 1'%str(costParam))
                 self.svmModel = svm_train(svmProb, params)
-                self.saveModel(pathToModel, svmModel)
+                self.saveModel(pathToModel, self.svmModel)
 
-    def saveModel(filename, model):
+    def saveModel(self, filename, model):
         try:
             svm_save_model(filename, model)
         except IOError:
             sys.stderr.write("\nCould not save model.\n")
 
-    def loadModel(filename):
+    def loadModel(self, filename):
         try:
             return svm_load_model(filename)
         except IOError:
             sys.stderr.write("\nCould not load model.\n")
 
-    def classifyDocument(label, featureSet):
+    def classifyDocument(self, label, featureSet):
         vector = featureSet.getVector()
         if isinstance(featureSet, FeatureSet):
             p_labels, p_acc, p_vals = svm_predict([0]*len(vector), [vector], self.svmModel)

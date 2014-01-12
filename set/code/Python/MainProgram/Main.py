@@ -159,15 +159,14 @@ def main():
         print "---"
         for featureSet in featureMatrix:
                 print featureSet.documentName, "---", featureSet.documentCategory
-                print featureSet._vector
                 print featureSet.getClass()
+                print featureSet.getVector()
                 labelMat.append(featureSet.getClass())
                 valueMat.append(featureSet.getVector())
                 print "---"
+                
         ###Testing Gaussian SVM###
         gSVM = GaussianSVM(labelMat, valueMat)
-
-
 
         startFakeSMTPServer()
 
