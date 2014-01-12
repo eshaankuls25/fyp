@@ -24,10 +24,10 @@ class HTMLFeatureExtractor(BaseExtractor):
                 self.urlList = urlList
 
                 if startScrapyScan is True:
-                        self._createCrawler(self.stopReactor, signals.spider_closed)
+                        self._createCrawler(self._stopReactor, signals.spider_closed)
 
 			
-	def stopReactor(self):
+	def _stopReactor(self):
 		reactor.stop()
         
 

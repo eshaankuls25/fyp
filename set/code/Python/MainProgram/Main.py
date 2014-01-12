@@ -17,7 +17,7 @@ from Extractors.HTMLScraper.items import HTMLScraperItem
 from Parsers.HTMLParser_ import HTMLParser
 from Parsers.TextParser import TextParser
 
-def extractFromEmails():
+def extractFromEmails(extractorSelector):
         emailList = []
         featureSetList = []
         filepathPrefix = "./Emails/"
@@ -62,8 +62,8 @@ def extractFromEmails():
                 
                 for extractor in extractorTuple:
                         featureSet = extractor.getFeatureSet(\
-				documentName+": "+extractor.__class__.__name__,\
-					documentCategory, processedPayload)
+                documentName+": "+extractor.__class__.__name__,\
+                    documentCategory, processedPayload)
                         featureSetList.append(featureSet)
                 i+=1
                 
@@ -89,18 +89,18 @@ def extractFromWebsites():
                 print headersDict[websitePath]
                 print "---"
 
-	return None
+        return None
         #Must return a list of feature set objects, later on
 
 def main():
 
         ###Defaults###
         extractorSelector = None
-	documentFilePath = 'test_email'
+        documentFilePath = 'test_email'
         documentCategory = 'text'
         categoryList = ['text', 'html']
 
-        extractorList = [(ImitationFeatureExtractor(), ObfuscationFeatureExtractor()), HTMLFeatureExtractor(True)]
+        extractorList = [(ImitationFeatureExtractor(), ObfuscationFeatureExtractor()), HTMLFeatureExtractor(False)]
     
         indicatorDictionary = {'text':['From:', 'Date:', 'Message-ID', 'In-Reply-To:'],\
                               'html':['http://', 'www', '.com', '.co.uk']}
@@ -133,13 +133,14 @@ def main():
 
         ###Extracting###
 
-        featureMatrix.extend(extractFromEmails())
-        featureMatrix.extend(extractFromWebsites())
+        featureMatrix.extend(extractFromEmails(extractorSelector))
+        #featureMatrix.extend(extractFromWebsites())
                         
         print "---"
         for featureSet in featureMatrix:
                 print featureSet.documentName
-                print featureSet.vector
+                print self.vector
+                print featureSet.getLabelsAndValuesTuple()
                 print "---"
 
         startFakeSMTPServer()
