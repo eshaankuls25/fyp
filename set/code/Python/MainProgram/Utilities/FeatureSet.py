@@ -29,8 +29,11 @@ class FeatureSet:
         del self._vector[featureName]
 
     def getLabels(self):
-                return self._vector.keys()
+        return self._vector.keys()
+
+    def getClass(self):
+        return self.documentClass
             
     def getVector(self):
-                #return np.array(self._vector.values())
-                return {k:v for k, v in enumerate(self._vector.values())}
+        #return np.array(self._vector.values())
+        return {k:v for k, v in enumerate(self._vector.values())}
