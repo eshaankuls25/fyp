@@ -139,7 +139,7 @@ def main():
         print "---"
         for featureSet in featureMatrix:
                 print featureSet.documentName
-                print self.vector
+                print featureSet.vector
                 print featureSet.getLabelsAndValuesTuple()
                 print "---"
 
