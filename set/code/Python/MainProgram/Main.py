@@ -158,11 +158,11 @@ def main():
                         
         print "---"
         for featureSet in featureMatrix:
-                print featureSet.documentName
-                print featureSet.documentCategory
+                print featureSet.documentName, "---", featureSet.documentCategory
                 print featureSet._vector
+                print featureSet.getClass()
+                labelMat.append(featureSet.getClass())
                 valueMat.append(featureSet.getVector())
-                valueMat.append(featureSet.getClass())
                 print "---"
         ###Testing Gaussian SVM###
         gSVM = GaussianSVM(labelMat, valueMat)
