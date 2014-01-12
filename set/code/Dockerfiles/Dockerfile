@@ -28,7 +28,7 @@ EXPOSE 	80
 #Install useful apps
 run 	apt-get install -y -q memcached
 run 	apt-get install -y -q python
-
+run 	apt-get install -y -q python-numpy
 #add readline support
 run 	apt-get install -y -q rlwrap
 
