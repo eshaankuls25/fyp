@@ -166,7 +166,7 @@ def main():
                 print "---"
                 
         ###Testing Gaussian SVM###
-        gSVM = GaussianSVM(labelMat, valueMat)
+        gSVM = GaussianSVM()
 
         startFakeSMTPServer()
 
