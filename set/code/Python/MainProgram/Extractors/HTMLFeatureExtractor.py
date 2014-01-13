@@ -12,6 +12,8 @@ sys.path.append("..")
 from Utilities.Utils import downloadNLTKData
 from BaseExtractor import BaseExtractor
 from HTMLScraper.spiders.SETSpider import SETSpider
+from Extractors.HTMLScraper.items import HTMLScraperItem
+from Parsers.HTMLParser_ import HTMLParser
 
 #Use scrapy code here - items, spiders etc.
 #Source - Stack Overflow: http://stackoverflow.com/questions/14777910/scrapy-crawl-from-script-always-blocks-script-execution-after-scraping/19060485
@@ -22,7 +24,8 @@ class HTMLFeatureExtractor(BaseExtractor):
                 BaseExtractor.__init__(self)
                 self.domainList = domainList
                 self.urlList = urlList
-
+                self.hparser = HTMLParser()
+                
                 if startScrapyScan is True:
                         self._createCrawler(self._stopReactor, signals.spider_closed)
 

@@ -86,7 +86,8 @@ def extractFromEmails(extractorSelector):
                 
         return featureSetList
 
-def extractFromWebsites():
+def extractFromWebsites(extractorSelector):
+        featureSetList = []
         filepathPrefix = "./Sites/"
         websiteList = listFilesInDirWithExtension(filepathPrefix, '.obj')
 
@@ -97,6 +98,14 @@ def extractFromWebsites():
         for websitePath in websiteList:
 
                 item = unpickleHTMLScraperItem(filepathPrefix+websitePath)
+
+                #response = hparser._getResponseAttribute(item, 'all')
+                #preProcessor = PreProcessor()
+                #processedResponse = preProcessor.removeEscapeChars(response)
+
+                #tempFeatureSetList = selectExtractorAndProcess(extractorSelector, processedResponse)
+                #featureSetList.extend(tempFeatureSetList)
+                
                 tagCounter[websitePath] = hparser.getTagCounter(item)
                 headersDict[websitePath] = hparser._getResponseAttribute(item, 'headers')
 
@@ -105,9 +114,10 @@ def extractFromWebsites():
                 print "---"
                 print headersDict[websitePath]
                 print "---"
-
+        
         return None
         #Must return a list of feature set objects, later on
+
 
 def main():
 
@@ -117,7 +127,8 @@ def main():
         documentCategory = 'text'
         categoryList = ['text', 'html']
 
-        extractorList = [(ImitationFeatureExtractor(), ObfuscationFeatureExtractor()), HTMLFeatureExtractor(False)]
+        extractorList = [(ImitationFeatureExtractor(), ObfuscationFeatureExtractor()),\
+                         HTMLFeatureExtractor(startScrapyScan=False)]
     
         indicatorDictionary = {'text':['From:', 'Date:', 'Message-ID', 'In-Reply-To:'],\
                               'html':['http://', 'www', '.com', '.co.uk']}
@@ -151,7 +162,7 @@ def main():
         ###Extracting###
 
         featureMatrix.extend(extractFromEmails(extractorSelector))
-        #featureMatrix.extend(extractFromWebsites())
+        featureMatrix.extend(extractFromWebsites())
 
         labelMat = []
         valueMat = []
