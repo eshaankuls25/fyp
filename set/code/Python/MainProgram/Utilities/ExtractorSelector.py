@@ -10,9 +10,9 @@ class ExtractorSelector:
 	extractorDictionary = {}
 
 	def __init__(self, categoryList, extractorList):
-		for group in zip(categoryList, extractorList):
-			self.categoryDictionary[group[0]] = set()
-			self.extractorDictionary[group[0]] = group[1]		
+		for pair in zip(categoryList, extractorList):
+			self.categoryDictionary[pair[0]] = set()
+			self.extractorDictionary[pair[0]] = pair[1]		
 
 	def addExtractor(self, category, extractor):
 		assert category not in self.categoryDictionary

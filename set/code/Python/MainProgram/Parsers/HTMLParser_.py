@@ -14,7 +14,7 @@ class HTMLParser:
 	def _findTagsInString(self, textString):
 		return re.findall('<.*?>', textString)
 
-	def _getTagsFromString(self, item):
+	def getTagsFromString(self, item):
 		if isinstance(item, dict):
 			responseAll = item['response']['tags']
 			return [x.encode('utf8') for x in responseAll]
@@ -32,5 +32,5 @@ class HTMLParser:
                         raise TypeError("The attribute must be a string.")
 	
 	def getTagCounter(self, item):
-		return(Counter(self._getTagsFromString(item)))
+		return(Counter(self.getTagsFromString(item)))
 
