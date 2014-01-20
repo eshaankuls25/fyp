@@ -7,7 +7,7 @@ from svmutil import *
 class GaussianSVM(object):
     """docstring for GaussianSVM"""
     svmModel = None
-    labels = None
+    classes = None
     featureMatrix = None
 
     #featureMatrix is an iterable (list, tuple etc.) of numpy arrays/vectors:
@@ -15,16 +15,16 @@ class GaussianSVM(object):
 
     #Use like this:
     #gSVM = GaussianSVM(costParam=your_chosen_number)
-    def __init__(self, labelList=None, featureMatrix=None,\
+    def __init__(self, classList=None, featureMatrix=None,\
                      pathToModel='./Classifiers/gaussianSVM_model.bak', costParam=5):
         super(GaussianSVM, self).__init__()
 
-        if labelList is None or featureMatrix is None:     
+        if classList is None or featureMatrix is None:     
                 self.svmModel = self.loadModel(pathToModel)
         else:
-                self.labels = labelList
+                self.classes = classList
                 self.featureMatrix = featureMatrix
-                svmProb = svm_problem(self.labels, self.featureMatrix)
+                svmProb = svm_problem(self.classes, self.featureMatrix)
 
                 #t = 2 model type Gaussian/RBF
                 #s = 0 C-SVC multi-class classifier
@@ -48,7 +48,7 @@ class GaussianSVM(object):
     def classifyDocument(self, label, featureSet):
         vector = featureSet.getVector()
         if isinstance(featureSet, FeatureSet):
-            p_labels, p_acc, p_vals = svm_predict([0]*len(vector), [vector], self.svmModel)
+            p_classes, p_acc, p_vals = svm_predict([0]*len(vector), [vector], self.svmModel)
             #Do stuff with variables
         else:
             raise TypeError("Feature set is not of the correct type.\nMust be of type 'FeatureSet'.\n")

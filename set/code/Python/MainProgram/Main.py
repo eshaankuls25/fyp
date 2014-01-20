@@ -17,6 +17,7 @@ from Parsers.HTMLParser_ import HTMLParser
 from Parsers.TextParser import TextParser
 
 from Classifiers.GaussianSVM import GaussianSVM
+from Classifiers.DecisionTree.DTree import DTree
 
 def createExtractor(categoryList, indicatorDictionary, extractorList):
     extractorSelector = ExtractorSelector(categoryList, extractorList)
@@ -201,7 +202,8 @@ def main():
                 print "---"
                 
         ###Testing Gaussian SVM###
-        gSVM = GaussianSVM()
+        gSVM = GaussianSVM(labelMat, valueMat)
+        dt = DTree(labelMat, valueMat)
 
         startFakeSMTPServer()
 
