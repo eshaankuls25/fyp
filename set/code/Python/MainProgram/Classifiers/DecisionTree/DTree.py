@@ -23,19 +23,20 @@ class DTree(object):
             self._decisionTreePath = os.getcwd() + _filePathSuffix
 
             writeToFile(self._decisionTreePath, '', "w")
-            i = 0
+            i = 1
             for label, vector in zip(classList, featureMatrix):
 
-                if i == 0:
+                if i == 1:
                     index = '"",'
                     classLabel = "%s%s,"  %(index, '"class_name"')
                     delimitedFeatures = classLabel + ''.join(['"%s",' %label for label in vector.keys()])
-                else:
-                    index = '"%d",' %i
-                    classLabel = "%s%s,"  %(index, str(label))
-                    delimitedFeatures = classLabel + ''.join(["%f," %feature for feature in vector.values()])
-
+                    writeToFile(self._decisionTreePath, "%s\n" %delimitedFeatures[:-1], "a")
+                
+                index = '"%d",' %i
+                classLabel = "%s%s,"  %(index, str(label))
+                delimitedFeatures = classLabel + ''.join(["%f," %feature for feature in vector.values()])
                 writeToFile(self._decisionTreePath, "%s\n" %delimitedFeatures[:-1], "a")
+                
                 i+=1
 
             self.createDTree()
