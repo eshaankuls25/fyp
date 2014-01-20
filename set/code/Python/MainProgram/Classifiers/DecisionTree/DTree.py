@@ -8,6 +8,7 @@ import DecisionTree
 class DTree(object):
     """docstring for DTree"""
     def __init__(self, classList, featureMatrix, filePath=None, documentGroupName=None):
+        self.dt = None
         self.rootNode = None
         self._decisionTreePath = None
         self.classes = classList
@@ -29,7 +30,7 @@ class DTree(object):
                 if i == 1:
                     index = '"",'
                     classLabel = "%s%s,"  %(index, '"class_name"')
-                    delimitedFeatures = classLabel + ''.join(['"%s",' %label for label in vector.keys()])
+                    delimitedFeatures = classLabel + ''.join(['"feature_%s",' %label for label in vector.keys()])
                     writeToFile(self._decisionTreePath, "%s\n" %delimitedFeatures[:-1], "a")
                 
                 index = '"%d",' %i
@@ -42,7 +43,7 @@ class DTree(object):
             self.createDTree()
 
     def createDTree(self):
-        dt = DecisionTree.DecisionTree( training_datafile = self._decisionTreePath,
+        self.dt = DecisionTree.DecisionTree( training_datafile = self._decisionTreePath,
                                 csv_class_column_index = 1,
                                 csv_columns_for_features = [x for x in range(len(self.classes))],
                                 entropy_threshold = 0.01,
@@ -50,16 +51,16 @@ class DTree(object):
                                 symbolic_to_numeric_cardinality_threshold = 10,
                               )
         
-        dt.get_training_data()
-        dt.calculate_first_order_probabilities()
-        dt.calculate_class_priors()
+        self.dt.get_training_data()
+        self.dt.calculate_first_order_probabilities()
+        self.dt.calculate_class_priors()
     
-        self.rootNode = dt.construct_decision_tree_classifier()
+        self.rootNode = self.dt.construct_decision_tree_classifier()
 
     #Some code is from DecisionTree.py's examples
     def classifyDocument(self, featureVector):
-        featureString = ''.join(["%s = %f" %(k, v) for k, v in featureVector.items()])
-        classification = dt.classify(self.rootNode, featureString)
+        featureList = ['feature_%s = %f' %(k, v) for k, v in featureVector.items()]
+        classification = self.dt.classify(self.rootNode, featureList)
 
         classes = sorted(list( classification.keys() ),\
             key=lambda x: classification[x], reverse=True)
