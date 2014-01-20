@@ -12,11 +12,16 @@ class DTree(object):
     classes = None
     featureMatrix = None
 
-    def __init__(self, classList, featureMatrix, filePath=None):
+    def __init__(self, classList, featureMatrix, filePath=None, documentGroupName=None):
+        
+        _filePathSuffix = "/Classifiers/DecisionTree/training_data.csv"
+        if documentGroupName is not None:
+             _filePathSuffix = "/Classifiers/DecisionTree/training_data_%s.csv" %documentGroupName
+
         if filePath is not None:
             self._decisionTreePath = filePath
-        else:
-            self._decisionTreePath = os.getcwd() + "/Classifiers/DecisionTree/training_data.csv" 
+        else:    
+            self._decisionTreePath = os.getcwd() + _filePathSuffix
 
             i =0
             for label, vector in zip(classList, featureMatrix):
@@ -30,7 +35,7 @@ class DTree(object):
                     classLabel = "%s%s,"  %(index, str(label))
                     delimitedFeatures = classLabel + ''.join(["%f," %feature for feature in vector.values()])
 
-                writeToFile(self._decisionTreePath, delimitedFeatures[:-1], "a")
+                writeToFile(self._decisionTreePath, delimitedFeatures[:-1], "w")
                 i+=1
 
 

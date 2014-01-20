@@ -208,7 +208,7 @@ def main():
                 
         ###Testing Gaussian SVM###
             svms = [GaussianSVM(matDict[category][0], matDict[category][1]) for category in matDict.keys()]
-            dTrees = [DTree(matDict[category][0], matDict[category][1]) for category in matDict.keys()]
+            dTrees = [DTree(matDict[category][0], matDict[category][1], documentGroupName=category) for category in matDict.keys()]
 
         startFakeSMTPServer()
 
