@@ -57,8 +57,8 @@ def selectExtractorAndProcess(extractorSelector, processedText,\
                 
         for extractor in extractorTuple:
                 featureSet = extractor.getFeatureSet(\
-                        documentName+": "+extractor.__class__.__name__,\
-                        documentCategory, textString, documentClass)
+                        documentName+": "+documentCategory,\
+                        extractor.__class__.__name__, textString, documentClass)
                 featureSetList.append(featureSet)
         return featureSetList
 
@@ -179,7 +179,7 @@ def main():
         
         extractorSelector = createExtractor(categoryList, indicatorDictionary, extractorList)
         
-        ###Sorting documents from file(s):###
+        ###Extracting emails from file(s):###
 
         if documentPaths: #List is not empty
                 [featureMatrix.extend(_extractFromEmail(x)) for x in documentPaths]             
@@ -189,21 +189,26 @@ def main():
         featureMatrix.extend(extractFromEmails(extractorSelector))
         #featureMatrix.extend(extractFromWebsites(extractorSelector))
 
-        labelMat = []
-        valueMat = []
+        matDict = {}
                         
-        print "---"
         for featureSet in featureMatrix:
-                print featureSet.documentName, "---", featureSet.documentCategory
-                print featureSet.getClass()
-                print featureSet.getVector()
-                labelMat.append(featureSet.getClass())
-                valueMat.append(featureSet.getVector())
-                print "---"
+                category = featureSet.documentCategory
+
+                if category not in matDict:
+                    matDict[category] = [[],[]]
+
+                matDict[category][0].append(featureSet.getClass())
+                matDict[category][1].append(featureSet.getVector())
+                
+        print "---"
+        for k in matDict:
+            print k
+            print matDict[k] 
+            print "---"
                 
         ###Testing Gaussian SVM###
-        gSVM = GaussianSVM(labelMat, valueMat)
-        dt = DTree(labelMat, valueMat)
+            svms = [GaussianSVM(matDict[category][0], matDict[category][1]) for category in matDict.keys()]
+            dTrees = [DTree(matDict[category][0], matDict[category][1]) for category in matDict.keys()]
 
         startFakeSMTPServer()
 
