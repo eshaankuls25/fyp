@@ -64,7 +64,7 @@ def writeToFile(filepath, data, accessType):
 
     try:
         with open(filepath, accessType) as f:
-            f.write(data + "\n")
+            f.write(data)
             f.close()
         return True
     except IOError:

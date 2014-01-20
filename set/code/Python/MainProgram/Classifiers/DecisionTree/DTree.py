@@ -7,13 +7,12 @@ import DecisionTree
 
 class DTree(object):
     """docstring for DTree"""
-    decisionTree = None
-    _decisionTreePath = None
-    classes = None
-    featureMatrix = None
-
     def __init__(self, classList, featureMatrix, filePath=None, documentGroupName=None):
-        
+        self.rootNode = None
+        self._decisionTreePath = None
+        self.classes = classList
+        self.featureMatrix = featureMatrix
+              
         _filePathSuffix = "/Classifiers/DecisionTree/training_data.csv"
         if documentGroupName is not None:
              _filePathSuffix = "/Classifiers/DecisionTree/training_data_%s.csv" %documentGroupName
@@ -23,7 +22,8 @@ class DTree(object):
         else:    
             self._decisionTreePath = os.getcwd() + _filePathSuffix
 
-            i =0
+            writeToFile(self._decisionTreePath, '', "w")
+            i = 0
             for label, vector in zip(classList, featureMatrix):
 
                 if i == 0:
@@ -35,7 +35,52 @@ class DTree(object):
                     classLabel = "%s%s,"  %(index, str(label))
                     delimitedFeatures = classLabel + ''.join(["%f," %feature for feature in vector.values()])
 
-                writeToFile(self._decisionTreePath, delimitedFeatures[:-1], "a")
+                writeToFile(self._decisionTreePath, "%s\n" %delimitedFeatures[:-1], "a")
                 i+=1
 
+            self.createDTree()
 
+    def createDTree(self):
+        dt = None
+        try:
+            with open(self._decisionTreePath, 'r') as training_data:
+
+                dt = DecisionTree.DecisionTree( training_datafile = training_data,
+                                csv_class_column_index = 1,
+                                csv_columns_for_features = [x for x in range(len(self.classes))],
+                                entropy_threshold = 0.01,
+                                max_depth_desired = 8,
+                                symbolic_to_numeric_cardinality_threshold = 10,
+                              )
+                
+                training_data.close()
+        except IOError:
+            sys.stderr.write("Could not open file.\n")
+            return None
+        dt.get_training_data()
+        dt.calculate_first_order_probabilities()
+        dt.calculate_class_priors()
+    
+        self.rootNode = dt.construct_decision_tree_classifier()
+
+    #Some code is from DecisionTree.py's examples
+    def classifyDocument(self, featureVector):
+        featureString = ''.join(["%s = %f" %(k, v) for k, v in featureVector.items()])
+        classification = dt.classify(self.rootNode, featureString)
+
+        classes = sorted(list( classification.keys() ),\
+            key=lambda x: classification[x], reverse=True)
+
+        classResult = ''.join(["\nClassification:\n",\
+            "     "  + str.ljust("class name", 30) + "probability",\
+            "     ----------                    -----------"])
+
+        for which_class in which_classes:
+            if which_class is not 'solution_path':
+                classResult += ''.join("     ",\
+                    str.ljust(which_class, 30), \
+                    str(classification[which_class]))
+
+        return {'solution_path': classification['solution_path'],
+                'no_of_nodes': self.rootNode.how_many_nodes(),
+                'class_result': classResult} 
