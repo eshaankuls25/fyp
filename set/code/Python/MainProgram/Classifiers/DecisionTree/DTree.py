@@ -17,13 +17,18 @@ class DTree(object):
             self._decisionTreePath = filePath
         else:
             self._decisionTreePath = os.getcwd() + "/Classifiers/DecisionTree/training_data.csv" 
-            i = 0
 
+            i =0
             for label, vector in zip(classList, featureMatrix):
 
-                index = '"",' if i == 0 else '"%d",' %i
-                classLabel = "%s%s,"  %(index, str(label))
-                delimitedFeatures = classLabel + ''.join(["%f," %feature for feature in vector.values()])
+                if i == 0:
+                    index = '"",'
+                    classLabel = "%s%s,"  %(index, '"class_name"')
+                    delimitedFeatures = classLabel + ''.join(['"%s",' %label for label in vector.keys()])
+                else:
+                    index = '"%d",' %i
+                    classLabel = "%s%s,"  %(index, str(label))
+                    delimitedFeatures = classLabel + ''.join(["%f," %feature for feature in vector.values()])
 
                 writeToFile(self._decisionTreePath, delimitedFeatures[:-1], "a")
                 i+=1
