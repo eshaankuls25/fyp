@@ -20,11 +20,12 @@ class DTree(object):
             i = 0
 
             for label, vector in zip(classList, featureMatrix):
-                index = '"%s",' % str(i)
-                delimitedFeatures = index.join(["%s," % str(feature) for feature in vector.keys()])
-                featureString = "%s,%s\n" %(delimitedFeatures, str(label))
 
-                writeToFile(self._decisionTreePath, featureString, "a")
+                index = '"",' if i == 0 else '"%d",' %i
+                classLabel = "%s%s,"  %(index, str(label))
+                delimitedFeatures = classLabel + ''.join(["%f," %feature for feature in vector.values()])
+
+                writeToFile(self._decisionTreePath, delimitedFeatures[:-1], "a")
                 i+=1
 
 
