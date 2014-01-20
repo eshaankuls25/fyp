@@ -35,7 +35,7 @@ class DTree(object):
                     classLabel = "%s%s,"  %(index, str(label))
                     delimitedFeatures = classLabel + ''.join(["%f," %feature for feature in vector.values()])
 
-                writeToFile(self._decisionTreePath, delimitedFeatures[:-1], "w")
+                writeToFile(self._decisionTreePath, delimitedFeatures[:-1], "a")
                 i+=1
 
 
