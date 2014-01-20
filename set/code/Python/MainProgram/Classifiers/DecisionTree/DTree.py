@@ -23,7 +23,6 @@ class DTree(object):
         else:    
             self._decisionTreePath = os.getcwd() + _filePathSuffix
 
-            writeToFile(self._decisionTreePath, '', "w")
             i = 1
             for label, vector in zip(classList, featureMatrix):
 
@@ -31,7 +30,7 @@ class DTree(object):
                     index = '"",'
                     classLabel = "%s%s,"  %(index, '"class_name"')
                     delimitedFeatures = classLabel + ''.join(['"feature_%s",' %label for label in vector.keys()])
-                    writeToFile(self._decisionTreePath, "%s\n" %delimitedFeatures[:-1], "a")
+                    writeToFile(self._decisionTreePath, "%s\n" %delimitedFeatures[:-1], "w")
                 
                 index = '"%d",' %i
                 classLabel = "%s%s,"  %(index, str(label))
@@ -45,7 +44,7 @@ class DTree(object):
     def createDTree(self):
         self.dt = DecisionTree.DecisionTree( training_datafile = self._decisionTreePath,
                                 csv_class_column_index = 1,
-                                csv_columns_for_features = [x for x in range(len(self.classes))],
+                                csv_columns_for_features = [x for x in range(len(self.classes)) if x > 1 ],
                                 entropy_threshold = 0.01,
                                 max_depth_desired = 8,
                                 symbolic_to_numeric_cardinality_threshold = 10,
@@ -56,6 +55,7 @@ class DTree(object):
         self.dt.calculate_class_priors()
     
         self.rootNode = self.dt.construct_decision_tree_classifier()
+        self.dt.show_training_data()        
 
     #Some code is from DecisionTree.py's examples
     def classifyDocument(self, featureVector):
