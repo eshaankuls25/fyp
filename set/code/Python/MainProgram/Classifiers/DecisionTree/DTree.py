@@ -41,22 +41,14 @@ class DTree(object):
             self.createDTree()
 
     def createDTree(self):
-        dt = None
-        try:
-            with open(self._decisionTreePath, 'r') as training_data:
-
-                dt = DecisionTree.DecisionTree( training_datafile = training_data,
+        dt = DecisionTree.DecisionTree( training_datafile = self._decisionTreePath,
                                 csv_class_column_index = 1,
                                 csv_columns_for_features = [x for x in range(len(self.classes))],
                                 entropy_threshold = 0.01,
                                 max_depth_desired = 8,
                                 symbolic_to_numeric_cardinality_threshold = 10,
                               )
-                
-                training_data.close()
-        except IOError:
-            sys.stderr.write("Could not open file.\n")
-            return None
+        
         dt.get_training_data()
         dt.calculate_first_order_probabilities()
         dt.calculate_class_priors()
