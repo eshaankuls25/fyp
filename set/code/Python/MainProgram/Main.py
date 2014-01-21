@@ -208,13 +208,13 @@ def main():
 
         #Test
         category = 'ImitationFeatureExtractor'
-        matDict[category][0].append(2)
+        matDict[category][0].append(0)
         matDict[category][1].append({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 20, 5: 1})
 
-        matDict[category][0].append(2)
+        matDict[category][0].append(0)
         matDict[category][1].append({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 30, 5: 1})
 
-        matDict[category][0].append(2)
+        matDict[category][0].append(0)
         matDict[category][1].append({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 28, 5: 1})
                 
         ###Testing Classifiers###

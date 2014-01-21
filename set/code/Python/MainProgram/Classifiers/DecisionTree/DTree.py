@@ -13,7 +13,7 @@ class DTree(object):
         self._decisionTreePath = None
         self.classes = classList
         self.featureMatrix = featureMatrix
-              
+                      
         _filePathSuffix = "/Classifiers/DecisionTree/training_data.csv"
         if documentGroupName is not None:
              _filePathSuffix = "/Classifiers/DecisionTree/training_data_%s.csv" %documentGroupName
@@ -22,9 +22,10 @@ class DTree(object):
             self._decisionTreePath = filePath
         else:    
             self._decisionTreePath = os.getcwd() + _filePathSuffix
-
+            
             i = 1
             for label, vector in zip(classList, featureMatrix):
+                print "\n---", label, "-:-", vector, "---"
 
                 if i == 1:
                     index = '"",'
@@ -44,7 +45,7 @@ class DTree(object):
     def createDTree(self):
         self.dt = DecisionTree.DecisionTree( training_datafile = self._decisionTreePath,
                                 csv_class_column_index = 1,
-                                csv_columns_for_features = [x for x in range(len(self.classes)) if x > 1 ],
+                                csv_columns_for_features = [x for x in range(len(self.featureMatrix[0])) if x > 1 ],
                                 entropy_threshold = 0.01,
                                 max_depth_desired = 8,
                                 symbolic_to_numeric_cardinality_threshold = 10,
@@ -54,8 +55,7 @@ class DTree(object):
         self.dt.calculate_first_order_probabilities()
         self.dt.calculate_class_priors()
     
-        self.rootNode = self.dt.construct_decision_tree_classifier()
-        self.dt.show_training_data()        
+        self.rootNode = self.dt.construct_decision_tree_classifier()        
 
     #Some code is from DecisionTree.py's examples
     def classifyDocument(self, featureVector):
