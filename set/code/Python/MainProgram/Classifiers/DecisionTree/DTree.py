@@ -25,16 +25,17 @@ class DTree(object):
             
             i = 1
             for label, vector in zip(classList, featureMatrix):
-                print "\n---", label, "-:-", vector, "---"
-
+                
                 if i == 1:
                     index = '"",'
                     classLabel = "%s%s,"  %(index, '"class_name"')
-                    delimitedFeatures = classLabel + ''.join(['"feature_%s",' %label for label in vector.keys()])
+                    delimitedFeatures = classLabel + ''.join(['"feature_%s",' %feature for feature in vector.keys()])
                     writeToFile(self._decisionTreePath, "%s\n" %delimitedFeatures[:-1], "w")
                 
                 index = '"%d",' %i
+
                 classLabel = "%s%s,"  %(index, str(label))
+                
                 delimitedFeatures = classLabel + ''.join(["%f," %feature for feature in vector.values()])
                 writeToFile(self._decisionTreePath, "%s\n" %delimitedFeatures[:-1], "a")
                 
@@ -55,7 +56,8 @@ class DTree(object):
         self.dt.calculate_first_order_probabilities()
         self.dt.calculate_class_priors()
     
-        self.rootNode = self.dt.construct_decision_tree_classifier()        
+        self.rootNode = self.dt.construct_decision_tree_classifier()
+        self.dt.show_training_data()
 
     #Some code is from DecisionTree.py's examples
     def classifyDocument(self, featureVector):
