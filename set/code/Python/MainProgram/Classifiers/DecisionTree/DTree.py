@@ -33,7 +33,6 @@ class DTree(object):
                     writeToFile(self._decisionTreePath, "%s\n" %delimitedFeatures[:-1], "w")
                 
                 index = '"%d",' %i
-
                 classLabel = "%s%s,"  %(index, str(label))
                 
                 delimitedFeatures = classLabel + ''.join(["%f," %feature for feature in vector.values()])
@@ -61,7 +60,8 @@ class DTree(object):
 
     #Some code is from DecisionTree.py's examples
     def classifyDocument(self, featureVector):
-        featureList = ['feature_%s = %f' %(k, v) for k, v in featureVector.items()]
+        featureList = ['feature_%s = %0.2f' %(k, v) for k, v in featureVector.items()]
+        print featureList
         classification = self.dt.classify(self.rootNode, featureList)
 
         classes = sorted(list( classification.keys() ),\

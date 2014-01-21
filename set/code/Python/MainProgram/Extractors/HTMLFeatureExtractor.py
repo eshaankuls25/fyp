@@ -51,6 +51,9 @@ class HTMLFeatureExtractor(BaseExtractor):
 
     #Define private methods as utilities for actual text parsing, instance methods, which will produce features, via inherited 'getFeatureSet' function
 
-    
+    #source: StackOverflow - http://stackoverflow.com/questions/106179/regular-expression-to-match-hostname-or-ip-address?lq=1 
+        def findIPAddressesInEmail(self, textString):
+		countExp = re.compile(r"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
+		return re.findall(countExp, textString)
 
 

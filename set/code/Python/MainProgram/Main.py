@@ -180,12 +180,10 @@ def main():
         extractorSelector = createExtractor(categoryList, indicatorDictionary, extractorList)
         
         ###Extracting emails from file(s):###
-
         if documentPaths: #List is not empty
                 [featureMatrix.extend(_extractFromEmail(x)) for x in documentPaths]             
 
         ###Extracting###
-
         featureMatrix.extend(extractFromEmails(extractorSelector))
         #featureMatrix.extend(extractFromWebsites(extractorSelector))
 
