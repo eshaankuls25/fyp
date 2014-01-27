@@ -28,8 +28,11 @@ class SETSpider(BaseSpider):
     """
 
     def __init__(self, domainList=None, urlList=None):
-        allowed_domains = domainList
-        start_urls = urlList
+        if domainList is None or urlList is None:
+            raise RuntimeError("\nYou must provide a domain list and url list to parse responses from.\n")
+        else:
+            self.allowed_domains = domainList
+            self.start_urls = urlList
         
     def parse(self, response):
         self.log('This is an item page, from: %s' % response.url)

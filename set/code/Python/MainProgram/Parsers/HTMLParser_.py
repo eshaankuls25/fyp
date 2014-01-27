@@ -1,4 +1,6 @@
 import os, sys, re
+from urlparse import urlparse
+
 from collections import Counter
 sys.path.append("..")
 
@@ -33,4 +35,21 @@ class HTMLParser:
 	
 	def getTagCounter(self, item):
 		return(Counter(self.getTagsFromString(item)))
+
+	#source: StackOverflow - http://stackoverflow.com/questions/9000960/python-regular-expressions-re-search-vs-re-findall
+        def _findIPAddressesInEmail(self, textString):
+                countExp = re.compile("((?:\d{1,3}\.){3}\d{1,3})")
+                return re.findall(countExp, textString)
+
+
+        #source: StackOverflow - http://stackoverflow.com/questions/8436818/regular-expression-to-extract-urls-with-difficult-formatting?rq=1
+        def _findUrlsInEmail(self, textString):
+                return re.findall("((http:|https:)//[^ \<]+)", textString)
+
+        def _parseURLString(self, textString):
+                return urlparse(textString)
+                #Must use 'tldextract' library - Source: https://github.com/john-kurkowski/tldextract
+                #To get correct domains from a URL
+
+                #Then send list of URLs, and associated domain list (in order), to Scrapy, for parsing.
 

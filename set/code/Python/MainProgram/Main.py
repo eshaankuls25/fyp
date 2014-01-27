@@ -1,4 +1,5 @@
 import sys, shlex, os, getopt, uuid
+from collections import OrderedDict
 
 from os.path import normpath, isfile, isdir
 from uuid import uuid4
@@ -93,6 +94,8 @@ def extractFromEmails(extractorSelector):
         for filepath in listFilesInDirWithExtension(filepathPrefix, ".eml"):
                 featureSetList.extend(_extractFromEmail(extractorSelector,\
                     filepathPrefix+filepath, index=i))
+                #Extend text feature vector with html features here
+                #
                 i+=1
                 
         return featureSetList
@@ -187,7 +190,7 @@ def main():
         featureMatrix.extend(extractFromEmails(extractorSelector))
         #featureMatrix.extend(extractFromWebsites(extractorSelector))
 
-        matDict = {}
+        matDict = OrderedDict()
                         
         for featureSet in featureMatrix:
                 category = featureSet.documentCategory

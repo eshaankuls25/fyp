@@ -61,6 +61,7 @@ class DTree(object):
     #Some code is from DecisionTree.py's examples
     def classifyDocument(self, featureVector):
         featureList = ['feature_%s = %0.2f' %(k, v) for k, v in featureVector.items()]
+        print self.dt._feature_names
         print featureList
         classification = self.dt.classify(self.rootNode, featureList)
 
