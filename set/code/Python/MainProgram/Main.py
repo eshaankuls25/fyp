@@ -94,8 +94,6 @@ def extractFromEmails(extractorSelector):
         for filepath in listFilesInDirWithExtension(filepathPrefix, ".eml"):
                 featureSetList.extend(_extractFromEmail(extractorSelector,\
                     filepathPrefix+filepath, index=i))
-                #Extend text feature vector with html features here
-                #
                 i+=1
                 
         return featureSetList
