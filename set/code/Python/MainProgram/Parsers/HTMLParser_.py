@@ -55,6 +55,6 @@ class HTMLParser:
         def getURLsWithDomains(self, textString):
                 urlList = [url for url in self.findURLsInEmail(textString)[0]]
                 domainList = [self.getURLDomain(url) for url in urlList]
-                return (urlList, domainList)
+                return (domainList, urlList)
 
 
