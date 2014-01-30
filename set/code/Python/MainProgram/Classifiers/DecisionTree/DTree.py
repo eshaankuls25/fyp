@@ -45,7 +45,7 @@ class DTree(object):
     def createDTree(self):
         self.dt = DecisionTree.DecisionTree( training_datafile = self._decisionTreePath,
                                 csv_class_column_index = 1,
-                                csv_columns_for_features = [x for x in range(len(self.featureMatrix[0])) if x > 1 ],
+                                csv_columns_for_features = [x for x in range(len(self.featureMatrix[0])+1) if x > 1 ],
                                 entropy_threshold = 0.01,
                                 max_depth_desired = 8,
                                 symbolic_to_numeric_cardinality_threshold = 10,
@@ -74,10 +74,8 @@ class DTree(object):
 
         for cl in classes:
             if cl is not 'solution_path':
-                classResult += ''.join("     ",\
-                    str.ljust(cl, 30), \
-                    str(classification[cl]))
-
+                classResult += ''.join("      %s%s" %(str.ljust(cl, 30),\
+                                                      str(classification[cl])))
         return {'solution_path': classification['solution_path'],
                 'no_of_nodes': self.rootNode.how_many_nodes(),
                 'class_result': classResult} 
