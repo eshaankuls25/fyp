@@ -6,7 +6,6 @@ from uuid import uuid4
 
 from Extractors.ObfuscationFeatureExtractor import ObfuscationFeatureExtractor
 from Extractors.ImitationFeatureExtractor import ImitationFeatureExtractor
-from Extractors.HTMLFeatureExtractor import HTMLFeatureExtractor
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
 from Utilities.PreProcessor import PreProcessor
@@ -98,38 +97,6 @@ def extractFromEmails(extractorSelector):
                 
         return featureSetList
 
-def extractFromWebsites(extractorSelector):
-        featureSetList = []
-        filepathPrefix = "./Sites/"
-        websiteList = listFilesInDirWithExtension(filepathPrefix, '.obj')
-
-        hparser = HTMLParser()
-        tagCounter = {}
-        headersDict = {}
-
-        for websitePath in websiteList:
-
-                item = unpickleHTMLScraperItem(filepathPrefix+websitePath)
-
-                #response = hparser._getResponseAttribute(item, 'all')
-                #preProcessor = PreProcessor()
-                #processedResponse = preProcessor.removeEscapeChars(response)
-
-                #tempFeatureSetList = selectExtractorAndProcess(extractorSelector, processedResponse)
-                #featureSetList.extend(tempFeatureSetList)
-                
-                tagCounter[websitePath] = hparser.getTagCounter(item)
-                headersDict[websitePath] = hparser._getResponseAttribute(item, 'headers')
-
-                print "---"
-                print tagCounter[websitePath]
-                print "---"
-                print headersDict[websitePath]
-                print "---"
-        
-        return None
-        #Must return a list of feature set objects, later on
-
 
 def main():
         ###Defaults###
@@ -140,7 +107,7 @@ def main():
                               'html':['http://', 'www', '.com', '.co.uk']}
 
         extractorList = [(ImitationFeatureExtractor(), ObfuscationFeatureExtractor()),\
-                         HTMLFeatureExtractor(startScrapyScan=False)]
+                         (ImitationFeatureExtractor(), ObfuscationFeatureExtractor())]
 
         featureMatrix = []
         documentPaths = []
@@ -186,10 +153,8 @@ def main():
 
         ###Extracting###
         featureMatrix.extend(extractFromEmails(extractorSelector))
-        #featureMatrix.extend(extractFromWebsites(extractorSelector))
 
-        matDict = OrderedDict()
-                        
+        matDict = OrderedDict() 
         for featureSet in featureMatrix:
                 category = featureSet.documentCategory
 
@@ -220,7 +185,7 @@ def main():
         svms = [GaussianSVM(matDict[category][0], matDict[category][1]) for category in matDict.keys()]
         dTrees = [DTree(matDict[category][0], matDict[category][1], documentGroupName=category) for category in matDict.keys()]
 
-        print dTrees[1].classifyDocument({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26, 5: 1})
+        #print dTrees[1].classifyDocument({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26, 5: 1})
     
         startFakeSMTPServer()
 

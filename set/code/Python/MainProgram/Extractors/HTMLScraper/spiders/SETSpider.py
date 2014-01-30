@@ -27,12 +27,14 @@ class SETSpider(BaseSpider):
     )
     """
 
-    def __init__(self, domainList=None, urlList=None):
+    def __init__(self, domainList=None, urlList=None, documentName="currentWebsite"):
+        
         if domainList is None or urlList is None:
             raise RuntimeError("\nYou must provide a domain list and url list to parse responses from.\n")
         else:
             self.allowed_domains = domainList
             self.start_urls = urlList
+            self.documentName = documentName    
         
     def parse(self, response):
         self.log('This is an item page, from: %s' % response.url)
@@ -74,5 +76,7 @@ class SETSpider(BaseSpider):
         'body' : response.body,
         'para' : paragraphText
         }
+
+        item['documentName'] = self.documentName
 
         return item

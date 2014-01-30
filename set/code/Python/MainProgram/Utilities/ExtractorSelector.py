@@ -10,6 +10,7 @@ class ExtractorSelector:
 	extractorDictionary = {}
 
 	def __init__(self, categoryList, extractorList):
+		assert len(categoryList) == len(extractorList)
 		for pair in zip(categoryList, extractorList):
 			self.categoryDictionary[pair[0]] = set()
 			self.extractorDictionary[pair[0]] = pair[1]		

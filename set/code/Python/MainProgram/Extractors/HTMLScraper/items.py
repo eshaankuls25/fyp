@@ -8,7 +8,8 @@ from scrapy.item import Item, Field
 class HTMLScraperItem(Item):
     # define the fields for your item here like:
     # name = Field()
-
+    
+    documentName = Field()
     links = Field()
     tableData = Field()
     response = Field()

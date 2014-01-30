@@ -1,4 +1,4 @@
-import os, sys, re
+import os, sys, re, tldextract
 from urlparse import urlparse
 
 from collections import Counter
@@ -25,7 +25,7 @@ class HTMLParser:
 			return self._findTagsInString(item)
 
 	#Choices: 'all', 'headers', 'body', 'para', 'url'
-	def _getResponseAttribute(self, item, attributeString):
+	def getResponseAttribute(self, item, attributeString):
 		if isinstance(attributeString, basestring)\
 			    and isinstance(item, dict):
 			unicodeBody = item['response'][attributeString]
@@ -37,19 +37,24 @@ class HTMLParser:
 		return(Counter(self.getTagsFromString(item)))
 
 	#source: StackOverflow - http://stackoverflow.com/questions/9000960/python-regular-expressions-re-search-vs-re-findall
-        def _findIPAddressesInEmail(self, textString):
+        def findIPAddressesInEmail(self, textString):
                 countExp = re.compile("((?:\d{1,3}\.){3}\d{1,3})")
                 return re.findall(countExp, textString)
 
 
         #source: StackOverflow - http://stackoverflow.com/questions/8436818/regular-expression-to-extract-urls-with-difficult-formatting?rq=1
-        def _findUrlsInEmail(self, textString):
+        def findURLsInEmail(self, textString):
                 return re.findall("((http:|https:)//[^ \<]+)", textString)
 
-        def _parseURLString(self, textString):
-                return urlparse(textString)
-                #Must use 'tldextract' library - Source: https://github.com/john-kurkowski/tldextract
-                #To get correct domains from a URL
+        #'tldextract' library - Source: https://github.com/john-kurkowski/tldextract
+        #To get correct domains from a URL
+        def getURLDomain(self, urlString):
+                return tldextract.extract(textString).domain
+                #return '.'.join(tldextract.extract(textString)[:2]) - Domain and Subdomain joined together
 
-                #Then send list of URLs, and associated domain list (in order), to Scrapy, for parsing.
+        def getURLsWithDomains(self, textString):
+                urlList = [url for url in self.findURLsInEmail(textString)[0]]
+                domainList = [self.getURLDomain(url) for url in urlList]
+                return (urlList, domainList)
+
 
