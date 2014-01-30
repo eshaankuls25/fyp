@@ -185,7 +185,7 @@ def main():
         svms = [GaussianSVM(matDict[category][0], matDict[category][1]) for category in matDict.keys()]
         dTrees = [DTree(matDict[category][0], matDict[category][1], documentGroupName=category) for category in matDict.keys()]
 
-        #print dTrees[1].classifyDocument({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26, 5: 1})
+        print dTrees[1].classifyDocument({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26})
     
         startFakeSMTPServer()
 
