@@ -170,13 +170,12 @@ def main():
             print matDict[k] 
             print "---"
 
-        #Test
+        #Test vectors
         cat = 'ImitationFeatureExtractor'
         matDict[cat][0].append(0)
         matDict[cat][1].append({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 20, 5: 1})
         matDict[cat][0].append(0)
         matDict[cat][1].append({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 30, 5: 1})
-
         matDict[cat][0].append(0)
         matDict[cat][1].append({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 28, 5: 1})
                 
