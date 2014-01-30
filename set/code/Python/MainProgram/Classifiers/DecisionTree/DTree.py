@@ -45,7 +45,7 @@ class DTree(object):
     def createDTree(self):
         self.dt = DecisionTree.DecisionTree( training_datafile = self._decisionTreePath,
                                 csv_class_column_index = 1,
-                                csv_columns_for_features = [x for x in range(len(self.featureMatrix[0])+1) if x > 1 ],
+                                csv_columns_for_features = [x for x in range(2+len(self.featureMatrix[0])) if x > 1 ],
                                 entropy_threshold = 0.01,
                                 max_depth_desired = 8,
                                 symbolic_to_numeric_cardinality_threshold = 10,
@@ -56,13 +56,10 @@ class DTree(object):
         self.dt.calculate_class_priors()
     
         self.rootNode = self.dt.construct_decision_tree_classifier()
-        self.dt.show_training_data()
 
     #Some code is from DecisionTree.py's examples
     def classifyDocument(self, featureVector):
         featureList = ['feature_%s = %0.2f' %(k, v) for k, v in featureVector.items()]
-        print self.dt._feature_names
-        print featureList
         classification = self.dt.classify(self.rootNode, featureList)
 
         classes = sorted(list( classification.keys() ),\

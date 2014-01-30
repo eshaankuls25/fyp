@@ -1,7 +1,7 @@
 import os, sys
 sys.path.append("..")
 
-from Utilities.FeatureSet import FeatureSet
+#from Utilities.FeatureSet import FeatureSet
 from svmutil import *
 
 class GaussianSVM(object):
@@ -10,7 +10,7 @@ class GaussianSVM(object):
     classes = None
     featureMatrix = None
 
-    #featureMatrix is an iterable (list, tuple etc.) of numpy arrays/vectors:
+    #featureMatrix is an iterable (list, tuple etc.) of dictionaries/vectors:
     ##e.g. [featureSet1.getVector(), featureSet2.getVector(), fe5.getVector() ...]
 
     #Use like this:
@@ -45,12 +45,11 @@ class GaussianSVM(object):
         except IOError:
             sys.stderr.write("\nCould not load model.\n")
 
-    def classifyDocument(self, label, featureSet):
-        vector = featureSet.getVector()
-        if isinstance(featureSet, FeatureSet):
-            p_classes, p_acc, p_vals = svm_predict([0]*len(vector), [vector], self.svmModel)
-            #Do stuff with variables
+    def classifyDocument(self, label, vector):
+        if isinstance(vector, dict) and isinstance(label, int):
+            p_classes, p_acc, p_vals = svm_predict([label], [vector], self.svmModel)
+            return (p_classes, p_acc, p_vals)
         else:
-            raise TypeError("Feature set is not of the correct type.\nMust be of type 'FeatureSet'.\n")
+            raise TypeError("Vector is not of the correct type.\nMust be of type 'dict'.\n")
 
         
