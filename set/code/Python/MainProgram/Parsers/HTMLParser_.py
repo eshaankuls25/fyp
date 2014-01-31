@@ -23,15 +23,15 @@ class HTMLParser:
                 else:
                         return TypeError("The 'item' must be of type 'dict'.")
     
-        if isinstance(item, basestring):
-            return self._findTagsInString(item)
+                if isinstance(item, basestring):
+                        return self._findTagsInString(item)
 
         #Choices: 'all', 'headers', 'body', 'para', 'url'
         def getResponseAttribute(self, item, attributeString):
                 if isinstance(attributeString, basestring)\
                         and isinstance(item, dict):
-                unicodeBody = item['response'][attributeString]
-                return ''.join([x.encode('utf8') for x in unicodeBody])
+                        unicodeBody = item['response'][attributeString]
+                        return ''.join([x.encode('utf8') for x in unicodeBody])
                 elif isinstance(item, dict):
                         raise TypeError("The attribute must be a string.")
                 else:
