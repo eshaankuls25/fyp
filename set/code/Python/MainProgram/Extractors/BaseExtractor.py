@@ -55,7 +55,7 @@ class BaseExtractor():
                 return len(self.htmlParser.findIPAddressesInEmail(textString))
 
         def numOfTagsInString(self, textString):
-                return len(self.htmlParser.getTagsFromString(textString))
+                return len(self.htmlParser.findTagsInString(textString))
 
         def numberOfURLsinWebsite(self, textString):
                 return len(self.htmlParser.getEmailURLs(textString))

@@ -13,10 +13,10 @@ class HTMLParser:
                 pass
 
         #Source: StackOverflow - http://stackoverflow.com/questions/4436008/how-to-get-html-tags
-        def _findTagsInString(self, textString):
+        def findTagsInString(self, textString):
                 return re.findall('<.*?>', textString)
 
-        def getTagsFromString(self, item):
+        def getTagsFromItem(self, item):
                 if isinstance(item, dict):
                         responseAll = item['response']['tags']
                         return [x.encode('utf8') for x in responseAll]
@@ -24,7 +24,7 @@ class HTMLParser:
                         return TypeError("The 'item' must be of type 'dict'.")
     
                 if isinstance(item, basestring):
-                        return self._findTagsInString(item)
+                        return self.findTagsInString(item)
 
         #Choices: 'all', 'headers', 'body', 'para', 'url'
         def getResponseAttribute(self, item, attributeString):
