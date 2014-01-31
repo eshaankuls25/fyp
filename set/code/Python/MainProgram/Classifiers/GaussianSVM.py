@@ -6,7 +6,7 @@ from svmutil import *
 
 class GaussianSVM(object):
     """docstring for GaussianSVM"""
-    svmModel = None
+    model = None
     classes = None
     featureMatrix = None
 
@@ -20,7 +20,7 @@ class GaussianSVM(object):
         super(GaussianSVM, self).__init__()
 
         if classList is None or featureMatrix is None:     
-                self.svmModel = self.loadModel(pathToModel)
+                self.model = self.loadModel(pathToModel)
         else:
                 self.classes = classList
                 self.featureMatrix = featureMatrix
@@ -30,8 +30,8 @@ class GaussianSVM(object):
                 #s = 0 C-SVC multi-class classifier
                 #c = cost parameter of C-SVC
                 params = svm_parameter('-s 0 -t 2 -c %s -b 1'%str(costParam))
-                self.svmModel = svm_train(svmProb, params)
-                self.saveModel(pathToModel, self.svmModel)
+                self.model = svm_train(svmProb, params)
+                self.saveModel(pathToModel, self.model)
 
     def saveModel(self, filename, model):
         try:
@@ -45,11 +45,13 @@ class GaussianSVM(object):
         except IOError:
             sys.stderr.write("\nCould not load model.\n")
 
-    def classifyDocument(self, label, vector):
-        if isinstance(vector, dict) and isinstance(label, int):
-            p_classes, p_acc, p_vals = svm_predict([label], [vector], self.svmModel)
-            return (p_classes, p_acc, p_vals)
+    def classifyDocument(self, labels, vectors):
+        if isinstance(vectors, dict) and isinstance(labels, int):
+            p_classes, p_acc, p_vals = svm_predict([labels], [vectors], self.model, options="-b 1")
+        elif isinstance(vectors, list) and isinstance(labels, list):
+            p_classes, p_acc, p_vals = svm_predict(labels, vectors, self.model, options="-b 1")        
         else:
-            raise TypeError("Vector is not of the correct type.\nMust be of type 'dict'.\n")
+            raise TypeError("Vector is not of the correct type.\nMust be of type 'dict'.\nOtherwise, a list of features, and a list of their labels, must be provided.\n")
+        return {'classes':p_classes, 'accuracy':p_acc, 'values':p_vals}
 
         

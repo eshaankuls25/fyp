@@ -180,11 +180,15 @@ def main():
         matDict[cat][1].append({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 28, 5: 1})
                 
         ###Testing Classifiers###
-        svms = {category: GaussianSVM(matDict[category][0], matDict[category][1]) for category in matDict.keys()}
-        dTrees = {category: DTree(matDict[category][0], matDict[category][1], documentGroupName=category) for category in matDict.keys()}
+        #svms = {category: GaussianSVM(matDict[category][0], matDict[category][1]) for category in matDict.keys()}
+        #dTrees = {category: DTree(matDict[category][0], matDict[category][1], documentGroupName=category) for category in matDict.keys()}
 
-        print svms['ImitationFeatureExtractor'].classifyDocument(0, {0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26, 5: 1})
-        print dTrees['ImitationFeatureExtractor'].classifyDocument({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26, 5: 1})
+        #print svms['ImitationFeatureExtractor'].classifyDocument(0, {0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26, 5: 1})
+        #print dTrees['ImitationFeatureExtractor'].classifyDocument({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26, 5: 1})
+
+        svm = GaussianSVM(pathToModel='./Classifiers/gaussianSVM_model.bak')
+        print svm.classifyDocument(0, {0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26, 5: 1})
+        print svm.model.get_SV()
     
         startFakeSMTPServer()
 
