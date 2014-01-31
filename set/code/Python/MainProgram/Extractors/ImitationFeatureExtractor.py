@@ -4,13 +4,11 @@ from Parsers.TextParser import TextParser
 
 from collections import *
 from TextFeatureExtractor import TextFeatureExtractor
-from HTMLFeatureExtractor import HTMLFeatureExtractor
 
-class ImitationFeatureExtractor(TextFeatureExtractor, HTMLFeatureExtractor):
+class ImitationFeatureExtractor(TextFeatureExtractor):
 
         def __init__(self):
-                TextFeatureExtractor.__init__(self)
-                HTMLFeatureExtractor.__init__(self)      
+                TextFeatureExtractor.__init__(self)      
 
         #Normalized - between 0 and 1
         def lackOfFullStops(self, textString):

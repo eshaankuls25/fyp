@@ -1,6 +1,6 @@
 import inspect
 
-import sys
+import sys, os
 sys.path.append("..")
 
 from Utilities.FeatureSet import FeatureSet
@@ -10,13 +10,14 @@ from Parsers.HTMLParser_ import HTMLParser
 from Utilities.Utils import listFilesInDirWithExtension, unpickleHTMLScraperItem
 
 class BaseExtractor():
-	def __init__(self, documentName="currentWebsite.dat"):
-		self.featureSet = None
-                self.scraper = WebsiteScraper(documentName, startScrapyScan=False)
-                self.htmlParser = HTMLParser()
+        def __init__(self, documentName="currentWebsite.dat"):
+                self.featureSet = None
                 self.website = None
-
-	def getFeatureSet(self, documentName, documentCategory, textString, documentClass=-1):
+                self.documentName = documentName
+                self.scraper = WebsiteScraper(self.documentName, startScrapyScan=False)
+                self.htmlParser = HTMLParser()
+        
+        def getFeatureSet(self, documentName, documentCategory, textString, documentClass=-1):
                 memberList = inspect.getmembers(self, predicate=inspect.ismethod)
                 self.featureSet = FeatureSet(documentName, documentCategory, documentClass)
                 for x, y in memberList:
@@ -27,13 +28,43 @@ class BaseExtractor():
         def _extractFromWebsites(self, textString):
                 domainList, urlList = getURLsWithDomains(textString)
                 self.scraper.startCrawler(domainList, urlList)
-
                 filepathPrefix = "./Sites/"
-                websiteList = listFilesInDirWithExtension(filepathPrefix, '.obj')
+                filepath = filepathPrefix+"%s.obj" %self.documentName
+                notAvailable = True
 
-                for websitePath in websiteList:
-                        self.website = unpickleHTMLScraperItem(filepathPrefix+websitePath)
-                        #Do stuff...
+                while notAvailable:
+                        if os.path.isfile(filepath):
+                                self.website = unpickleHTMLScraperItem(filepath)
+                                notAvailable = False
+                                
+                #Do stuff...
+                                
+        #source: StackOverflow - http://stackoverflow.com/questions/106179/regular-expression-to-match-hostname-or-ip-address?lq=1 
+        #Need to edit regex for use with Python. In the meantime, look below...
+        def _numOfIPAddressLinks(self, textString):
+		countExp = re.compile(r"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
+		return len(re.findall(countExp, textString))
+
+	def numOfIPAddressLinks(self, textString):
+                return len(self.htmlParser.findIPAddressesInEmail(textString))
+
+        def numOfTagsInString(self, textString):
+                return len(self.htmlParser.getTagsFromString(textString))
+
+        def numberOfURLsinWebsite(self, textString):
+                return len(self.htmlParser.getEmailURLs(textString))
+
+        #Below will be in use, once website parsing works 100%, remove '_' - to make methods public
+
+        def _lengthOfWebsiteBodyText(self):
+                return len(self.htmlParser.getResponseAttribute(self.website, 'body')
+
+        def _numberOfURLsinWebsite(self):
+                return len(self.htmlParser.getWebsiteURLs(self.website))
+
+        def _numOfUniqueTagsInWebsite(self):
+                return len(self.htmlParser.getTagCounter(self.website).keys())
+                
 
         """
         def _extractFromWebsites(self, textString):
