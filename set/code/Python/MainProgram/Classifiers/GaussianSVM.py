@@ -45,7 +45,7 @@ class GaussianSVM(object):
         except IOError:
             sys.stderr.write("\nCould not load model.\n")
 
-    def classifyDocument(self, labels, vectors):
+    def classifyDocument(self, classes, vectors):
         if isinstance(vectors, dict) and isinstance(labels, int):
             p_classes, p_acc, p_vals = svm_predict([labels], [vectors], self.model, options="-b 1")
         elif isinstance(vectors, list) and isinstance(labels, list):
