@@ -1,6 +1,6 @@
 svm_type c_svc
 kernel_type rbf
-gamma 0.166667
+gamma 0.125
 nr_class 1
 total_sv 0
 rho

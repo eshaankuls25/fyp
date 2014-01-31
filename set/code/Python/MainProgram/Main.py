@@ -173,11 +173,11 @@ def main():
         #Test vectors
         cat = 'ImitationFeatureExtractor'
         matDict[cat][0].append(0)
-        matDict[cat][1].append({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 20, 5: 1})
+        matDict[cat][1].append({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 20, 5: 1, 6: 1, 7: 1, 8: 3})
         matDict[cat][0].append(0)
-        matDict[cat][1].append({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 30, 5: 1})
+        matDict[cat][1].append({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 30, 5: 1, 6: 2, 7: 1, 8: 3})
         matDict[cat][0].append(0)
-        matDict[cat][1].append({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 28, 5: 1})
+        matDict[cat][1].append({0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 28, 5: 1, 6:1, 7: 1, 8: 1})
                 
         ###Testing Classifiers###
         svms = {category: GaussianSVM(matDict[category][0], matDict[category][1]) for category in matDict.keys()}
