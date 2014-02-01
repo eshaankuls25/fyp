@@ -19,7 +19,7 @@ class BaseExtractor():
                 self.foundWebsite = False
                 
                 if urlString is not None:
-                        self._scrapeWebsiteFromURL(urlString)
+                        self.scrapeWebsiteFromURL(urlString)
         
         def getFeatureSet(self, documentName, documentCategory, params=None, documentClass=-1):
                 if isinstance(params, (list, tuple)):
@@ -35,7 +35,7 @@ class BaseExtractor():
                 return self.featureSet
 
         def scrapeWebsiteFromURL(self, urlString, documentName=None):
-                domainList, urlList = getURLsWithDomains(urlString)
+                domainList, urlList = self.htmlParser.getURLsWithDomains(urlString)
 
                 if documentName is not None:
                         self.documentName = documentName
