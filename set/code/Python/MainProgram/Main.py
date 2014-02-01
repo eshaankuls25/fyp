@@ -57,7 +57,7 @@ def selectExtractorAndProcess(extractorSelector, processedText,\
                 
         for extractor in extractorTuple:
                 urlList = HTMLParser().getEmailURLs(textString) #Get all urls in email
-                if urlList is not None: #Get first url
+                if urlList is not list(): #Get first url, if list isn't empty
                         extractor.scrapeWebsiteFromURL(urlList[0][0], documentName=None)
                 featureSet = extractor.getFeatureSet(\
                         documentName+": "+documentCategory,\
