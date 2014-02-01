@@ -8,8 +8,8 @@ from Utilities.Utils import downloadNLTKData
 
 class ObfuscationFeatureExtractor(TextFeatureExtractor):
 
-        def __init__(self):
-                TextFeatureExtractor.__init__(self)
+        def __init__(self, urlString=None, documentName="currentWebsite"):
+                TextFeatureExtractor.__init__(self, urlString, documentName)
                 downloaded = downloadNLTKData('punkt')
 
                 if not downloaded:

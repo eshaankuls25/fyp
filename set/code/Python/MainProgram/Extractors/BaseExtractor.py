@@ -10,13 +10,16 @@ from Parsers.HTMLParser_ import HTMLParser
 from Utilities.Utils import listFilesInDirWithExtension, unpickleHTMLScraperItem
 
 class BaseExtractor():
-        def __init__(self, documentName="currentWebsite.dat"):
+        def __init__(self, urlString, documentName):
                 self.featureSet = None
                 self.website = None
                 self.documentName = documentName
                 self.htmlParser = HTMLParser()
-                self.scraper = WebsiteScraper(self.documentName, startScrapyScan=False)
-                #self._extractFromWebsites()
+                self.scraper = WebsiteScraper(documentName=self.documentName, startScrapyScan=False)
+                self.foundWebsite = False
+                
+                if urlString is not None:
+                        self._scrapeWebsiteFromURL(urlString)
         
         def getFeatureSet(self, documentName, documentCategory, params=None, documentClass=-1):
                 if isinstance(params, (list, tuple)):
@@ -27,23 +30,27 @@ class BaseExtractor():
                 memberList = inspect.getmembers(self, predicate=inspect.ismethod)
                 self.featureSet = FeatureSet(documentName, documentCategory, documentClass)
                 for x, y in memberList:
-                        if x[0] != '_' and x != 'getFeatureSet':
+                        if x[0] != '_' and x != 'getFeatureSet' and x != 'scrapeWebsiteFromURL':
                                 self.featureSet.addFeature(x, getattr(self, x)(*parameters))
                 return self.featureSet
 
-        def _extractFromWebsites(self, textString):
-                domainList, urlList = getURLsWithDomains(textString)
-                self.scraper.startCrawler(domainList, urlList)
+        def scrapeWebsiteFromURL(self, urlString, documentName=None):
+                domainList, urlList = getURLsWithDomains(urlString)
+
+                if documentName is not None:
+                        self.documentName = documentName
+                
+                self.scraper.startCrawler(domainList, urlList, self.documentName)
                 filepathPrefix = "./Sites/"
                 filepath = filepathPrefix+"%s.obj" %self.documentName
                 notAvailable = True
 
+                #Must implement a timeout feature here - other could have infinite hang
                 while notAvailable:
                         if os.path.isfile(filepath):
                                 self.website = unpickleHTMLScraperItem(filepath)
                                 notAvailable = False
-                                
-                #Do stuff...
+                self.foundWebsite = True
                                 
         #source: StackOverflow - http://stackoverflow.com/questions/106179/regular-expression-to-match-hostname-or-ip-address?lq=1 
         #Need to edit regex for use with Python. In the meantime, look below...
@@ -63,12 +70,15 @@ class BaseExtractor():
         #Below will be in use, once website parsing works 100%, remove '_' - to make methods public
 
         def _lengthOfWebsiteBodyText(self):
+                assert self.foundWebsite
                 return len(self.htmlParser.getResponseAttribute(self.website, 'body'))
 
         def _numberOfURLsinWebsite(self):
+                assert self.foundWebsite
                 return len(self.htmlParser.getWebsiteURLs(self.website))
 
         def _numOfUniqueTagsInWebsite(self):
+                assert self.foundWebsite
                 return len(self.htmlParser.getTagCounter(self.website).keys())
                 
 

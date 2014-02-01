@@ -7,8 +7,8 @@ from TextFeatureExtractor import TextFeatureExtractor
 
 class ImitationFeatureExtractor(TextFeatureExtractor):
 
-        def __init__(self):
-                TextFeatureExtractor.__init__(self)      
+        def __init__(self, urlString=None, documentName="currentWebsite"):
+                TextFeatureExtractor.__init__(self, urlString, documentName)      
 
         #Normalized - between 0 and 1
         def lackOfFullStops(self, textString):

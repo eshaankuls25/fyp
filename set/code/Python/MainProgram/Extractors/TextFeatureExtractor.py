@@ -9,8 +9,8 @@ from nltk.corpus import cmudict
 
 class TextFeatureExtractor(BaseExtractor):
 
-        def __init__(self):
-                BaseExtractor.__init__(self) 
+        def __init__(self, urlString, documentName):
+                BaseExtractor.__init__(self, urlString, documentName) 
 
                 downloaded = downloadNLTKData('cmudict')
                 if not downloaded:
