@@ -58,11 +58,11 @@ class HTMLParser:
         #'tldextract' library - Source: https://github.com/john-kurkowski/tldextract
         #To get correct domains from a URL
         def getURLDomain(self, urlString):
-                return tldextract.extract(textString).domain
+                return tldextract.extract(urlString).domain
                 #return '.'.join(tldextract.extract(textString)[:2]) - Domain and Subdomain joined together
 
         def getURLsWithDomains(self, textString):
-                urlList = [url for url in self.findURLsInEmail(textString)[0]]
+                urlList = [url for url in self.getEmailURLs(textString)[0]]
                 domainList = [self.getURLDomain(url) for url in urlList]
                 return (domainList, urlList)
 

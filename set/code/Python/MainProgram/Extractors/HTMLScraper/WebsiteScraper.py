@@ -45,7 +45,7 @@ class WebsiteScraper():
                 reactor.run() # the script will block here until the spider_closed signal was sent
 
    
-        def startCrawler(domainList=None,\
+        def startCrawler(self, domainList=None,\
                      urlList=None, documentName=None):
                 if domainList is not None and urlList is not None:
                         self.domainList = domainList
