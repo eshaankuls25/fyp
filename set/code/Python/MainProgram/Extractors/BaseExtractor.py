@@ -72,16 +72,22 @@ class BaseExtractor():
         #Below will be in use, once website parsing works 100%, remove '_' - to make methods public
 
         def lengthOfWebsiteBodyText(self, textString):
-                assert self.foundWebsite
-                return len(self.htmlParser.getResponseAttribute(self.website, 'body'))
+                if self.foundWebsite:
+			return len(self.htmlParser.getResponseAttribute(self.website, 'body'))
+		else:
+			return 0.1
 
         def numberOfURLsInWebsite(self, textString):
-                assert self.foundWebsite
-                return len(self.htmlParser.getWebsiteURLs(self.website))
+                if self.foundWebsite:
+			return len(self.htmlParser.getWebsiteURLs(self.website))
+		else:
+			return 0.1
 
         def numOfUniqueTagsInWebsite(self, textString):
-                assert self.foundWebsite
-                return len(self.htmlParser.getTagCounter(self.website).keys())        
+                if self.foundWebsite:
+			return len(self.htmlParser.getTagCounter(self.website).keys())        
+		else:
+			return 0.1
 
         """
         def _extractFromWebsites(self, textString):

@@ -2,7 +2,7 @@ import re, sys
 
 from scrapy.spider import BaseSpider
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
-from scrapy.selector import Selector
+from scrapy.selector.lxmlsel import XPathSelector as Selector
 
 sys.path.append("..")
 from Extractors.HTMLScraper.items import HTMLScraperItem
@@ -45,33 +45,33 @@ class SETSpider(BaseSpider):
         sel = Selector(response)
         
         #Find menu links
-    	sites = sel.xpath('//ul/li')
+    	sites = sel.select('//ul/li')
         
         item['links'] = {}
         i=0
 
         for site in sites:
             siteDict = {
-                'title':site.xpath('a/text()').extract(),
-                'link':site.xpath('a/@href').extract(),
-                'desc':site.xpath('text()').extract(),
+                'title':site.select('a/text()').extract(),
+                'link':site.select('a/@href').extract(),
+                'desc':site.select('text()').extract(),
             }
 
             item['links']['site_'+str(i)] = siteDict
             i+=1
             
         #Table data
-        tableData = sel.xpath('//td/text()')
+        tableData = sel.select('//td/text()')
 
         item['tableData'] = {
-            'tableData': tableData.xpath('td/text()').extract()
+            'tableData': tableData.select('td/text()').extract()
         }
 
         #Whole document body
-        paragraphText = sel.xpath('//body//p//text()').extract()
-        tags = sel.xpath('//html/*').re('<.*?>')
+        paragraphText = sel.select('//body//p//text()').extract()
+        tags = sel.select('//html/*').re('<.*?>')
         item['response'] = {
-        'all' : sel.xpath('//html/*').extract(),
+        'all' : sel.select('//html/*').extract(),
         'tags' : tags,
         'link' : response.url,
         'headers' : response.headers,
