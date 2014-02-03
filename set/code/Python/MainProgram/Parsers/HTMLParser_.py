@@ -17,11 +17,11 @@ class HTMLParser:
                 return re.findall('<.*?>', textString)
 
         def getTagsFromItem(self, item):
-                if isinstance(item, dict):
+                if isinstance(item, HTMLScraperItem):
                         responseAll = item['response']['tags']
                         return [x.encode('utf8') for x in responseAll]
                 else:
-                        return TypeError("The 'item' must be of type 'dict'.")
+                        return TypeError("The 'item' must be of type 'HTMLScraperItem'.")
     
                 if isinstance(item, basestring):
                         return self.findTagsInString(item)
@@ -29,13 +29,14 @@ class HTMLParser:
         #Choices: 'all', 'headers', 'body', 'para', 'url'
         def getResponseAttribute(self, item, attributeString):
                 if isinstance(attributeString, basestring)\
-                        and isinstance(item, dict):
+                        and isinstance(item, HTMLScraperItem):
                         unicodeBody = item['response'][attributeString]
                         return ''.join([x.encode('utf8') for x in unicodeBody])
-                elif isinstance(item, dict):
+                elif not isinstance(attributeString, basestring):
                         raise TypeError("The attribute must be a string.")
-                else:
-                        return TypeError("The 'item' must be of type 'dict'.")
+                elif not isinstance(item, HTMLScraperItem):
+                        print item
+                        return TypeError("The 'item' must be of type 'HTMLScraperItem'.")
     
         def getTagCounter(self, item):
                 return(Counter(self.getTagsFromString(item)))
@@ -46,11 +47,11 @@ class HTMLParser:
                 return re.findall(countExp, textString)
 
         def getWebsiteURLs(self, item):
-                if isinstance(item, dict):
+                if isinstance(item, HTMLScraperItem):
                         return [item['links']['site_'+str(i)]['link']\
                                 for i in range(len(item['links']))]
                 else:
-                        return TypeError("The 'item' must be of type 'dict'.")
+                        return TypeError("The 'item' must be of type 'HTMLScraperItem'.")
 
         #source: StackOverflow - http://stackoverflow.com/questions/6883049/regex-to-find-urls-in-string-in-python
         def getEmailURLs(self, textString):

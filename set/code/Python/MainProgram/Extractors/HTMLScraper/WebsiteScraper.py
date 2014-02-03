@@ -28,7 +28,7 @@ class WebsiteScraper():
                 self.scrapeResults = Queue()
                 if startScrapyScan is True:
                         item = self._createCrawler()
-                        return list(item)
+                        return list(item)[0]
         
 
         def _createCrawler(self):
@@ -48,4 +48,4 @@ class WebsiteScraper():
                 if documentName is not None:
                         self.documentName = documentName
                 item = self._createCrawler()
-                return list(item)
+                return list(item)[0]

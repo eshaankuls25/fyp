@@ -30,8 +30,6 @@ class BaseExtractor():
                 elif params is not None:
                         parameters = [params]
 
-                print "Params: ", params
-
                 if params is not None:
                         for x, y in memberList:
                                 if x[0] != '_' and x != 'getFeatureSet' and x != 'scrapeWebsiteFromURL':
@@ -73,15 +71,15 @@ class BaseExtractor():
 
         #Below will be in use, once website parsing works 100%, remove '_' - to make methods public
 
-        def lengthOfWebsiteBodyText(self):
+        def lengthOfWebsiteBodyText(self, textString):
                 assert self.foundWebsite
                 return len(self.htmlParser.getResponseAttribute(self.website, 'body'))
 
-        def numberOfURLsInWebsite(self):
+        def numberOfURLsInWebsite(self, textString):
                 assert self.foundWebsite
                 return len(self.htmlParser.getWebsiteURLs(self.website))
 
-        def numOfUniqueTagsInWebsite(self):
+        def numOfUniqueTagsInWebsite(self, textString):
                 assert self.foundWebsite
                 return len(self.htmlParser.getTagCounter(self.website).keys())        
 
