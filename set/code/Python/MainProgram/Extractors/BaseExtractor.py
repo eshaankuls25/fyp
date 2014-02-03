@@ -22,16 +22,25 @@ class BaseExtractor():
                         self.scrapeWebsiteFromURL(urlString)
         
         def getFeatureSet(self, documentName, documentCategory, params=None, documentClass=-1):
-                if isinstance(params, (list, tuple)):
-                        parameters = params
-                else:
-                        parameters = [params]
-
                 memberList = inspect.getmembers(self, predicate=inspect.ismethod)
                 self.featureSet = FeatureSet(documentName, documentCategory, documentClass)
-                for x, y in memberList:
-                        if x[0] != '_' and x != 'getFeatureSet' and x != 'scrapeWebsiteFromURL':
-                                self.featureSet.addFeature(x, getattr(self, x)(*parameters))
+
+                if isinstance(params, (list, tuple)):
+                        parameters = params
+                elif params is not None:
+                        parameters = [params]
+
+                print params
+
+                if params is not None:
+                        for x, y in memberList:
+                                if x[0] != '_' and x != 'getFeatureSet' and x != 'scrapeWebsiteFromURL':
+                                        self.featureSet.addFeature(x, getattr(self, x)(*parameters))
+                if params is None:
+                        for x, y in memberList:
+                                if x[0] != '_' and x != 'getFeatureSet' and x != 'scrapeWebsiteFromURL':
+                                        self.featureSet.addFeature(x, getattr(self, x))        
+
                 return self.featureSet
 
         def scrapeWebsiteFromURL(self, urlString, documentName=None):
@@ -40,16 +49,11 @@ class BaseExtractor():
                 if documentName is not None:
                         self.documentName = documentName
                 
-                self.scraper.startCrawler(domainList, urlList, self.documentName)
+                self.website = self.scraper.startCrawler(domainList, urlList, self.documentName)
                 filepathPrefix = "./Sites/"
                 filepath = filepathPrefix+"%s.obj" %self.documentName
                 notAvailable = True
-
-                #Must implement a timeout feature here - other could have infinite hang
-                while notAvailable:
-                        if os.path.isfile(filepath):
-                                self.website = unpickleHTMLScraperItem(filepath)
-                                notAvailable = False
+                
                 self.foundWebsite = True
                                 
         #source: StackOverflow - http://stackoverflow.com/questions/106179/regular-expression-to-match-hostname-or-ip-address?lq=1 
@@ -69,18 +73,17 @@ class BaseExtractor():
 
         #Below will be in use, once website parsing works 100%, remove '_' - to make methods public
 
-        def _lengthOfWebsiteBodyText(self):
+        def lengthOfWebsiteBodyText(self):
                 assert self.foundWebsite
                 return len(self.htmlParser.getResponseAttribute(self.website, 'body'))
 
-        def _numberOfURLsinWebsite(self):
+        def numberOfURLsInWebsite(self):
                 assert self.foundWebsite
                 return len(self.htmlParser.getWebsiteURLs(self.website))
 
-        def _numOfUniqueTagsInWebsite(self):
+        def numOfUniqueTagsInWebsite(self):
                 assert self.foundWebsite
-                return len(self.htmlParser.getTagCounter(self.website).keys())
-                
+                return len(self.htmlParser.getTagCounter(self.website).keys())        
 
         """
         def _extractFromWebsites(self, textString):

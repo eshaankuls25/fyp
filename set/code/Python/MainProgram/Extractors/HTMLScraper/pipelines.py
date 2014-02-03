@@ -8,7 +8,13 @@ from scrapy import signals
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 class HTMLScraperPipeline(object):
-    
+    def __init__(self):
+        pass
+
+    def process_item(self, item, spider):
+        return item
+
+    """
     def __init__(self):
         self.files = {}
        	self.dirPath = os.getcwd() + "/Sites/"
@@ -21,10 +27,6 @@ class HTMLScraperPipeline(object):
         return pipeline
 
     def spiderOpened(self, spider):
-        """
-        file = open(self.dirPath+spider.name+'_website_%s.obj'\
-%datetime.datetime.utcnow().strftime("%d-%m-%Y-%H%M%S"), 'wb')
-        """
         file = open(self.dirPath+spider.documentName+'.obj', 'wb')
         self.files[spider] = file
         self.exporter = PickleItemExporter(file, protocol=2)
@@ -38,3 +40,5 @@ class HTMLScraperPipeline(object):
     def process_item(self, item, spider):
         self.exporter.export_item(item)
         return item
+
+    """

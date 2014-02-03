@@ -51,9 +51,10 @@ class HTMLParser:
                                 for i in range(len(item['links']))]
                 else:
                         return TypeError("The 'item' must be of type 'dict'.")
-        #source: StackOverflow - http://stackoverflow.com/questions/8436818/regular-expression-to-extract-urls-with-difficult-formatting?rq=1
+
+        #source: StackOverflow - http://stackoverflow.com/questions/6883049/regex-to-find-urls-in-string-in-python
         def getEmailURLs(self, textString):
-                return re.findall("((http:|https:)//[^ \<]+)", textString)
+                return re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', textString)
 
         #'tldextract' library - Source: https://github.com/john-kurkowski/tldextract
         #To get correct domains from a URL
@@ -62,7 +63,7 @@ class HTMLParser:
                 #return '.'.join(tldextract.extract(textString)[:2]) - Domain and Subdomain joined together
 
         def getURLsWithDomains(self, textString):
-                urlList = [url for url in self.getEmailURLs(textString)[0]]
+                urlList = self.getEmailURLs(textString)
                 domainList = [self.getURLDomain(url) for url in urlList]
                 return (domainList, urlList)
 

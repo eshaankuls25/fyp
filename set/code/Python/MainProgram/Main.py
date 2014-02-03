@@ -23,7 +23,6 @@ def createExtractor(categoryList, indicatorDictionary, extractorList):
     extractorSelector = ExtractorSelector(categoryList, extractorList)
     for category in categoryList:
         extractorSelector.addExtractorIdentifierSet(category, indicatorDictionary[category])
-
     return extractorSelector
 
 def selectExtractorAndProcess(extractorSelector, processedText,\
@@ -57,8 +56,8 @@ def selectExtractorAndProcess(extractorSelector, processedText,\
                 
         for extractor in extractorTuple:
                 urlList = HTMLParser().getEmailURLs(textString) #Get all urls in email
-                if urlList != list(): #Get first url, if list isn't empty
-                        extractor.scrapeWebsiteFromURL(urlList[0][0], documentName=None)
+                if urlList != list(): #Get first url, if one exists in email
+                        extractor.scrapeWebsiteFromURL(urlList[0], documentName=None)
                 featureSet = extractor.getFeatureSet(\
                         documentName+": "+documentCategory,\
                         extractor.__class__.__name__, textString, documentClass)
