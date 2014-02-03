@@ -30,7 +30,7 @@ class BaseExtractor():
                 elif params is not None:
                         parameters = [params]
 
-                print params
+                print "Params: ", params
 
                 if params is not None:
                         for x, y in memberList:
@@ -39,7 +39,7 @@ class BaseExtractor():
                 if params is None:
                         for x, y in memberList:
                                 if x[0] != '_' and x != 'getFeatureSet' and x != 'scrapeWebsiteFromURL':
-                                        self.featureSet.addFeature(x, getattr(self, x))        
+                                        self.featureSet.addFeature(x, getattr(self, x)())        
 
                 return self.featureSet
 
