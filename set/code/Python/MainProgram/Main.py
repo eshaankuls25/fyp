@@ -210,5 +210,5 @@ if __name__ == "__main__":
         detector = Detector(*sys.argv[1:])
         detector.extractAllDocuments()
         detector.trainClassifiers()
-        detector.classifyDocument(0, {0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26,\
+        detector.classifyDocument('ImitationFeatureExtractor', 0, {0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26,\
                                       5: 1, 6:0, 7:56, 8:3, 9:2, 10:1, 11:0})
