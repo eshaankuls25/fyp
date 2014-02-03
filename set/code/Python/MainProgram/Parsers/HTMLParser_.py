@@ -23,8 +23,11 @@ class HTMLParser:
                 else:
                         return TypeError("The 'item' must be of type 'HTMLScraperItem'.")
     
-                if isinstance(item, basestring):
-                        return self.findTagsInString(item)
+        def getTagsFromString(self, textString):
+                if isinstance(textString, basestring):
+                        return self.findTagsInString(textString)
+                elif not isinstance(textString, basestring):
+                        raise TypeError("The parameter must be a string.")
 
         #Choices: 'all', 'headers', 'body', 'para', 'url'
         def getResponseAttribute(self, item, attributeString):
@@ -39,7 +42,7 @@ class HTMLParser:
                         return TypeError("The 'item' must be of type 'HTMLScraperItem'.")
     
         def getTagCounter(self, item):
-                return(Counter(self.getTagsFromString(item)))
+                return(Counter(self.getTagsFromItem(item)))
 
         #source: StackOverflow - http://stackoverflow.com/questions/9000960/python-regular-expressions-re-search-vs-re-findall
         def findIPAddressesInEmail(self, textString):
