@@ -10,6 +10,10 @@ class CrawlerWorker(Process):
     def __init__(self, spider, results):
         Process.__init__(self)
         self.results = results
+
+        #Check Multiprocessing rules fow windows here:
+        #
+        #if sys.platform == 'win32':
         
         settings_module = importlib.import_module('Extractors.HTMLScraper.settings')
         settings = CrawlerSettings(settings_module)
