@@ -50,7 +50,7 @@ class Detector(object):
                 
                         if opt in ('-d', '--documentlist'):
                                 documentListString = readFromFile(path)
-                                documentFilePaths = documentListString.split(';')
+                                documentFilePaths = documentListString.split(';')[:-1]
                                 print documentFilePaths
                                 documentClassAndPaths = [pair.split(',') for pair in documentFilePaths]
 
