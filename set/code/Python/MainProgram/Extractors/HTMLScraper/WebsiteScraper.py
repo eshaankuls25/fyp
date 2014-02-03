@@ -28,13 +28,13 @@ class WebsiteScraper():
                 self.scrapeResults = Queue()
                 if startScrapyScan is True:
                         item = self._createCrawler()
-                        return list(item)[0]
+                        return tuple(item)[0]
         
 
         def _createCrawler(self):
                 spider = SETSpider(self.domainList, self.urlList, self.documentName)
-                crawler = CrawlerWorker(spider, self.scrapeResults)
-                crawler.run()
+                crawlerWorker = CrawlerWorker(spider, self.scrapeResults)
+                crawlerWorker.start()
 
                 for item in self.scrapeResults.get():
                         yield item
@@ -48,4 +48,4 @@ class WebsiteScraper():
                 if documentName is not None:
                         self.documentName = documentName
                 item = self._createCrawler()
-                return list(item)[0]
+                return tuple(item)[0]

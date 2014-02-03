@@ -22,8 +22,8 @@ class CrawlerWorker(Process):
     def _item_passed(self, item):
         self.items.append(item)
 
-    def run(self, name="currentCrawler"):
-        crawler = self.crawlerProcess.create_crawler(name)
+    def run(self):
+        crawler = self.crawlerProcess.create_crawler("currentCrawler")
         crawler.crawl(self.spider)
         self.crawlerProcess.start()
         self.crawlerProcess.stop()
