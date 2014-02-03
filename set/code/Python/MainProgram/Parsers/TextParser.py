@@ -14,7 +14,7 @@ class TextParser:
         stanfordTagger = None
         #config_java("C:\Program Files\Java\jdk1.6.0_37\\bin\java.exe") 
 
-        def __init__(self, pathToParser=None):
+        def __init__(self, pathToParser=None, javaHeapOptions='-Xmx2g'):
 
                 if pathToParser is None:
                         taggerLibraryPath = os.getcwd() + "/sp/jar/" + "stanford-postagger.jar"
@@ -24,7 +24,7 @@ class TextParser:
                         taggerModelPath = pathToParser + "/sp/models/" + "english-bidirectional-distsim.tagger"
 
                 self.stanfordTagger = POSTagger(taggerModelPath,
-                        taggerLibraryPath)
+                        taggerLibraryPath, java_options=javaHeapOptions)
 
                 print "---"
                 print "Tagger library path: " + taggerLibraryPath

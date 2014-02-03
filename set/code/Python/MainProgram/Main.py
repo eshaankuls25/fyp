@@ -202,13 +202,48 @@ class Detector(object):
 
 
         def classifyDocument(self, classifierName, label, dictVector):
-                self.svms[classifierName].classifyDocument(label, dictVector)
-                self.dTrees[classifierName].classifyDocument(dictVector)
-                
+                return(self.svms[classifierName].classifyDocument(label, dictVector),
+                       self.dTrees[classifierName].classifyDocument(dictVector))
+
+        def startClassificationLoop(self):
+                while True:
+                        option = None
+                        documentClass = None
+                        documentPath = None
+                        print "SET Deception Detector:\n"
+                        print "Press a number associated with the following options."
+                        print "1) Classify document\n2) Train program with documents\n3) Exit"
+                        
+                        while (not isinstance(option, (int))\
+                                   and (option < 1 or option > 3)):
+                                option = int(raw_input("Please choose a valid option.\n"))
+                                print option
+                                
+                        if option is 1:
+                                while (not isinstance(documentClass, (int))\
+                                       and (documentClass < 1)):
+                                        documentClass = int(raw_input("Please enter a class integer, equal to or greater than 1.\n"))
+                                print documentClass
+                                documentPath = normpath(raw_input("Now enter the filepath of the document to classify.\n"))
+                                
+                                while not isfile(documentPath):
+                                        documentPath = normpath(raw_input("Please enter a valid filepath.\n"))
+                                #Must change default classifier group name - imitation, obfuscation etc.
+                                self.classifyDocument('ImitationFeatureExtractor', documentClass, self._extractFromDocument(documentPath, documentClass)) 
+
+                        elif option is 2:
+                                detector.extractAllDocuments()
+                                detector.trainClassifiers()
+                        elif option is 3:
+                                sys.exit(0)
                 
 if __name__ == "__main__":
         detector = Detector(*sys.argv[1:])
-        detector.extractAllDocuments()
-        detector.trainClassifiers()
+        detector.startClassificationLoop()
+        """
         detector.classifyDocument('ImitationFeatureExtractor', 0, {0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26,\
                                       5: 1, 6:0, 7:56, 8:3, 9:2, 10:1, 11:0})
+
+        """
+
+        
