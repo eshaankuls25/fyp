@@ -43,8 +43,7 @@ def unpickleHTMLScraperItem(filepath):
         raise IOError("Item is corrupted/not valid.\nIt has been deleted. Please try again.")
     return item
 
-def readFromFile(filename):
-    filepath = os.getcwd() + "/" + filename
+def readFromFile(filepath):
     try:
         with open(filepath, 'r') as f:
             fileContents = f.read()
