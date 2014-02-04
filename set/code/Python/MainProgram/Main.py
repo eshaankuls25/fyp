@@ -182,9 +182,9 @@ class Detector(object):
         def extractAllDocuments(self, documentListString=None):
                 featureMatrix = []
 
-                if filepath is not None:
+                if documentListString is not None:
                         self.documentPaths = self._getDocumentPaths(documentListString)
-                elif filepath is None:
+                elif documentListString is None:
                         featureMatrix.extend(self.extractFromEmails(documentClass=0))
                 
                 if self.documentPaths:  #List is not empty
@@ -251,8 +251,7 @@ class Detector(object):
                                         message = "\nNow enter the directory path or filepath of the document(s) "\
                                                   +"to classify, using the following format:\n[class integer],[directory path];\n"\
                                          +"----------------------------\nYou can enter in as many of these lines, as you'd like.\n"
-                                        documentPaths = normpath(raw_input(message))
-
+                                        
                                         while not isinstance(path, basestring) or not (isfile(path) or isdir(path)):
                                                 documentPaths = normpath(raw_input("Please enter a valid file or directory path.\n"))
                                                 try:
@@ -260,7 +259,7 @@ class Detector(object):
                                                 except IndexError:
                                                         path = None
                                                 
-                                detector.extractAllDocuments(filepath=documentPaths)
+                                detector.extractAllDocuments(documentListString=documentPaths)
                                 detector.trainClassifiers()
                                 
                         elif option is 3:
