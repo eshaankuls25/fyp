@@ -248,7 +248,7 @@ class Detector(object):
                                 documentPaths = None
                                 path = None
                                 if len(sys.argv) is 1: #No arguments passed
-                                        message = "Now enter the directory path or filepath of the document(s) "\
+                                        message = "\nNow enter the directory path or filepath of the document(s) "\
                                                   +"to classify, using the following format:\n[class integer],[directory path];\n"\
                                          +"----------------------------\nYou can enter in as many of these lines, as you'd like.\n"
                                         documentPaths = normpath(raw_input(message))
