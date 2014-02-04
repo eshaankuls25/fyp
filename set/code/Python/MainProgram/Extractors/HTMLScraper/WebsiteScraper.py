@@ -1,4 +1,4 @@
-import sys, re
+import sys, re, importlib
 
 from twisted.internet import reactor
 from twisted.internet.error import ConnectionRefusedError
@@ -7,6 +7,7 @@ from scrapy import log, signals
 from scrapy.crawler import Crawler
 from scrapy.settings import CrawlerSettings
 from CrawlerWorker import CrawlerWorker
+from scrapy.crawler import CrawlerProcess
 from scrapy.xlib.pydispatch import dispatcher
 from multiprocessing import Process
 
@@ -66,15 +67,15 @@ def _runCrawler(spider, results):
         crawlerProcess = CrawlerProcess(settings)
         items = []
 
-        def _item_passed(items, item):
+        def _item_passed(item, response, spider):
                 items.append(item)
 
-        dispatcher.connect(_item_passed, signals.item_passed)
+        dispatcher.connect(_item_passed, signals.item_scraped)
 
         crawler = crawlerProcess.create_crawler("currentCrawler")
         crawler.crawl(spider)
-        self.crawlerProcess.start()
-        self.crawlerProcess.stop()
+        crawlerProcess.start()
+        crawlerProcess.stop()
         results.put(items)
 
                         

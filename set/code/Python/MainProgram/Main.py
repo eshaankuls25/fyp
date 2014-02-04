@@ -51,7 +51,6 @@ class Detector(object):
                         if opt in ('-d', '--documentlist'):
                                 documentListString = readFromFile(path)
                                 documentFilePaths = documentListString.split(';')[:-1]
-                                print documentFilePaths
                                 documentClassAndPaths = [pair.split(',') for pair in documentFilePaths]
 
                                 for label, path in documentClassAndPaths:
@@ -59,7 +58,8 @@ class Detector(object):
                                             self.documentPaths.extend([(label, os.path.join(path, document)) for document in listFilesInDir(path)])
                                         elif isfile(path):
                                             self.documentPaths.append((label, document))
-                                print "Documents: ", self.documentPaths
+                                print "\n-------------------------\nPaths: ", documentFilePaths
+                                print "Documents: ", self.documentPaths, "\n-------------------------\n"
 
                         if opt in ('-c', '--categorylist'):
                                 categoryListString = readFromFile(path)
@@ -229,8 +229,7 @@ class Detector(object):
                                 while not isfile(documentPath):
                                         documentPath = normpath(raw_input("Please enter a valid filepath.\n"))
                                 #Must change default classifier group name - imitation, obfuscation etc.
-                                self.classifyDocument('ImitationFeatureExtractor', documentClass, self._extractFromDocument(documentPath, documentClass)) 
-
+                                self.classifyDocument('ImitationFeatureExtractor', documentClass, self._extractFromDocument(documentPath, documentClass))
                         elif option is 2:
                                 detector.extractAllDocuments()
                                 detector.trainClassifiers()
