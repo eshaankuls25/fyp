@@ -38,7 +38,6 @@ class Detector(object):
                 self.matrixDict = OrderedDict()
                 self.svms = None
                 self.dTrees = None
-                
 
                 ###User arguments###
                 #Text must be delimited by semi-colon, in 
@@ -50,16 +49,7 @@ class Detector(object):
                 
                         if opt in ('-d', '--documentlist'):
                                 documentListString = readFromFile(path)
-                                documentFilePaths = documentListString.split(';')[:-1]
-                                documentClassAndPaths = [pair.split(',') for pair in documentFilePaths]
-
-                                for label, path in documentClassAndPaths:
-                                        if isdir(path):
-                                            self.documentPaths.extend([(label, os.path.join(path, document)) for document in listFilesInDir(path)])
-                                        elif isfile(path):
-                                            self.documentPaths.append((label, document))
-                                print "\n-------------------------\nPaths: ", documentFilePaths
-                                print "Documents: ", self.documentPaths, "\n-------------------------\n"
+                                self.documentPaths = self._getDocumentPaths(documentListString)
 
                         if opt in ('-c', '--categorylist'):
                                 categoryListString = readFromFile(path)
@@ -82,7 +72,26 @@ class Detector(object):
                                 print self.indicatorList
         
                 self.extractorSelector = self._createExtractor(self.categoryList, self.indicatorDictionary, self.extractorList)
-                                
+
+        def _getDocumentPaths(self, documentListString):
+                documentPaths = []
+                try:
+                        documentFilePaths = documentListString.split(';')[:-1]
+                        documentClassAndPaths = [pair.split(',') for pair in documentFilePaths]
+                except AttributeError, IndexError:
+                        print "\nYour document list has been formatted "\
+                                         +"incorrectly.\nFollow this format:\n[class integer],[directory path];\n"\
+                                         +"----------------------------\nYou can enter in as many of these lines, as you'd like.\n"
+                        sys.exit(1)
+                for label, path in documentClassAndPaths:
+                        if isdir(path):
+                                documentPaths.extend([(label, os.path.join(path, document)) for document in listFilesInDir(path)])
+                        elif isfile(path):
+                                documentPaths.append((label, document))
+                        print "\n-------------------------\nPaths: ", documentFilePaths
+                        print "Documents: ", documentPaths, "\n-------------------------\n"
+
+                return documentPaths
 
         def _createExtractor(self, categoryList, indicatorDictionary, extractorList):
                 extractorSelector = ExtractorSelector(categoryList, extractorList)
@@ -170,15 +179,19 @@ class Detector(object):
                 
                 return featureSetList
 
-        def extractAllDocuments(self):
+        def extractAllDocuments(self, documentListString=None):
                 featureMatrix = []
-                ###Extracting emails from file(s):###
-                if self.documentPaths: #List is not empty
-                        [featureMatrix.extend(self._extractFromDocument(document, label)) for label, document in self.documentPaths]
-                else:
-                        ###Extracting###
-                        featureMatrix.extend(self.extractFromEmails(documentClass=0))
 
+                if filepath is not None:
+                        self.documentPaths = self._getDocumentPaths(documentListString)
+                elif filepath is None:
+                        featureMatrix.extend(self.extractFromEmails(documentClass=0))
+                
+                if self.documentPaths:  #List is not empty
+                        [featureMatrix.extend(self._extractFromDocument(document, label)) for label, document in self.documentPaths]
+                else:                   #No documents found
+                        raise RuntimeError("Could not find any documents.\nPlease enter another file, or directory path.\n")
+                
                 for featureSet in featureMatrix:
                         category = featureSet.documentCategory
 
@@ -205,7 +218,7 @@ class Detector(object):
                 return(self.svms[classifierName].classifyDocument(label, dictVector),
                        self.dTrees[classifierName].classifyDocument(dictVector))
 
-        def startClassificationLoop(self):
+        def startMainMenu(self):
                 while True:
                         option = -1
                         documentClass = -1
@@ -217,28 +230,45 @@ class Detector(object):
                         while not isinstance(option, (int))\
                                    or (option < 1 or option > 3):
                                 option = int(raw_input("Please choose a valid option.\n"))
-                                print option
                                 
                         if option is 1:
+
                                 while not isinstance(documentClass, (int))\
                                        or documentClass < 1:
                                         documentClass = int(raw_input("Please enter a class integer, equal to or greater than 1.\n"))
-                                print documentClass
                                 documentPath = normpath(raw_input("Now enter the filepath of the document to classify.\n"))
                                 
                                 while not isfile(documentPath):
                                         documentPath = normpath(raw_input("Please enter a valid filepath.\n"))
                                 #Must change default classifier group name - imitation, obfuscation etc.
                                 self.classifyDocument('ImitationFeatureExtractor', documentClass, self._extractFromDocument(documentPath, documentClass))
+                                
                         elif option is 2:
-                                detector.extractAllDocuments()
+
+                                documentPaths = None
+                                path = None
+                                if len(sys.argv) is 1: #No arguments passed
+                                        message = "Now enter the directory path or filepath of the document(s) "\
+                                                  +"to classify, using the following format:\n[class integer],[directory path];\n"\
+                                         +"----------------------------\nYou can enter in as many of these lines, as you'd like.\n"
+                                        documentPaths = normpath(raw_input(message))
+
+                                        while not isinstance(path, basestring) or not (isfile(path) or isdir(path)):
+                                                documentPaths = normpath(raw_input("Please enter a valid file or directory path.\n"))
+                                                try:
+                                                        path = documentPaths.split(',')[1].split(';')[0]
+                                                except IndexError:
+                                                        path = None
+                                                
+                                detector.extractAllDocuments(filepath=documentPaths)
                                 detector.trainClassifiers()
+                                
                         elif option is 3:
                                 sys.exit(0)
                 
 if __name__ == "__main__":
         detector = Detector(*sys.argv[1:])
-        detector.startClassificationLoop()
+        detector.startMainMenu()
         """
         detector.classifyDocument('ImitationFeatureExtractor', 0, {0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26,\
                                       5: 1, 6:0, 7:56, 8:3, 9:2, 10:1, 11:0})
