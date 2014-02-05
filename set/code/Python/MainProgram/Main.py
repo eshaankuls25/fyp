@@ -87,7 +87,7 @@ class Detector(object):
                         if isdir(path):
                                 documentPaths.extend([(label, os.path.join(path, document)) for document in listFilesInDir(path)])
                         elif isfile(path):
-                                documentPaths.append((label, document))
+                                documentPaths.append((label, path))
                 print "\n-------------------------\nPaths: ", documentFilePaths
                 print "Documents: ", documentPaths, "\n-------------------------\n"
 
