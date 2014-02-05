@@ -17,6 +17,7 @@ EXTENSIONS = {
 
 SCRAPYLOGGER_ENABLED = True
 SCRAPYLOGGER_MAXITEMCOUNT = 1200
+LOG_ENABLED = False
 
 ITEM_PIPELINES = {
     'Extractors.HTMLScraper.pipelines.HTMLScraperPipeline': 300, 
