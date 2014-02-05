@@ -88,8 +88,8 @@ class Detector(object):
                                 documentPaths.extend([(label, os.path.join(path, document)) for document in listFilesInDir(path)])
                         elif isfile(path):
                                 documentPaths.append((label, document))
-                        print "\n-------------------------\nPaths: ", documentFilePaths
-                        print "Documents: ", documentPaths, "\n-------------------------\n"
+                print "\n-------------------------\nPaths: ", documentFilePaths
+                print "Documents: ", documentPaths, "\n-------------------------\n"
 
                 return documentPaths
 
@@ -266,6 +266,7 @@ class Detector(object):
                                 sys.exit(0)
                 
 if __name__ == "__main__":
+        print sys.argv
         detector = Detector(*sys.argv[1:])
         detector.startMainMenu()
         """
