@@ -3,6 +3,8 @@ import cPickle as pickle
 from subprocess import Popen, PIPE
 from threading import Thread
 
+from os.path import isdir, isfile
+
 sys.path.append("..")
 
 try:
@@ -168,25 +170,34 @@ def _threadStreamPrinter(process, blockingTimeout=1):
 
 def listFilesInDir(directoryPath):
     fileList = []
-    
+    possiblePath = None
     if not isinstance(directoryPath, basestring) or \
         directoryPath is None:
         raise TypeError("ERROR: The parameter must be a string.")
 
     for file_ in os.listdir(directoryPath):
-        fileList.append(file_)
+        possiblePath = os.path.join(directoryPath, file_)
+        if isdir(possiblePath):
+            fileList.extend(listFilesInDir(possiblePath))
+        else:
+            fileList.append(file_)
+    print fileList
     return fileList
 
 def listFilesInDirWithExtension(directoryPath, extension):
     fileList = []
-    
+    possiblePath = None
     if not isinstance(directoryPath, basestring) or \
         directoryPath is None:
         raise TypeError("ERROR: The parameter must be a string.")
 
     for file_ in os.listdir(directoryPath):
-        if file_.endswith(extension):
+        possiblePath = os.path.join(directoryPath, file_)
+        if isdir(possiblePath):
+            fileList.extend(listFilesInDirWithExtension(possiblePath, extension))
+        elif file_.endswith(extension):
             fileList.append(file_)
+        print fileList
     return fileList
 
 "Source: Jython - https://fisheye3.atlassian.com/browse/jython/trunk/jython/Lib/subprocess.py?r=6636#to566"
