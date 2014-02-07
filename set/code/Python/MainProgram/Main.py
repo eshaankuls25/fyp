@@ -239,7 +239,8 @@ class Detector(object):
                                 while not isfile(documentPath):
                                         documentPath = normpath(raw_input("Please enter a valid filepath.\n"))
                                 #Must change default classifier group name - imitation, obfuscation etc.
-                                self.classifyDocument('ImitationFeatureExtractor', documentClass, self._extractFromDocument(documentPath, documentClass))
+                                self.classifyDocument('ImitationFeatureExtractor', documentClass,\
+                                	self._extractFromDocument(documentPath, documentClass))
                                 
                         elif option is 2:
 
@@ -251,13 +252,14 @@ class Detector(object):
                                          +"----------------------------\nYou can enter in as many of these lines, as you'd like.\n"
                                         
                                         while not isinstance(path, basestring) or not (isfile(path) or isdir(path)):
-                                                documentPaths = normpath(raw_input("Please enter a valid file or directory path.\n"))
+                                                documentPaths = normpath(raw_input(message))
                                                 try:
                                                         path = documentPaths.split(',')[1].split(';')[0]
                                                 except IndexError:
                                                         path = None
-                                                
-                                detector.extractAllDocuments(documentListString=documentPaths)
+                                		detector.extractAllDocuments(documentListString=documentPaths)
+                                else:
+                                		detector.extractAllDocuments()		
                                 detector.trainClassifiers()
                                 
                         elif option is 3:
