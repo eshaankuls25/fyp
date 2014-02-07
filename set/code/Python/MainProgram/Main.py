@@ -89,7 +89,7 @@ class Detector(object):
                         elif isfile(path):
                                 documentPaths.append((label, path))
                 print "\n-------------------------\nPaths: ", documentFilePaths
-                print "Documents: ", documentPaths, "\n-------------------------\n"
+                print "Documents: ", documentPaths if len(documentPaths) <= 20 else "More than 20 documents.", "\n-------------------------\n"
 
                 return documentPaths
 
