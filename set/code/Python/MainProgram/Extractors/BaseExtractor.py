@@ -1,5 +1,4 @@
 import inspect
-
 import sys, os
 sys.path.append("..")
 
@@ -45,13 +44,9 @@ class BaseExtractor():
                 domainList, urlList = self.htmlParser.getURLsWithDomains(urlString)
 
                 if documentName is not None:
-                        self.documentName = documentName
-                
-                self.website = self.scraper.startCrawler(domainList, urlList, self.documentName)
-                filepathPrefix = "./Sites/"
-                filepath = filepathPrefix+"%s.obj" %self.documentName
-                notAvailable = True
-                
+                        self.documentName = documentName           
+                self.website = self.scraper.startCrawler(domainList,\
+                        urlList, self.documentName)                
                 self.foundWebsite = True
                                 
         #source: StackOverflow - http://stackoverflow.com/questions/106179/regular-expression-to-match-hostname-or-ip-address?lq=1 
@@ -69,55 +64,22 @@ class BaseExtractor():
         def numberOfURLsinWebsite(self, textString):
                 return len(self.htmlParser.getEmailURLs(textString))
 
-        #Below will be in use, once website parsing works 100%, remove '_' - to make methods public
-
         def lengthOfWebsiteBodyText(self, textString):
                 if self.foundWebsite:
 			return len(self.htmlParser.getResponseAttribute(self.website, 'body'))
 		else:
-			return 0.1
+			return 1
 
         def numberOfURLsInWebsite(self, textString):
                 if self.foundWebsite:
 			return len(self.htmlParser.getWebsiteURLs(self.website))
 		else:
-			return 0.1
+			return 1
 
         def numOfUniqueTagsInWebsite(self, textString):
                 if self.foundWebsite:
 			return len(self.htmlParser.getTagCounter(self.website).keys())        
 		else:
-			return 0.1
+			return 1
 
-        """
-        def _extractFromWebsites(self, textString):
-                featureSetList = []
-                filepathPrefix = "./Sites/"
-                websiteList = listFilesInDirWithExtension(filepathPrefix, '.obj')
 
-                tagCounter = {}
-                headersDict = {}
-
-                for websitePath in websiteList:
-
-                        item = unpickleHTMLScraperItem(filepathPrefix+websitePath)
-
-                        #response = hparser._getResponseAttribute(item, 'all')
-                        #preProcessor = PreProcessor()
-                        #processedResponse = preProcessor.removeEscapeChars(response)
-
-                        #tempFeatureSetList = selectExtractorAndProcess(extractorSelector, processedResponse)
-                        #featureSetList.extend(tempFeatureSetList)
-                
-                        tagCounter[websitePath] = self.htmlParser.getTagCounter(item)
-                        headersDict[websitePath] = self.htmlParser.getResponseAttribute(item, 'headers')
-
-                        print "---"
-                        print tagCounter[websitePath]
-                        print "---"
-                        print headersDict[websitePath]
-                        print "---"
-        
-                return None
-                #Must return a list of feature set objects, later on
-        """

@@ -4,8 +4,7 @@ from collections import OrderedDict
 from os.path import normpath, isfile, isdir
 from uuid import uuid4
 
-from Extractors.ObfuscationFeatureExtractor import ObfuscationFeatureExtractor
-from Extractors.ImitationFeatureExtractor import ImitationFeatureExtractor
+from Extractors.DeceptionFeatureExtractor import DeceptionFeatureExtractor
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
 from Utilities.PreProcessor import PreProcessor
@@ -29,8 +28,7 @@ class Detector(object):
                 self.indicatorDictionary = {'text':['From:', 'Date:', 'Message-ID', 'In-Reply-To:'],\
                               'html':['http://', 'www', '.com', '.co.uk']}
 
-                self.extractorList = [(ImitationFeatureExtractor(), ObfuscationFeatureExtractor()),\
-                         (ImitationFeatureExtractor(), ObfuscationFeatureExtractor())]
+                self.extractorList = [DeceptionFeatureExtractor(), DeceptionFeatureExtractor()]
 
                 self.documentPaths = []
                 self.extractorSelector = None
@@ -266,13 +264,7 @@ class Detector(object):
                                 sys.exit(0)
                 
 if __name__ == "__main__":
-        print sys.argv
         detector = Detector(*sys.argv[1:])
         detector.startMainMenu()
-        """
-        detector.classifyDocument('ImitationFeatureExtractor', 0, {0: 0.4, 1: 2.8, 2: 0.89, 3: 0.9, 4: 26,\
-                                      5: 1, 6:0, 7:56, 8:3, 9:2, 10:1, 11:0})
-
-        """
 
         

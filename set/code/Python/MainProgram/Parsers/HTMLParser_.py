@@ -33,8 +33,13 @@ class HTMLParser:
         def getResponseAttribute(self, item, attributeString):
                 if isinstance(attributeString, basestring)\
                         and isinstance(item, HTMLScraperItem):
-                        unicodeBody = item['response'][attributeString]
-                        return ''.join([x.encode('utf8') for x in unicodeBody])
+
+                        try:
+                                unicodeText = item['response'][attributeString]
+                                return ''.join([x.encode('utf8') for x in unicodeText])
+                        except UnicodeDecodeError:
+                                return '1'
+
                 elif not isinstance(attributeString, basestring):
                         raise TypeError("The attribute must be a string.")
                 elif not isinstance(item, HTMLScraperItem):
