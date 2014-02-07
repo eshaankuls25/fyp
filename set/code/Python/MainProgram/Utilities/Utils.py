@@ -170,7 +170,6 @@ def _threadStreamPrinter(process, blockingTimeout=1):
 
 def listFilesInDir(directoryPath):
     fileList = []
-    possiblePath = None
     if not isinstance(directoryPath, basestring) or \
         directoryPath is None:
         raise TypeError("ERROR: The parameter must be a string.")
@@ -181,12 +180,10 @@ def listFilesInDir(directoryPath):
             fileList.extend(listFilesInDir(possiblePath))
         else:
             fileList.append(file_)
-    print fileList
     return fileList
 
 def listFilesInDirWithExtension(directoryPath, extension):
     fileList = []
-    possiblePath = None
     if not isinstance(directoryPath, basestring) or \
         directoryPath is None:
         raise TypeError("ERROR: The parameter must be a string.")
@@ -197,7 +194,6 @@ def listFilesInDirWithExtension(directoryPath, extension):
             fileList.extend(listFilesInDirWithExtension(possiblePath, extension))
         elif file_.endswith(extension):
             fileList.append(file_)
-        print fileList
     return fileList
 
 "Source: Jython - https://fisheye3.atlassian.com/browse/jython/trunk/jython/Lib/subprocess.py?r=6636#to566"
