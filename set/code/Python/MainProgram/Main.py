@@ -209,8 +209,8 @@ class Detector(object):
                 mkeys = self.matrixDict.keys()
                 mdict = self.matrixDict
 
-                print mkeys
-                print mdict
+                print mdict[mkeys[0]][0]
+                print mdict[mkeys[0]][1]
                 
                 self.svms = {category: GaussianSVM(mdict[category][0], mdict[category][1]) for category in mkeys}
                 self.dTrees = {category: DTree(mdict[category][0], mdict[category][1], documentGroupName=category) for category in mkeys}

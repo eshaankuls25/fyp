@@ -2,6 +2,7 @@ from nltk.tag.stanford import POSTagger
 from nltk.internals import config_java
 from email.parser import Parser
 import os, sys
+from os.path import normpath
 sys.path.append("..")
 
 from Utilities.Utils import readFromFile
@@ -17,11 +18,11 @@ class TextParser:
         def __init__(self, pathToParser=None, javaHeapOptions='-Xmx2g'):
 
                 if pathToParser is None:
-                        taggerLibraryPath = os.getcwd() + "/sp/jar/" + "stanford-postagger.jar"
-                        taggerModelPath = os.getcwd() + "/sp/models/" + "english-bidirectional-distsim.tagger"
+                        taggerLibraryPath = normpath(os.path.join(os.getcwd(), "sp/jar/stanford-postagger.jar"))
+                        taggerModelPath = normpath(os.path.join(os.getcwd(), "sp/models/english-bidirectional-distsim.tagger"))
                 else:
-                        taggerLibraryPath = pathToParser + "/sp/jar/" + "stanford-postagger.jar"
-                        taggerModelPath = pathToParser + "/sp/models/" + "english-bidirectional-distsim.tagger"
+                        taggerLibraryPath = normpath(os.path.join(pathToParser, "sp/jar/stanford-postagger.jar"))
+                        taggerModelPath = normpath(os.path.join(pathToParser, "sp/models/english-bidirectional-distsim.tagger"))
 
                 self.stanfordTagger = POSTagger(taggerModelPath,
                         taggerLibraryPath, java_options=javaHeapOptions)
