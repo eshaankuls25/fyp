@@ -153,6 +153,7 @@ class Detector(object):
                         print "\nPayload: "+payload
                         print "---"
 
+                if index is not None:
                         processedPayload = preProcessor.removeEscapeChars(payload)
                         return self._selectExtractorAndProcess(processedDocument,\
                                                          documentClass,\
@@ -207,6 +208,10 @@ class Detector(object):
         def trainClassifiers(self):
                 mkeys = self.matrixDict.keys()
                 mdict = self.matrixDict
+
+                print mkeys
+                print mdict
+                
                 self.svms = {category: GaussianSVM(mdict[category][0], mdict[category][1]) for category in mkeys}
                 self.dTrees = {category: DTree(mdict[category][0], mdict[category][1], documentGroupName=category) for category in mkeys}
 
