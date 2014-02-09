@@ -24,6 +24,10 @@ class GaussianSVM(object):
         else:
                 self.classes = classList
                 self.featureMatrix = featureMatrix
+
+                print self.classes
+                print self.featureMatrix
+
                 svmProb = svm_problem(self.classes, self.featureMatrix)
 
                 #t = 2 model type Gaussian/RBF

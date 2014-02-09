@@ -208,9 +208,6 @@ class Detector(object):
         def trainClassifiers(self):
                 mkeys = self.matrixDict.keys()
                 mdict = self.matrixDict
-
-                print mdict[mkeys[0]][0]
-                print mdict[mkeys[0]][1]
                 
                 self.svms = {category: GaussianSVM(mdict[category][0], mdict[category][1]) for category in mkeys}
                 self.dTrees = {category: DTree(mdict[category][0], mdict[category][1], documentGroupName=category) for category in mkeys}
@@ -261,9 +258,9 @@ class Detector(object):
                                                         path = documentPaths.split(',')[1].split(';')[0]
                                                 except IndexError:
                                                         path = None
-                                		detector.extractAllDocuments(documentListString=documentPaths)
+                                        detector.extractAllDocuments(documentListString=documentPaths)
                                 else:
-                                		detector.extractAllDocuments()		
+                                	detector.extractAllDocuments()		
                                 detector.trainClassifiers()
                                 
                         elif option is 3:

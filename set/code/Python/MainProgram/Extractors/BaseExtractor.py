@@ -68,18 +68,18 @@ class BaseExtractor():
                 if self.foundWebsite:
 			return len(self.htmlParser.getResponseAttribute(self.website, 'body'))
 		else:
-			return 1
+			return 0.1
 
         def numberOfURLsInWebsite(self, textString):
                 if self.foundWebsite:
 			return len(self.htmlParser.getWebsiteURLs(self.website))
 		else:
-			return 1
+			return 0.1
 
         def numOfUniqueTagsInWebsite(self, textString):
                 if self.foundWebsite:
 			return len(self.htmlParser.getTagCounter(self.website).keys())        
 		else:
-			return 1
+			return 0.1
 
 
