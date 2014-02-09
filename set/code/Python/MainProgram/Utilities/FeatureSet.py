@@ -11,7 +11,7 @@ class FeatureSet:
         if featureName in self._vector:
             raise AssertionError('Feature value already set.')
         else:
-            self._vector[featureName] = float(value)
+            self._vector[featureName] = value
 
     def replaceFeatureValue(self, featureName, value):
         assert featureName in self._vector
