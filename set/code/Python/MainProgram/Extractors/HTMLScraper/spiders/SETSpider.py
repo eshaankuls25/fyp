@@ -1,13 +1,13 @@
 import re, sys
 
-from scrapy.spider import BaseSpider
+from scrapy.spider import Spider
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.selector.lxmlsel import XPathSelector as Selector
 
 sys.path.append("..")
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
-class SETSpider(BaseSpider):
+class SETSpider(Spider):
     name = "setSpider"
     allowed_domains = ["localhost"]
 
