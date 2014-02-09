@@ -153,7 +153,6 @@ class Detector(object):
                         print "\nPayload: "+payload
                         print "---"
 
-                if index is not None:
                         processedPayload = preProcessor.removeEscapeChars(payload)
                         return self._selectExtractorAndProcess(processedDocument,\
                                                          documentClass,\
