@@ -83,9 +83,9 @@ class Detector(object):
                         sys.exit(1)
                 for label, path in documentClassAndPaths:
                         if isdir(path):
-                                documentPaths.extend([(label, os.path.join(path, document)) for document in listFilesInDir(path)])
+                                documentPaths.extend([(int(label), os.path.join(path, document)) for document in listFilesInDir(path)])
                         elif isfile(path):
-                                documentPaths.append((label, path))
+                                documentPaths.append((int(label), path))
                 print "\n-------------------------\nPaths: ", documentFilePaths
                 print "Documents: ", documentPaths if len(documentPaths) <= 20 else "More than 20 documents.", "\n-------------------------\n"
 
