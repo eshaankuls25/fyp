@@ -38,6 +38,10 @@ class GaussianSVM(object):
                 self.model = svm_train(svmProb, params)
                 self.saveModel(pathToModel, self.model)
 
+                print "--------------Support Vectors:\n",\
+                      "--------------\nCoefficients: ", self.model.get_sv_coef(),\
+                      "\nVectors: ", self.model.get_SV() 
+
     def saveModel(self, filename, model):
         try:
             svm_save_model(filename, model)
@@ -51,7 +55,7 @@ class GaussianSVM(object):
             sys.stderr.write("\nCould not load model.\n")
 
     def classifyDocument(self, classes, vectors):
-        print "Classes: ", classes, " Vectors: ", vectors
+        print "Expected Class(es): ", classes, " Vector(s): ", vectors, "\n"    
         if isinstance(vectors, dict) and isinstance(classes, int):
             p_classes, p_acc, p_vals = svm_predict([classes], [vectors], self.model, options="-b 1")
         elif isinstance(vectors, list) and isinstance(classes, list):
