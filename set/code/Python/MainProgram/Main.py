@@ -127,10 +127,9 @@ class Detector(object):
 
                 #Start parsing using the chosen extractor(s)
                 extractorTuple = selectedExtractorTuple[1]
-                print extractorTuple
                 for extractor in extractorTuple:
                         urlList = HTMLParser().getEmailURLs(textString) #Get all urls in email
-                        if urlList != list(): #Get first url, if one exists in email
+                        if urlList != list(): #Get first url, if one exists in email (list is not empty)
                                 extractor.scrapeWebsiteFromURL(urlList[0], documentName=None)
                         
                         featureSet = extractor.getFeatureSet(\
