@@ -134,7 +134,6 @@ class Detector(object):
 
         def _extractFromDocument(self, filepath, documentClass, index=None):    
                 documentString = readFromFile(filepath)
-
                 print "---\n", documentString, "\n---"
 
                 preProcessor = PreProcessor()
@@ -177,16 +176,10 @@ class Detector(object):
                 
                 return featureSetList
 
-        def extractAllDocuments(self, documentListString=None):
+        def extractAllDocuments(self):
                 featureMatrix = []
-
-                if documentListString is not None:
-                        self.documentPaths = self._getDocumentPaths(documentListString)
-                elif documentListString is None:
-                        featureMatrix.extend(self.extractFromEmails(documentClass=0))
-                
                 if self.documentPaths:  #List is not empty
-                        [featureMatrix.extend(self._extractFromDocument(document, label)) for label, document in self.documentPaths]
+                        [featureMatrix.extend(self._extractFromDocument(filepath=document, documentClass=label)) for label, document in self.documentPaths]
                 else:                   #No documents found
                         raise RuntimeError("Could not find any documents.\nPlease enter another file, or directory path.\n")
                 
@@ -258,9 +251,8 @@ class Detector(object):
                                                         path = documentPaths.split(',')[1].split(';')[0]
                                                 except IndexError:
                                                         path = None
-                                        detector.extractAllDocuments(documentListString=documentPaths)
-                                else:
-                                	detector.extractAllDocuments()		
+                                        self.documentPaths = self._getDocumentPaths(documentPaths) #If entering in the document list, on the fly...
+                                detector.extractAllDocuments()		
                                 detector.trainClassifiers()
                                 
                         elif option is 3:
