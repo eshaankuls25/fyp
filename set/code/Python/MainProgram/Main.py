@@ -215,12 +215,12 @@ class Detector(object):
 
 
         def classifyDocument(self, classifierName, label, dictVector):
-
-                if self.svms is None:
+                if self.svms is None or self.dTrees is None:    #SVM
                         self.svms = {classifierName: GaussianSVM()} #Loads pre-computed model
-                
-                return(self.svms[classifierName].classifyDocument(label, dictVector),
-                       self.dTrees[classifierName].classifyDocument(dictVector))
+                        return self.svms[classifierName].classifyDocument(label, dictVector)
+                else:                                           #SVM and decision tree
+                        return(self.svms[classifierName].classifyDocument(label, dictVector),
+                               self.dTrees[classifierName].classifyDocument(dictVector))
 
         def startMainMenu(self):
                 while True:
