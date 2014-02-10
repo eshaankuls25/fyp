@@ -179,7 +179,7 @@ def listFilesInDir(directoryPath):
         if isdir(possiblePath):
             fileList.extend(listFilesInDir(possiblePath))
         else:
-            fileList.append(file_)
+            fileList.append(possiblePath)
     return fileList
 
 def listFilesInDirWithExtension(directoryPath, extension):
@@ -193,7 +193,7 @@ def listFilesInDirWithExtension(directoryPath, extension):
         if isdir(possiblePath):
             fileList.extend(listFilesInDirWithExtension(possiblePath, extension))
         elif file_.endswith(extension):
-            fileList.append(file_)
+            fileList.append(possiblePath)
     return fileList
 
 "Source: Jython - https://fisheye3.atlassian.com/browse/jython/trunk/jython/Lib/subprocess.py?r=6636#to566"
