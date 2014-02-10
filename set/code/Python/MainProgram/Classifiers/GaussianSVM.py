@@ -46,12 +46,15 @@ class GaussianSVM(object):
             sys.stderr.write("\nCould not load model.\n")
 
     def classifyDocument(self, classes, vectors):
+        print "Classes: ", classes, " Vectors: ", vectors
         if isinstance(vectors, dict) and isinstance(classes, int):
             p_classes, p_acc, p_vals = svm_predict([classes], [vectors], self.model, options="-b 1")
         elif isinstance(vectors, list) and isinstance(classes, list):
             p_classes, p_acc, p_vals = svm_predict(classes, vectors, self.model, options="-b 1")        
         else:
-            raise TypeError("Vector is not of the correct type.\nMust be of type 'dict'.\nOtherwise, a list of features, and a list of their labels, must be provided.\n")
+            sys.stderr.write("Vector is not of the correct type.\nIt must be of type 'dict'.\n"\
+                             +"Otherwise, a list of features, and a list of their labels, must be provided.\n")
+            return
         return {'classes':p_classes, 'accuracy':p_acc, 'values':p_vals}
 
         

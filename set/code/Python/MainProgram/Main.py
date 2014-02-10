@@ -243,10 +243,11 @@ class Detector(object):
                                 documentPath = normpath(raw_input("Now enter the filepath of the document to classify.\n"))
                                 while (not isinstance(documentPath, basestring)) or (not isfile(documentPath)):
                                         documentPath = normpath(raw_input("Please enter a valid filepath.\n"))
-                                        
+
+                                featureSet = self._extractFromDocument(documentPath, documentClass)
                                 #Must change default classifier group name - shouldn't be hardcoded
-                                self.classifyDocument('DeceptionFeatureExtractor', documentClass,\
-                                	self._extractFromDocument(documentPath, documentClass))
+                                self.classifyDocument('DeceptionFeatureExtractor',\
+                                                      documentClass, featureSet.getVector())
                                 
                         elif option is 2:
 
