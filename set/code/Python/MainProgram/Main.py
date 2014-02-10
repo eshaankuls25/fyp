@@ -234,8 +234,8 @@ class Detector(object):
                         if option is 1:
 
                                 while not isinstance(documentClass, (int))\
-                                       or documentClass < 1:
-                                        documentClass = int(raw_input("Please enter a class integer, equal to or greater than 1.\n"))
+                                       or documentClass < 0:
+                                        documentClass = int(raw_input("Please enter a class integer, equal to or greater than 0.\n"))
                                 documentPath = normpath(raw_input("Now enter the filepath of the document to classify.\n"))
                                 
                                 while not isfile(documentPath):
