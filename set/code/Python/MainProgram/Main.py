@@ -215,6 +215,10 @@ class Detector(object):
 
 
         def classifyDocument(self, classifierName, label, dictVector):
+
+                if self.svms is None:
+                        self.svms = {classifierName: GaussianSVM()} #Loads pre-computed model
+                
                 return(self.svms[classifierName].classifyDocument(label, dictVector),
                        self.dTrees[classifierName].classifyDocument(dictVector))
 
@@ -246,7 +250,7 @@ class Detector(object):
 
                                 featureSetList = self._extractFromDocument(documentPath, documentClass)
                                 for featureSet in featureSetList:
-                                        self.classifyDocument(featureSet.documentCategory,\
+                                        print self.classifyDocument(featureSet.documentCategory,\
                                                               documentClass, featureSet.getVector())
                                 
                         elif option is 2:

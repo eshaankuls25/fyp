@@ -1,4 +1,5 @@
 import os, sys
+from os.path import normpath, isfile
 sys.path.append("..")
 
 #from Utilities.FeatureSet import FeatureSet
@@ -19,8 +20,12 @@ class GaussianSVM(object):
                      pathToModel='./Classifiers/gaussianSVM_model.bak', costParam=5):
         super(GaussianSVM, self).__init__()
 
-        if classList is None or featureMatrix is None:     
-                self.model = self.loadModel(pathToModel)
+        if classList is None or featureMatrix is None:
+                if isinstance(pathToModel, basestring) and isfile(pathToModel):
+                    self.model = self.loadModel(pathToModel)
+                else:
+                    sys.stderr.write("\nPath to model is incorrect.\n")
+                    sys.exit(1)
         else:
                 self.classes = classList
                 self.featureMatrix = featureMatrix
