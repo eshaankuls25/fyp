@@ -39,11 +39,11 @@ class Detector(object):
                 self.dTrees = None
 
                 ###Dependency checks###
-                #downloadedP = downloadNLTKData('punkt')
-                #downloadedC = downloadNLTKData('cmudict')
+                downloadedP = downloadNLTKData('punkt')
+                downloadedC = downloadNLTKData('cmudict')
 
-                #if not (downloadedP and downloadedC):
-                #        raise RuntimeError("\n\nCould not download the required nltk dependencies\n('punkt' or 'cmudict' dictionaries).\n")                
+                if not (downloadedP and downloadedC):
+                        raise RuntimeError("\n\nCould not download the required nltk dependencies\n('punkt' or 'cmudict' dictionaries).\n")                
 
                 ###User arguments###
                 #Text must be delimited by semi-colon, in 
