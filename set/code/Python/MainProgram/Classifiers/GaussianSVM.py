@@ -38,7 +38,7 @@ class GaussianSVM(object):
                 self.model = svm_train(svmProb, params)
                 self.saveModel(pathToModel, self.model)
 
-        print "--------------Support Vectors:\n",\
+        print "\n--------------\nSupport Vectors:\n",\
               "--------------\nCoefficients: ", self.model.get_sv_coef(),\
               "\nVectors: ", self.model.get_SV() 
 
