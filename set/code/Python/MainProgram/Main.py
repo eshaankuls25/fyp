@@ -235,13 +235,17 @@ class Detector(object):
 
                                 while not isinstance(documentClass, (int))\
                                        or documentClass < 0:
-                                        documentClass = int(raw_input("Please enter a class integer, equal to or greater than 0.\n"))
+                                        try:
+                                                documentClass = int(raw_input("Please enter a class integer, equal to or greater than 0.\n"))
+                                        except ValueError:
+                                                documentClass = None  
+
                                 documentPath = normpath(raw_input("Now enter the filepath of the document to classify.\n"))
-                                
-                                while not isfile(documentPath):
+                                while (not isinstance(documentPath, basestring)) or (not isfile(documentPath)):
                                         documentPath = normpath(raw_input("Please enter a valid filepath.\n"))
-                                #Must change default classifier group name - imitation, obfuscation etc.
-                                self.classifyDocument('ImitationFeatureExtractor', documentClass,\
+                                        
+                                #Must change default classifier group name - shouldn't be hardcoded
+                                self.classifyDocument('DeceptionFeatureExtractor', documentClass,\
                                 	self._extractFromDocument(documentPath, documentClass))
                                 
                         elif option is 2:
