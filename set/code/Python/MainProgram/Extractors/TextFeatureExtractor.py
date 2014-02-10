@@ -10,11 +10,7 @@ from nltk.corpus import cmudict
 class TextFeatureExtractor(BaseExtractor):
 
         def __init__(self, urlString, documentName):
-                BaseExtractor.__init__(self, urlString, documentName) 
-
-                downloaded = downloadNLTKData('cmudict')
-                if not downloaded:
-                        raise RuntimeError("\n\nCould not download 'cmudict' dictionary.\n")
+                BaseExtractor.__init__(self, urlString, documentName)
                         
         ##Obfuscation and Imitation methods
                         

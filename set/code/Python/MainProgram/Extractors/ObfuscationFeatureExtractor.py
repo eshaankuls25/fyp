@@ -10,11 +10,7 @@ class ObfuscationFeatureExtractor(TextFeatureExtractor):
 
         def __init__(self, urlString=None, documentName="currentWebsite"):
                 TextFeatureExtractor.__init__(self, urlString, documentName)
-                downloaded = downloadNLTKData('punkt')
-
-                if not downloaded:
-                        raise RuntimeError("\n\nCould not download 'punkt' dictionary.\n")
-		#print self.numOfIPAddressLinks("vdvrf23.2.2.5rwwr1r127.0.0.1")
+                
         #Normalized - between 0 and 1
         def lackOfCommas(self, textString):
                 return self._lackOfCharInString(textString, ',')

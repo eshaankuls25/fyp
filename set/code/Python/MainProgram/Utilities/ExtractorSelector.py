@@ -1,8 +1,7 @@
 import sys
 sys.path.append("..")
 
-from Extractors.ObfuscationFeatureExtractor import ObfuscationFeatureExtractor
-from Extractors.ImitationFeatureExtractor import ImitationFeatureExtractor
+from Extractors.DeceptionFeatureExtractor import DeceptionFeatureExtractor
 
 class ExtractorSelector:
 
@@ -74,7 +73,7 @@ class ExtractorSelector:
 			else:
 				return (extractorName, (bestExtractor,))	
 		else:
-			return (None,  (ImitationFeatureExtractor(), ObfuscationFeatureExtractor()))
+			return (None,  (DeceptionFeatureExtractor(),))
 
 		
 

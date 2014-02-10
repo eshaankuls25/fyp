@@ -14,6 +14,7 @@ from Utilities.listen import startFakeSMTPServer
 
 from Parsers.HTMLParser_ import HTMLParser
 from Parsers.TextParser import TextParser
+from Utilities.Utils import downloadNLTKData
 
 from Classifiers.GaussianSVM import GaussianSVM
 from Classifiers.DecisionTree.DTree import DTree
@@ -36,6 +37,13 @@ class Detector(object):
                 self.matrixDict = OrderedDict()
                 self.svms = None
                 self.dTrees = None
+
+                ###Dependency checks###
+                #downloadedP = downloadNLTKData('punkt')
+                #downloadedC = downloadNLTKData('cmudict')
+
+                #if not (downloadedP and downloadedC):
+                #        raise RuntimeError("\n\nCould not download the required nltk dependencies\n('punkt' or 'cmudict' dictionaries).\n")                
 
                 ###User arguments###
                 #Text must be delimited by semi-colon, in 
@@ -77,9 +85,9 @@ class Detector(object):
                         documentFilePaths = documentListString.split(';')[:-1]
                         documentClassAndPaths = [pair.split(',') for pair in documentFilePaths]
                 except AttributeError, IndexError:
-                        print "\nYour document list has been formatted "\
-                                         +"incorrectly.\nFollow this format:\n[class integer],[directory path];\n"\
-                                         +"----------------------------\nYou can enter in as many of these lines, as you'd like.\n"
+                        sys.stderr.write("\nYour document list has been formatted incorrectly.\n"\
+                                         +"Follow this format:\n[class integer],[directory path];\n"\
+                                         +"----------------------------\nYou can enter in as many of these lines, as you'd like.\n")
                         sys.exit(1)
                 for label, path in documentClassAndPaths:
                         if isdir(path):
@@ -119,7 +127,7 @@ class Detector(object):
 
                 #Start parsing using the chosen extractor(s)
                 extractorTuple = selectedExtractorTuple[1]
-                
+                print extractorTuple
                 for extractor in extractorTuple:
                         urlList = HTMLParser().getEmailURLs(textString) #Get all urls in email
                         if urlList != list(): #Get first url, if one exists in email
@@ -155,12 +163,12 @@ class Detector(object):
                 if index is not None:
                         processedPayload = preProcessor.removeEscapeChars(payload)
                         return self._selectExtractorAndProcess(processedDocument,\
-                                                         documentClass,\
-                                                         email.get("Message-Id"),\
+                                                               documentClass,\
+                                                               email.get("Message-Id"),\
                                                                processedPayload)
                 else:
                         return self._selectExtractorAndProcess(processedDocument,\
-                                                         documentClass)
+                                                               documentClass)
                         
                     
         def extractFromEmails(self, documentClass):
@@ -170,8 +178,8 @@ class Detector(object):
                 i=0
                 for filepath in listFilesInDirWithExtension(filepathPrefix, ".eml"):
                         featureSetList.extend(self._extractFromDocument(filepathPrefix+filepath,\
-                                                                   documentClass,\
-                                                                   index=i))
+                                                                        documentClass,\
+                                                                        index=i))
                 i+=1
                 
                 return featureSetList
@@ -181,7 +189,8 @@ class Detector(object):
                 if self.documentPaths:  #List is not empty
                         [featureMatrix.extend(self._extractFromDocument(filepath=document, documentClass=label)) for label, document in self.documentPaths]
                 else:                   #No documents found
-                        raise RuntimeError("Could not find any documents.\nPlease enter another file, or directory path.\n")
+                        sys.stderr.write("Could not find any documents.\nPlease try again, or enter another file, or directory path.\n")
+                        return
                 
                 for featureSet in featureMatrix:
                         category = featureSet.documentCategory

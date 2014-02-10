@@ -3,22 +3,15 @@ sys.path.append("..")
 from Parsers.TextParser import TextParser
 import nltk.data, sys, re, os
 from collections import *
-#from collections import Counter
 from TextFeatureExtractor import TextFeatureExtractor
 
 sys.path.append("..")
 from Parsers.TextParser import TextParser
-from Utilities.Utils import downloadNLTKData
 
 class DeceptionFeatureExtractor(TextFeatureExtractor):
 
         def __init__(self, urlString=None, documentName="currentWebsite"):
-                TextFeatureExtractor.__init__(self, urlString, documentName)      
-                downloaded = downloadNLTKData('punkt')
-
-                if not downloaded:
-                        raise RuntimeError("\n\nCould not download 'punkt' dictionary.\n")
-                #print self.numOfIPAddressLinks("vdvrf23.2.2.5rwwr1r127.0.0.1")
+                TextFeatureExtractor.__init__(self, urlString, documentName)
         
         #Obfuscation
 
