@@ -1,24 +1,14 @@
 import inspect
 import sys, os
+from nltk.corpus import cmudict
 sys.path.append("..")
 
 from Utilities.FeatureSet import FeatureSet
-from Utilities.PreProcessor import PreProcessor
-from Extractors.HTMLScraper.WebsiteScraper import WebsiteScraper
-from Parsers.HTMLParser_ import HTMLParser
-from Utilities.Utils import listFilesInDirWithExtension, unpickleHTMLScraperItem
 
 class BaseExtractor():
-        def __init__(self, urlString, documentName):
+        def __init__(self, documentName):
                 self.featureSet = None
-                self.website = None
                 self.documentName = documentName
-                self.htmlParser = HTMLParser()
-                self.scraper = WebsiteScraper(documentName=self.documentName, startScrapyScan=False)
-                self.foundWebsite = False
-                
-                if urlString is not None:
-                        self.scrapeWebsiteFromURL(urlString)
         
         def getFeatureSet(self, documentName, documentCategory, params=None, documentClass=-1):
                 memberList = inspect.getmembers(self, predicate=inspect.ismethod)
@@ -40,46 +30,58 @@ class BaseExtractor():
 
                 return self.featureSet
 
-        def scrapeWebsiteFromURL(self, urlString, documentName=None):
-                domainList, urlList = self.htmlParser.getURLsWithDomains(urlString)
+        ###Utility Functions###
 
-                if documentName is not None:
-                        self.documentName = documentName           
-                self.website = self.scraper.startCrawler(domainList,\
-                        urlList, self.documentName)                
-                self.foundWebsite = True
-                                
-        #source: StackOverflow - http://stackoverflow.com/questions/106179/regular-expression-to-match-hostname-or-ip-address?lq=1 
-        #Need to edit regex for use with Python. In the meantime, look below...
-        def _numOfIPAddressLinks(self, textString):
-                countExp = re.compile(r"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
-                return len(re.findall(countExp, textString))
+        #-1 means an error has occurred - e.g. wrong parameter type passed into function
 
-        def numOfIPAddressLinks(self, textString):
-                return len(self.htmlParser.findIPAddressesInEmail(textString))
+        def _charCountInString(self, textString, char):
+                if isinstance(textString, basestring) and \
+                isinstance(char, basestring) and len(char) == 1:
+                        return len(textString.split(char))-1
+                else:
+                        return -1
 
-        def numOfTagsInString(self, textString):
-                return len(self.htmlParser.findTagsInString(textString))
+        #If charCount == 0 return value = 1
+        #If charCount is far greater than 0, return value approaches 0
+        #0.1 constant chosen, to reduce the effect of a chosen character being introduced
 
-        def numberOfURLsinWebsite(self, textString):
-                return len(self.htmlParser.getEmailURLs(textString))
+        #(in future constant should be based on 1/(Average Amount Of A Character In All Documents)
 
-        def lengthOfWebsiteBodyText(self, textString):
-                if self.foundWebsite:
-			return len(self.htmlParser.getResponseAttribute(self.website, 'body'))
-		else:
-			return 1
+        #Done since there could be many of these special characters, over the span of a single document,
+        #but not too many (max = approx. 25, for emails/websites [MUST RESEARCH TO DETERMINE IF VALID]), 
+        #making resulting values in range over the internal [0, 1] be spread out more evenly
 
-        def numberOfURLsInWebsite(self, textString):
-                if self.foundWebsite:
-			return len(self.htmlParser.getWebsiteURLs(self.website))
-		else:
-			return 1
+        def _lackOfCharInString(self, textString, char):
+                count = self._charCountInString(textString, char)
+                if count != -1:
+                        try:
+                                return 1/float(1+(0.1*count))
+                        except Exception, e:
+                                raise e
+                else:
+                        return count
 
-        def numOfUniqueTagsInWebsite(self, textString):
-                if self.foundWebsite:
-			return len(self.htmlParser.getTagCounter(self.website).keys())        
-		else:
-			return 1
+        #Source: Stack Overflow - http://stackoverflow.com/questions/405161/detecting-syllables-in-a-word
+        def _numberOfSyllablesInWord(self, word):
+                try:
+                        d = cmudict.dict()
+                        return [len(list(y for y in x if y[-1].isdigit())) for x in d[word.lower()]][0]
+                except KeyError:
+                        sys.stderr.write('\n\nWord not in dictionary.\n')
+                        return 0
+                except NameError:
+                        sys.stderr.write("\n\n'cmudict' not available.\n")
+                        return 0
+
+        #Not normalized (yet)
+        def _wordCountInString(self, textString, word):
+                #Using regular expression: [\w]+
+                #\w - word character class
+                #r - represents that the following string is in rawstring notation
+                return Counter(re.findall(r"[\w]+", textString.lower()))[word]
+
+        
+
+
 
 

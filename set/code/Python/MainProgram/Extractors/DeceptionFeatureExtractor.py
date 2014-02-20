@@ -1,17 +1,16 @@
-import sys, os
-sys.path.append("..")
-from Parsers.TextParser import TextParser
-import nltk.data, sys, re, os
+import sys, os, re, nltk.data
 from collections import *
-from TextFeatureExtractor import TextFeatureExtractor
-
 sys.path.append("..")
+
 from Parsers.TextParser import TextParser
+from BaseExtractor import BaseExtractor
 
-class DeceptionFeatureExtractor(TextFeatureExtractor):
-
-        def __init__(self, urlString=None, documentName="currentWebsite"):
-                TextFeatureExtractor.__init__(self, urlString, documentName)
+class DeceptionFeatureExtractor(BaseExtractor):
+        def __init__(self, documentName="currentWebsite"):
+                BaseExtractor.__init__(self, documentName)
+                
+                pathToParser = os.getcwd()+"/Parsers"
+                self.textParser = TextParser(pathToParser)
         
         #Obfuscation
 
@@ -43,13 +42,10 @@ class DeceptionFeatureExtractor(TextFeatureExtractor):
                 return len(textString)
 
         def numberOfPersonalPronouns(self, textString):
-                pathToParser = os.getcwd()+"/Parsers"
-                
-                tp = TextParser(os.path.normpath(pathToParser))
-                tp.tagText("temp", textString)
+                self.textParser.tagText("temp", textString)
 
                 count = 0
-                for x, y in tp.taggedText["temp"]:
+                for x, y in self.textParser.taggedText["temp"]:
                         if y == 'PRP':
                                 count+=1
                 return count

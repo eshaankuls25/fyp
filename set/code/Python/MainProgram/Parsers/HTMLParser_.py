@@ -43,7 +43,6 @@ class HTMLParser:
                 elif not isinstance(attributeString, basestring):
                         raise TypeError("The attribute must be a string.")
                 elif not isinstance(item, HTMLScraperItem):
-                        print item
                         return TypeError("The 'item' must be of type 'HTMLScraperItem'.")
     
         def getTagCounter(self, item):

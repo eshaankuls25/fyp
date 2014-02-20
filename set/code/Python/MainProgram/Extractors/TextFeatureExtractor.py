@@ -1,29 +1,21 @@
 import nltk.data, re, sys
+from nltk.probability import FreqDist
+
+from collections import *
+from nltk.corpus import cmudict
 sys.path.append("..")
 
 from Utilities.Utils import downloadNLTKData
 from BaseExtractor import BaseExtractor
-from collections import *
-from nltk.corpus import cmudict
-
 
 class TextFeatureExtractor(BaseExtractor):
 
-        def __init__(self, urlString, documentName):
-                BaseExtractor.__init__(self, urlString, documentName)
-                        
-        ##Obfuscation and Imitation methods
+        def __init__(self, documentName):
+                BaseExtractor.__init__(self, documentName)
                         
         #Normalized - between 0 and 1
         def lackOfApostrophes(self, textString):
                 return self._lackOfCharInString(textString, '\'')
-
-        #Not normalized (yet)
-        def _wordCountInString(self, textString, word):
-                #Using regular expression: [\w]+
-                #\w - word character class
-                #r - represents that the following string is in rawstring notation
-                return Counter(re.findall(r"[\w]+", textString.lower()))[word]
 
         def averageWordLength(self, textString):
                 words = Counter(re.findall(r"[\w]+", textString.lower())).keys()
@@ -35,48 +27,18 @@ class TextFeatureExtractor(BaseExtractor):
                 wordCount = len(words)
                 return float(sum([self._numberOfSyllablesInWord(word) for word in words]))/wordCount
 
-        ###Utility Functions###
+        #Source: NLTK - http://www.nltk.org/book/ch01.html#sec-automatic-natural-language-understanding
+        def lexicalDiversity(self, textString):
+                ldiv = len(textString) /len(set(textString))
+                return 1 if ldiv >= 1.3 else 0 #return 1, if 30% repetition of words
 
-        #-1 means an error has occurred - e.g. wrong parameter type passed into function
-
-        def _charCountInString(self, textString, char):
-                if isinstance(textString, basestring) and \
-                isinstance(char, basestring) and len(char) == 1:
-                        return len(textString.split(char))-1
-                else:
-                        return -1
-
-        #If charCount == 0 return value = 1
-        #If charCount is far greater than 0, return value approaches 0
-        #0.1 constant chosen, to reduce the effect of a chosen character being introduced
-
-        #(in future constant should be based on 1/(Average Amount Of A Character In All Documents)
-
-        #Done since there could be many of these special characters, over the span of a single document,
-        #but not too many (max = approx. 25, for emails/websites [MUST RESEARCH TO DETERMINE IF VALID]), 
-        #making resulting values in range over the internal [0, 1] be spread out more evenly
-
-        def _lackOfCharInString(self, textString, char):
-                count = self._charCountInString(textString, char)
-                if count != -1:
-                        try:
-                                return 1/float(1+(0.1*count))
-                        except Exception, e:
-                                raise e
-                else:
-                        return count
-
-        #Source: Stack Overflow - http://stackoverflow.com/questions/405161/detecting-syllables-in-a-word
-        def _numberOfSyllablesInWord(self, word):
-                try:
-                        d = cmudict.dict()
-                        return [len(list(y for y in x if y[-1].isdigit())) for x in d[word.lower()]][0]
-                except KeyError:
-                        sys.stderr.write('\n\nWord not in dictionary.\n')
-                        return 0
-                except NameError:
-                        sys.stderr.write("\n\n'cmudict' not available.\n")
-                        return 0
+        #Source: NLTK - http://www.nltk.org/book/ch01.html#sec-automatic-natural-language-understanding
+        def proportionOfLongWords(self, textString):
+                threshold = 7
+                freqDist = FreqDist(textString)
+                wordSet = set(textString)
                 
-                
-                        
+                return float(len([word for word in wordSet \
+                                  if len(word) > threshold and freqDist[word] > threshold]))/len(wordSet)                    
+
+        

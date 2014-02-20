@@ -5,11 +5,13 @@ from os.path import normpath, isfile, isdir
 from uuid import uuid4
 
 from Extractors.DeceptionFeatureExtractor import DeceptionFeatureExtractor
+from Extractors.HTMLFeatureExtractor import HTMLFeatureExtractor
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
 from Utilities.PreProcessor import PreProcessor
 from Utilities.ExtractorSelector import ExtractorSelector
-from Utilities.Utils import readFromFile, listFilesInDirWithExtension, unpickleObject, unpickleHTMLScraperItem, listFilesInDir
+from Utilities.Utils import readFromFile, listFilesInDirWithExtension,\
+     unpickleObject, unpickleHTMLScraperItem, listFilesInDir
 from Utilities.listen import startFakeSMTPServer
 
 from Parsers.HTMLParser_ import HTMLParser
@@ -39,10 +41,8 @@ class Detector(object):
                 self.dTrees = None
 
                 ###Dependency checks###
-                downloadedP = downloadNLTKData('punkt')
-                downloadedC = downloadNLTKData('cmudict')
 
-                if not (downloadedP and downloadedC):
+                if not (downloadNLTKData('punkt') and downloadNLTKData('cmudict')):
                         raise RuntimeError("\n\nCould not download the required nltk dependencies\n('punkt' or 'cmudict' dictionaries).\n")                
 
                 ###User arguments###
@@ -128,9 +128,10 @@ class Detector(object):
                 #Start parsing using the chosen extractor(s)
                 extractorTuple = selectedExtractorTuple[1]
                 for extractor in extractorTuple:
-                        urlList = HTMLParser().getEmailURLs(textString) #Get all urls in email
-                        if urlList != list(): #Get first url, if one exists in email (list is not empty)
-                                extractor.scrapeWebsiteFromURL(urlList[0], documentName=None)
+                        if isinstance(extractor, HTMLFeatureExtractor):
+                                urlList = HTMLParser().getEmailURLs(textString) #Get all urls in email
+                                if urlList != list():
+                                        extractor.scrapeWebsiteFromURL(urlList[0], documentName=None) #Get first url, if one exists in email (list is not empty)
                         
                         featureSet = extractor.getFeatureSet(\
                                 documentName+": "+documentCategory,\
@@ -186,7 +187,11 @@ class Detector(object):
         def extractAllDocuments(self):
                 featureMatrix = []
                 if self.documentPaths:  #List is not empty
-                        [featureMatrix.extend(self._extractFromDocument(filepath=document, documentClass=label)) for label, document in self.documentPaths]
+                        docNum = 0
+                        for label, document in self.documentPaths:
+                                print "\nDocument No. %d" %(docNum)
+                                featureMatrix.extend(self._extractFromDocument(filepath=document, documentClass=label))
+                                docNum+=1
                 else:                   #No documents found
                         sys.stderr.write("Could not find any documents.\nPlease try again, or enter another file, or directory path.\n")
                         return
