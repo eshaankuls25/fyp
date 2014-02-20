@@ -32,11 +32,11 @@ def startFakeSMTPServer(options=None, args=None):
 
     if (options is None) or (args is None):
         smtp_server = FakeSMTPServer(('localhost', 3333), None)
-        print "Running fake smtp server on port 3333"
+        print "Running fake smtp server on port 3333\n"
     else:
         portnum = int(options.portnumber)
         smtp_server = FakeSMTPServer(('localhost', portnum), None)
-        print "Running fake smtp server on port", portnum
+        print "Running fake smtp server on port %d\n" %(portnum)
         
     try:
         asyncore.loop()

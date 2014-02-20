@@ -131,8 +131,8 @@ class Detector(object):
                 for extractor in extractorTuple:
                         if isinstance(extractor, HTMLFeatureExtractor):
                                 urlList = HTMLParser().getEmailURLs(textString) #Get all urls in email
-                                if urlList != list():
-                                        extractor.scrapeWebsiteFromURL(urlList[0], documentName=None) #Get first url, if one exists in email (list is not empty)
+                                if urlList != list():                           #If the list is not empty...
+                                        extractor.scrapeWebsiteFromURL(urlList[0], documentName=None) #Extract data from first url
                         
                         featureSet = extractor.getFeatureSet(\
                                 documentName+": "+documentCategory,\
@@ -188,11 +188,11 @@ class Detector(object):
         def extractAllDocuments(self):
                 featureMatrix = []
                 if self.documentPaths:  #List is not empty
-                        docNum = 0
+                        docNum = 1
                         for label, document in self.documentPaths:
                                 print "\nDocument No. %d" %(docNum)
                                 featureMatrix.extend(self._extractFromDocument(filepath=document, documentClass=label))
-                                docNum+=1
+                                docNum+=1 if docNum <= sys.maxint else 0
                 else:                   #No documents found
                         sys.stderr.write("Could not find any documents.\nPlease try again, or enter another file, or directory path.\n")
                         return
