@@ -1,4 +1,5 @@
 import sys, shlex, os, getopt, uuid
+import threading
 from collections import OrderedDict
 
 from os.path import normpath, isfile, isdir
@@ -226,12 +227,29 @@ class Detector(object):
                 else:                                           #SVM and decision tree
                         return(self.svms[classifierName].classifyDocument(label, dictVector),
                                self.dTrees[classifierName].classifyDocument(dictVector))
+                
+        def startFakeSMTPServerThread(self):
+            smtpThread = threading.Thread(target=startFakeSMTPServer, name='smtp-watcher',
+                        args=())
+
+            smtpThread.daemon = True
+            smtpThread.start()
 
         def startMainMenu(self):
                 while True:
                         option = -1
                         documentClass = -1
                         documentPath = None
+
+                        """
+
+                        if (fileList = listFilesInDir("./Emails"): #List is not empty
+                                print "\nPlease wait... Classifying documents.\n
+                                #for document in fileList
+                                print "\nDone."
+
+                        """
+                        
                         print "\n-------------------------\nSET Deception Detector:\n-------------------------\n"
                         print "Press a number associated with the following options."
                         print "1) Classify document\n2) Train program with documents\n3) Exit"
@@ -282,6 +300,7 @@ class Detector(object):
                 
 if __name__ == "__main__":
         detector = Detector(*sys.argv[1:])
+        detector.startFakeSMTPServerThread()
         detector.startMainMenu()
 
         
