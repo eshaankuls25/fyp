@@ -6,9 +6,13 @@ sys.path.append("..")
 from Utilities.FeatureSet import FeatureSet
 
 class BaseExtractor():
-        def __init__(self, documentName):
+        def __init__(self, documentName, indicators=None):
                 self.featureSet = None
                 self.documentName = documentName
+                if isinstance(indicators, (list, tuple)): #If 'indicators' is a list or tuple
+                        self.indicators = indicators
+                else:
+                        self.indicators = []
         
         def getFeatureSet(self, documentName, documentCategory, params=None, documentClass=-1):
                 memberList = inspect.getmembers(self, predicate=inspect.ismethod)

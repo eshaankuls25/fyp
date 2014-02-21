@@ -10,8 +10,9 @@ from BaseExtractor import BaseExtractor
 
 class TextFeatureExtractor(BaseExtractor):
 
-        def __init__(self, documentName):
-                BaseExtractor.__init__(self, documentName)
+        def __init__(self, documentName,\
+                     indicators=('From:', 'Date:', 'Message-ID', 'In-Reply-To:')):
+                BaseExtractor.__init__(self, documentName, indicators)
                         
         #Normalized - between 0 and 1
         def lackOfApostrophes(self, textString):

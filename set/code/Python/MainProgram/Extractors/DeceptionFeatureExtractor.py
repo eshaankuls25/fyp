@@ -3,6 +3,7 @@ from collections import *
 sys.path.append("..")
 
 from Parsers.TextParser import TextParser
+from Parsers.HTMLParser_ import HTMLParser
 from BaseExtractor import BaseExtractor
 
 class DeceptionFeatureExtractor(BaseExtractor):
@@ -11,6 +12,7 @@ class DeceptionFeatureExtractor(BaseExtractor):
                 
                 pathToParser = os.getcwd()+"/Parsers"
                 self.textParser = TextParser(pathToParser)
+                self.htmlParser = HTMLParser()
         
         #Obfuscation
 
@@ -49,4 +51,19 @@ class DeceptionFeatureExtractor(BaseExtractor):
                         if y == 'PRP':
                                 count+=1
                 return count
+
+        #source: StackOverflow - http://stackoverflow.com/questions/106179/regular-expression-to-match-hostname-or-ip-address?lq=1 
+        #Need to edit regex for use with Python. In the meantime, look below...
+        def _numOfIPAddressLinks(self, textString):
+                countExp = re.compile(r"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
+                return len(re.findall(countExp, textString))
+
+        def numOfIPAddressLinks(self, textString):
+                return len(self.htmlParser.findIPAddressesInEmail(textString))
+
+        def numOfTagsInString(self, textString):
+                return len(self.htmlParser.findTagsInString(textString))
+
+        def numOfURLsinString(self, textString):
+                return len(self.htmlParser.getEmailURLs(textString))
 

@@ -27,12 +27,7 @@ class Detector(object):
         def __init__(self, *args):
                 ###Defaults###
 
-                self.categoryList = ['text', 'html']
-
-                self.indicatorDictionary = {'text':['From:', 'Date:', 'Message-ID', 'In-Reply-To:'],\
-                              'html':['http://', 'www', '.com', '.co.uk']}
-
-                self.extractorList = [DeceptionFeatureExtractor(), DeceptionFeatureExtractor()]
+                self.extractorDictionary = {'text':DeceptionFeatureExtractor(), 'html':DeceptionFeatureExtractor()}
 
                 self.documentPaths = []
                 self.extractorSelector = None
@@ -49,7 +44,7 @@ class Detector(object):
                 ###User arguments###
                 #Text must be delimited by semi-colon, in 
                 #each file passed into the program
-                options, extras = getopt.getopt(args, 'd:c:i:', ['documentlist=', 'categorylist=' 'indicatorlist='])
+                options, extras = getopt.getopt(args, 'd:i:', ['documentlist=', 'indicatorlist='])
                 
                 for opt, arg in options:
                         path = normpath(arg)
@@ -57,13 +52,6 @@ class Detector(object):
                         if opt in ('-d', '--documentlist'):
                                 documentListString = readFromFile(path)
                                 self.documentPaths = self._getDocumentPaths(documentListString)
-
-                        if opt in ('-c', '--categorylist'):
-                                categoryListString = readFromFile(path)
-                                self.categoryList = categoryListString.split(';')
-
-                                print self.categoryList
-
                         if opt in ('-i', '--indicatorlist'):
                                 indicatorListString = readFromFile(path)
                                 #For separating indicator to groups - one for each category
@@ -74,11 +62,13 @@ class Detector(object):
                                         self.indicatorDictionary = {categoryList[x] : indicatorGroupsList[x].split(',') \
                                                                for x in len(range(categoryList))}
                                 else:
-                                        raise RuntimeError("\nTotal number of categories, is not equal to the number of indicator groups.\n")     
+                                        raise RuntimeError("\nTotal number of categories, is not equal to the number of indicator groups.\n")
 
-                                print self.indicatorList
+                                #self.extractorDictionary = {category:None for category in self.extractorDictionary}
+                                        ###Must add FeatureExtractor instances, somehow...
+                
         
-                self.extractorSelector = self._createExtractor(self.categoryList, self.indicatorDictionary, self.extractorList)
+                self.extractorSelector = self._createExtractor(self.extractorDictionary)
 
         def _getDocumentPaths(self, documentListString):
                 documentPaths = []
@@ -100,11 +90,8 @@ class Detector(object):
 
                 return documentPaths
 
-        def _createExtractor(self, categoryList, indicatorDictionary, extractorList):
-                extractorSelector = ExtractorSelector(categoryList, extractorList)
-                for category in categoryList:
-                        extractorSelector.addExtractorIdentifierSet(category, indicatorDictionary[category])
-                return extractorSelector
+        def _createExtractor(self, extractorDictionary):
+                return ExtractorSelector(extractorDictionary)
 
         def _selectExtractorAndProcess(self, processedText,\
                               documentClass, email_ID=None, emailPayload=None):
