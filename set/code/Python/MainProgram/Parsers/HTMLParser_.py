@@ -12,21 +12,18 @@ class HTMLParser:
         def __init__(self):
                 pass
 
-        #Source: StackOverflow - http://stackoverflow.com/questions/4436008/how-to-get-html-tags
-        def findTagsInString(self, textString):
-                return re.findall('<.*?>', textString)
-
         def getTagsFromItem(self, item):
                 if isinstance(item, HTMLScraperItem):
                         responseAll = item['response']['tags']
                         return [x.encode('utf8') for x in responseAll]
                 else:
                         return TypeError("The 'item' must be of type 'HTMLScraperItem'.")
-    
+                
+        #Source: StackOverflow - http://stackoverflow.com/questions/4436008/how-to-get-html-tags
         def getTagsFromString(self, textString):
                 if isinstance(textString, basestring):
-                        return self.findTagsInString(textString)
-                elif not isinstance(textString, basestring):
+                        return re.findall('<.*?>', textString)
+                else:
                         raise TypeError("The parameter must be a string.")
 
         #Choices: 'all', 'headers', 'body', 'para', 'url'

@@ -61,9 +61,6 @@ class DeceptionFeatureExtractor(BaseExtractor):
         def numOfIPAddressLinks(self, textString):
                 return len(self.htmlParser.findIPAddressesInEmail(textString))
 
-        def numOfTagsInString(self, textString):
-                return len(self.htmlParser.findTagsInString(textString))
-
         def numOfURLsinString(self, textString):
                 return len(self.htmlParser.getEmailURLs(textString))
 

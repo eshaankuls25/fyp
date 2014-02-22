@@ -27,7 +27,7 @@ class Detector(object):
         def __init__(self, *args):
                 ###Defaults###
 
-                self.extractorDictionary = {'text':DeceptionFeatureExtractor(), 'html':DeceptionFeatureExtractor()}
+                self.extractorDictionary = {'text':DeceptionFeatureExtractor(), 'html':HTMLDeceptionFeatureExtractor()}
 
                 self.documentPaths = []
                 self.extractorSelector = None
