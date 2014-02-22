@@ -23,7 +23,8 @@ class DeceptionFeatureExtractor(BaseExtractor):
 
         def proportionOfNonMatchingHRefPairs(self, textString):
                 pairs = self._getHREFAndURLTextPairsInString(textString)
-                if not pairs: #List/tuple is empty
+                if len(pairs) == 1 and (pairs[0][0] == None\
+                                        and pairs[0][1] == None): #List/tuple is empty
                     return 0
                 return float(sum([0 if pair[0] == pair[1] else 1\
                                   for pair in pairs]))/len(pairs)
