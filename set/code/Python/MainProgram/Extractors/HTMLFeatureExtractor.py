@@ -29,18 +29,30 @@ class HTMLFeatureExtractor(tfe):
 
         def lengthOfWebsiteBodyText(self, textString):
                 if self.foundWebsite:
-                        return len(self.htmlParser.getResponseAttribute(self.website, 'body'))
+                        bodyLength = len(self.htmlParser.getResponseAttribute(self.website, 'body'))
+                        responseLength = len(self.htmlParser.getResponseAttribute(self.website, 'all'))
+                        return float(bodyLength/responseLength)
                 else:
                         return 1
 
         def numOfURLsInWebsite(self, textString):
                 if self.foundWebsite:
-                        return len(self.htmlParser.getWebsiteURLs(self.website))
+                        maxURLCount = 30 #Unsure of how many URLs exist, in the document, so not perfect
+                        return float(len(self.htmlParser.getWebsiteURLs(self.website)))/maxURLCount
                 else:
                         return 1
 
-        def numOfUniqueTagsInWebsite(self, textString):
+        def proportionOfUniqueTagsInWebsite(self, textString):
                 if self.foundWebsite:
-                        return len(self.htmlParser.getTagCounter(self.website).keys())        
+                        maxTagCount = 100 #Unsure of how many HTML tags exist, so not perfect
+                        return float(len(self.htmlParser.getTagCounter(self.website).keys()))/maxTagCount       
+                else:
+                        return 1
+
+        def tagDiversity(self, textString):
+                if self.foundWebsite:
+                        numOfTags = len(self.htmlParser.getTagsFromItem(self.website))
+                        return float(len(self.htmlParser\
+                                         .getTagCounter(self.website).keys()))/numOfTags       
                 else:
                         return 1

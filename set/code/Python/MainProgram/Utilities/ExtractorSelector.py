@@ -79,6 +79,7 @@ class ExtractorSelector:
                         else:
                                 return (extractorName, (bestExtractor,))        
                 else:
+                        #return (None,  (hfe(),))
                         return (None,  (tfe(),))
 
                 

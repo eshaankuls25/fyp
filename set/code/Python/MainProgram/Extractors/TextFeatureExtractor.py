@@ -7,12 +7,15 @@ sys.path.append("..")
 
 from Utilities.Utils import downloadNLTKData
 from HTMLDeceptionFeatureExtractor import HTMLDeceptionFeatureExtractor as hdfe
+#from Extractors.BaseExtractor import BaseExtractor as be
 
+#class TextFeatureExtractor(be):
 class TextFeatureExtractor(hdfe):
 
         def __init__(self, documentName="currentWebsite",\
                      indicators=('From:', 'Date:', 'Message-ID', 'In-Reply-To:')):
                 hdfe.__init__(self, documentName)
+                #be.__init__(self, documentName, indicators)
                         
         #Normalized - between 0 and 1
         def lackOfApostrophes(self, textString):
