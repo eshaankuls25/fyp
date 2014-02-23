@@ -6,8 +6,8 @@ from os.path import normpath, isfile, isdir
 from uuid import uuid4
 
 from Extractors.DeceptionFeatureExtractor import DeceptionFeatureExtractor as dfe
-#from Extractors.HTMLDeceptionFeatureExtractor import HTMLDeceptionFeatureExtractor as hfe
-from Extractors.TextFeatureExtractor import TextFeatureExtractor as tfe
+from Extractors.HTMLDeceptionFeatureExtractor import HTMLDeceptionFeatureExtractor as hfe
+#from Extractors.TextFeatureExtractor import TextFeatureExtractor as tfe
 from Extractors.HTMLFeatureExtractor import HTMLFeatureExtractor
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
@@ -36,7 +36,7 @@ class Detector(object):
         def __init__(self, *args):
                 ###Defaults###
 
-                self.extractorDictionary = {'text':tfe(), 'html':tfe()}
+                self.extractorDictionary = {'text':hfe(), 'html':hfe()}
 
                 self.documentPaths = []
                 self.extractorSelector = None
