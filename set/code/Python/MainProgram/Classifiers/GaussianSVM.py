@@ -33,9 +33,11 @@ class GaussianSVM(object):
                 self.featureMatrix = featureMatrix
                 svmProb = svm_problem(self.classes, self.featureMatrix)
 
-                #t = 2 model type Gaussian/RBF
+                #t = 2 Model type: Gaussian/RBF
                 #s = 0 C-SVC multi-class classifier
-                #c = cost parameter of C-SVC
+                #c = Cost parameter of C-SVC
+                #v = 5 Cross-validation 'block' size
+                #b = 0 Create probability estimates for SVC type SVM
                 params = svm_parameter('-s 0 -t 2 -c %s -b 0 -v 5'%str(costParam))
                 self.model = svm_train(svmProb, params)
                 self.saveModel(pathToModel, self.model)
