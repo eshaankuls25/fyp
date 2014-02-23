@@ -1,4 +1,7 @@
 import os, sys
+    model = None
+    classes = None
+    featureMatrix = None
 from os.path import normpath, isfile
 sys.path.append("..")
 
@@ -7,9 +10,6 @@ from svmutil import *
 
 class GaussianSVM(object):
     """docstring for GaussianSVM"""
-    model = None
-    classes = None
-    featureMatrix = None
 
     #featureMatrix is an iterable (list, tuple etc.) of dictionaries/vectors:
     ##e.g. [featureSet1.getVector(), featureSet2.getVector(), fe5.getVector() ...]
@@ -36,7 +36,7 @@ class GaussianSVM(object):
                 #t = 2 model type Gaussian/RBF
                 #s = 0 C-SVC multi-class classifier
                 #c = cost parameter of C-SVC
-                params = svm_parameter('-s 0 -t 2 -c %s -b 1'%str(costParam))
+                params = svm_parameter('-s 0 -t 2 -c %s -b 0 -v 5'%str(costParam))
                 self.model = svm_train(svmProb, params)
                 self.saveModel(pathToModel, self.model)
 

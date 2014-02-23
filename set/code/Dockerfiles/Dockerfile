@@ -32,15 +32,18 @@ run 	apt-get install -y -q python-numpy
 #add readline support
 run 	apt-get install -y -q rlwrap
 
-#Install python
+#Install python packages
 run	apt-get install -y -q python-pip
 run	pip install s3cmd
 run	pip install python-magic
 run pip install virtualenv
 run pip install tldextract
+run pip install nltk
+run pip install chardet
+
 run	apt-get install -y -q python-dev
 run	apt-get install -y -q libxml2-dev libxslt-dev
-run	apt-get install -y -q scrapy-0.18
+run	apt-get install -y -q scrapy-0.22
 
 # Runtime dependencies
 run	apt-get install -y -q iptables
@@ -55,11 +58,11 @@ run	apt-get install -y -q aufs-tools
 #run 	cd impacket* && python setup.py install
 
 # Install pcapy
-run 	apt-get install -y -q python-pcapy
+#run 	apt-get install -y -q python-pcapy
 
 ##MIGHT NEED TO REMOVE LATER, SINCE NOT IN USE YET
 # Install numpy
-run 	apt-get install -y -q python-numpy
+#run 	apt-get install -y -q python-numpy
 
 #Install libsvm
 run 	git clone git@github.com:cjlin1/libsvm.git ~/tmp/libsvm/
@@ -98,7 +101,7 @@ run 	cd set && python setup.py install
 #Clone fyp repo
 run 	git clone https://github.com/Quantza/fyp ~/fyp/
 run 	cp ~/fyp/set/dev.sh ~
-run     cd ~/fyp/set/code/Python/MainProgram/libsvm/python/
+run     cd ~/fyp/set/code/Python/MainProgram/Classifiers/libsvm/python/
 run     make
 run     cd ~
 run 	chmod +x dev.sh
