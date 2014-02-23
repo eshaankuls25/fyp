@@ -1,6 +1,7 @@
 import sys
 sys.path.append("..")
 
+from Extractors.TextFeatureExtractor import TextFeatureExtractor as tfe
 from Extractors.DeceptionFeatureExtractor import DeceptionFeatureExtractor as dfe
 from Extractors.HTMLDeceptionFeatureExtractor import HTMLDeceptionFeatureExtractor as hfe
 from Extractors.BaseExtractor import BaseExtractor as be
@@ -78,7 +79,7 @@ class ExtractorSelector:
                         else:
                                 return (extractorName, (bestExtractor,))        
                 else:
-                        return (None,  (hfe(),))
+                        return (None,  (tfe(),))
 
                 
 

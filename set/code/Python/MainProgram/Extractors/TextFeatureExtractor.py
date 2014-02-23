@@ -6,13 +6,13 @@ from nltk.corpus import cmudict
 sys.path.append("..")
 
 from Utilities.Utils import downloadNLTKData
-from BaseExtractor import BaseExtractor as be
+from HTMLDeceptionFeatureExtractor import HTMLDeceptionFeatureExtractor as hdfe
 
-class TextFeatureExtractor(be):
+class TextFeatureExtractor(hdfe):
 
-        def __init__(self, documentName,\
+        def __init__(self, documentName="currentWebsite",\
                      indicators=('From:', 'Date:', 'Message-ID', 'In-Reply-To:')):
-                be.__init__(self, documentName, indicators)
+                hdfe.__init__(self, documentName)
                         
         #Normalized - between 0 and 1
         def lackOfApostrophes(self, textString):
