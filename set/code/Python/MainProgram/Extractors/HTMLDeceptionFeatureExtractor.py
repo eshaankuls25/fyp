@@ -5,7 +5,7 @@ import lxml.html as lh
 #import lxml.html.clean as lhclean
 sys.path.append("..")
 
-from Parsers.HTMLParser_ import HTMLParser_
+from Parsers.HTMLParser_ import HTMLParser
 from DeceptionFeatureExtractor import DeceptionFeatureExtractor as dfe
 
 class HTMLDeceptionFeatureExtractor(dfe):
