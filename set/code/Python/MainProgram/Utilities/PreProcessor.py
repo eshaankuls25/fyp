@@ -7,9 +7,9 @@ curVersion = sys.version_info
         
 def removeEscapeChars(textString):
         if curVersion < reqVersion:
-                return string.encode('string_escape').decode('string_escape')  #Python 2
+                return textString.encode('string_escape').decode('string_escape')  #Python 2
         else:
-                return string.encode('encode_escape').decode("unicode_escape") #Python 3
+                return textString.encode('encode_escape').decode("unicode_escape") #Python 3
 
 def getASCIIChars(textString):
         return unicode(string, 'ascii', 'ignore')

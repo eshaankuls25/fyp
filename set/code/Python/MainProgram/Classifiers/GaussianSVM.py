@@ -20,6 +20,8 @@ class GaussianSVM(object):
                      pathToModel='./Classifiers/gaussianSVM_model.bak', costParam=5):
         super(GaussianSVM, self).__init__()
 
+        self.costParam = costParam
+
         if classList is None or featureMatrix is None:
                 if isinstance(pathToModel, basestring) and isfile(pathToModel):
                     self.model = self.loadModel(pathToModel)
@@ -53,6 +55,16 @@ class GaussianSVM(object):
             return svm_load_model(filename)
         except IOError:
             sys.stderr.write("\nCould not load model.\n")
+
+    """
+    def updateModel(self, classList, featureMatrix,\
+                    pathToModel='./Classifiers/gaussianSVM_model.bak'):
+        if isinstance(pathToModel, basestring) and isfile(pathToModel):
+            self.model = self.loadModel(pathToModel)
+            #Need to train new documents/emails, as they come in. SVM model is not evolving...
+            #Could mention this for future work, as cannot do this, right now.
+    """        
+        
 
     def classifyDocument(self, classes, vectors):
         print "\nExpected Class(es): ", classes, " Vector(s): ", vectors, "\n"    

@@ -1,4 +1,4 @@
-import sys, shlex, os, getopt, uuid
+import sys, shlex, os, getopt, uuid, time
 import threading
 from collections import OrderedDict
 
@@ -14,7 +14,7 @@ from Utilities.ExtractorSelector import ExtractorSelector
 from Utilities.Utils import readFromFile, listFilesInDirWithExtension,\
      unpickleObject, unpickleHTMLScraperItem, listFilesInDir
 from Utilities.listen import startFakeSMTPServer
-import Utilities.PreProcessor
+import Utilities.PreProcessor as PreProcessor
 
 from Parsers.HTMLParser_ import HTMLParser
 from Parsers.TextParser import TextParser
@@ -22,6 +22,13 @@ from Utilities.Utils import downloadNLTKData
 
 from Classifiers.GaussianSVM import GaussianSVM
 from Classifiers.DecisionTree.DTree import DTree
+
+try:
+    from Queue import Queue, Empty
+except ImportError:
+    from queue import Queue, Empty  #Python 3.x
+
+io_q = Queue()
 
 class Detector(object):
         """docstring for Detector"""
@@ -94,91 +101,13 @@ class Detector(object):
         def _createExtractor(self, extractorDictionary):
                 return ExtractorSelector(extractorDictionary)
 
-        def _selectExtractorAndProcess(self, processedText,\
-                              documentClass, email_ID=None, emailPayload=None):
-                featureSetList = []
-                selectedExtractorTuple = self.extractorSelector.\
-                                         determineBestExtractor(processedText.split())
-                extractorCategory = selectedExtractorTuple[0]
-
-                if extractorCategory is None:
-                        documentName = "DEFAULT"
-                        documentCategory = 'Text'
-                else:
-                        documentName = "%s - %s" % (extractorCategory.upper(), str(uuid4()))
-                        documentCategory = extractorCategory
-
-                if email_ID is None or emailPayload is None:
-                        textString = processedText
-                else:
-                        documentName = email_ID
-                        textString = emailPayload
-
-                #Start parsing using the chosen extractor(s)
-                extractorTuple = selectedExtractorTuple[1]
-                for extractor in extractorTuple:
-                        if isinstance(extractor, HTMLFeatureExtractor):
-                                urlList = HTMLParser().getEmailURLs(textString) #Get all urls in email
-                                if urlList != list():                           #If the list is not empty...
-                                        extractor.scrapeWebsiteFromURL(urlList[0], documentName=None) #Extract data from first url
-                        
-                        featureSet = extractor.getFeatureSet(\
-                                documentName+": "+documentCategory,\
-                                extractor.__class__.__name__, textString, documentClass)
-
-                        featureSetList.append(featureSet)
-                return featureSetList
-
-        def _extractFromDocument(self, filepath, documentClass, index=None):    
-                documentString = readFromFile(filepath)
-                print "---\n", documentString, "\n---"
-
-                processedDocument = PreProcessor.removeEscapeChars(documentString)
-
-                parser = TextParser(os.getcwd()+"/Parsers")
-                email, isMultipart = parser.getEmailFromString(documentString)
-                payload = email.get_payload()
-
-                if index is not None:
-                        print "Email no. "+str(index)+": "
-
-                        print "---"
-                        for header in email.keys():
-                                print "\n"+header+": "+email.get(header)
-                        print "\nPayload: "+payload
-                        print "---"
-
-                if index is not None:
-                        processedPayload = PreProcessor.removeEscapeChars(payload)
-                        return self._selectExtractorAndProcess(processedDocument,\
-                                                               documentClass,\
-                                                               email.get("Message-Id"),\
-                                                               processedPayload)
-                else:
-                        return self._selectExtractorAndProcess(processedDocument,\
-                                                               documentClass)
-                        
-                    
-        def extractFromEmails(self, documentClass):
-                featureSetList = []
-                filepathPrefix = "./Emails/"
-        
-                i=0
-                for filepath in listFilesInDirWithExtension(filepathPrefix, ".eml"):
-                        featureSetList.extend(self._extractFromDocument(filepathPrefix+filepath,\
-                                                                        documentClass,\
-                                                                        index=i))
-                i+=1
-                
-                return featureSetList
-
         def extractAllDocuments(self):
                 featureMatrix = []
                 if self.documentPaths:  #List is not empty
                         docNum = 1
                         for label, document in self.documentPaths:
                                 print "\nDocument No. %d" %(docNum)
-                                featureMatrix.extend(self._extractFromDocument(filepath=document, documentClass=label))
+                                featureMatrix.extend(_extractFromDocument(self.extractorSelector, filepath=document, documentClass=label))
                                 docNum+=1 if docNum <= sys.maxint else 0
                 else:                   #No documents found
                         sys.stderr.write("Could not find any documents.\nPlease try again, or enter another file, or directory path.\n")
@@ -221,25 +150,26 @@ class Detector(object):
 
             smtpThread.daemon = True
             smtpThread.start()
+                
+
+        def startClassificationThread(self, documentClass):
+                classificationThread = threading.Thread(target=_classifyEmailsInFolder,\
+                                                        name='email-watcher',args=(self.extractorSelector, documentClass, 10))
+
+                classificationThread.daemon = True
+                classificationThread.start()
 
         def startMainMenu(self):
+                time.sleep(1);
                 while True:
                         option = -1
                         documentClass = -1
                         documentPath = None
-
-                        """
-
-                        if (fileList = listFilesInDir("./Emails"): #List is not empty
-                                print "\nPlease wait... Classifying documents.\n
-                                #for document in fileList
-                                print "\nDone."
-
-                        """
                         
                         print "\n-------------------------\nSET Deception Detector:\n-------------------------\n"
                         print "Press a number associated with the following options."
                         print "1) Classify document\n2) Train program with documents\n3) Exit"
+                        #print "\n\nNOTE: New documents added to the './Emails' folder\nwill be processed in the background, ***AND then deleted***.\n"
                         
                         while not isinstance(option, (int))\
                                    or (option < 1 or option > 3):
@@ -258,7 +188,7 @@ class Detector(object):
                                 while (not isinstance(documentPath, basestring)) or (not isfile(documentPath)):
                                         documentPath = normpath(raw_input("Please enter a valid filepath.\n"))
 
-                                featureSetList = self._extractFromDocument(documentPath, documentClass)
+                                featureSetList = _extractFromDocument(documentPath, documentClass)
                                 for featureSet in featureSetList:
                                         print self.classifyDocument(featureSet.documentCategory,\
                                                               documentClass, featureSet.getVector())
@@ -284,6 +214,107 @@ class Detector(object):
                                 
                         elif option is 3:
                                 sys.exit(0)
+
+def _selectExtractorAndProcess(extractorSelector, processedText,\
+                               documentClass, email_ID=None, emailPayload=None):
+        featureSetList = []
+        selectedExtractorTuple = extractorSelector.\
+                                 determineBestExtractor(processedText.split())
+        extractorCategory = selectedExtractorTuple[0]
+
+        if extractorCategory is None:
+                documentName = "DEFAULT"
+                documentCategory = 'Text'
+        else:
+                documentName = "%s - %s" % (extractorCategory.upper(), str(uuid4()))
+                documentCategory = extractorCategory
+
+        if email_ID is None or emailPayload is None:
+                textString = processedText
+        else:
+                documentName = email_ID
+                textString = emailPayload
+
+        #Start parsing using the chosen extractor(s)
+        extractorTuple = selectedExtractorTuple[1]
+        for extractor in extractorTuple:
+                if isinstance(extractor, HTMLFeatureExtractor):
+                        urlList = HTMLParser().getEmailURLs(textString) #Get all urls in email
+                        if urlList != list():                           #If the list is not empty...
+                                extractor.scrapeWebsiteFromURL(urlList[0], documentName=None) #Extract data from first url
+                
+                featureSet = extractor.getFeatureSet(\
+                        documentName+": "+documentCategory,\
+                        extractor.__class__.__name__, textString, documentClass)
+
+                featureSetList.append(featureSet)
+        return featureSetList
+
+def _extractFromDocument(extractorSelector, filepath, documentClass, index=None):    
+        documentString = readFromFile(filepath)
+        print "---\n", documentString, "\n---"
+
+        processedDocument = PreProcessor.removeEscapeChars(documentString)
+
+        parser = TextParser(os.getcwd()+"/Parsers")
+        email, isMultipart = parser.getEmailFromString(documentString)
+        payload = email.get_payload()
+
+        if index is not None:
+                print "Email no. "+str(index)+": "
+
+                print "---"
+                for header in email.keys():
+                        print "\n"+header+": "+email.get(header)
+                print "\nPayload: "+payload
+                print "---"
+
+        if index is not None:
+                processedPayload = PreProcessor.removeEscapeChars(payload)
+                return _selectExtractorAndProcess(extractorSelector,\
+                                                  processedDocument,\
+                                                  documentClass,\
+                                                  email.get("Message-Id"),\
+                                                  processedPayload)
+        else:
+                return _selectExtractorAndProcess(extractorSelector,\
+                                                  processedDocument,\
+                                                  documentClass)
+                        
+                    
+def extractFromEmails(extractorSelector, documentClass):
+        featureSetList = []
+        filepathPrefix = "./Emails/"
+
+        i=0
+        for filepath in listFilesInDirWithExtension(filepathPrefix, ".eml"):
+                featureSetList.extend(_extractFromDocument(extractorSelector,\
+                                                           filepathPrefix+filepath,\
+                                                           documentClass))
+        i+=1
+        
+        return featureSetList
+
+def _classifyEmailsInFolder(extractorSelector, documentClass, maxQueueLength):
+        currentQueueLength = 0
+        maxQueueLength = maxQueueLength if maxQueueLength > 1 else 1
+
+        while True:
+        
+                while currentQueueLength < maxQueueLength:
+                        emailList = listFilesInDirWithExtension(filepathPrefix, ".eml")
+                        for filepath in emailList:
+                                io_q.put(_extractFromDocument(extractorSelector,\
+                                                              filepathPrefix+filepath,\
+                                                              documentClass,\
+                                                              index=-1))
+                                os.remove(filepath)
+                                currentQueueLength += 1
+
+                [self.svms[model].updateModel([documentClass], [io_q.get()]) for model in self.svms]
+                currentQueueLength -= 1
+                #Delete email, when not in access. Otherwise wait/locked out...
+                
                 
 if __name__ == "__main__":
         detector = Detector(*sys.argv[1:])
