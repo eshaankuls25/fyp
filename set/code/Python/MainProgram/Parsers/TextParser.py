@@ -15,7 +15,7 @@ class TextParser:
         stanfordTagger = None
         #config_java("C:\Program Files\Java\jdk1.6.0_37\\bin\java.exe") 
 
-        def __init__(self, pathToParser=None, javaHeapOptions='-Xmx4g'):
+        def __init__(self, pathToParser=None, javaHeapOptions='-Xmx4g -XX:-UseGCOverheadLimit'):
 
                 if pathToParser is None:
                         taggerLibraryPath = normpath(os.path.join(os.getcwd(), "sp/jar/stanford-postagger.jar"))
