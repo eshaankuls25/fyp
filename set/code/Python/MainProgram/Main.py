@@ -35,7 +35,7 @@ class Detector(object):
         def __init__(self, *args):
                 ###Defaults###
 
-                self.extractorDictionary = {'text':dfe(), 'html':hfe()}
+                self.extractorDictionary = {'text':hfe(), 'html':hfe()}
 
                 self.documentPaths = []
                 self.extractorSelector = None
@@ -107,6 +107,11 @@ class Detector(object):
                         docNum = 1
                         for label, document in self.documentPaths:
                                 print "\nDocument No. %d" %(docNum)
+                                """
+                                featureSetList = _extractFromDocument(self.extractorSelector, filepath=document, documentClass=label)
+                                print "Class: ", featureSetList[0].getClass(), "Vector: ", featureSetList[0].getVector()
+                                featureMatrix.extend(featureSetList)
+                                """
                                 featureMatrix.extend(_extractFromDocument(self.extractorSelector, filepath=document, documentClass=label))
                                 docNum+=1 if docNum <= sys.maxint else 0
                 else:                   #No documents found

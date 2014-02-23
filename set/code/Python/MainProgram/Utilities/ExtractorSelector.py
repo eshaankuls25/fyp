@@ -1,8 +1,9 @@
 import sys
 sys.path.append("..")
 
-from Extractors.DeceptionFeatureExtractor import DeceptionFeatureExtractor
-from Extractors.BaseExtractor import BaseExtractor
+from Extractors.DeceptionFeatureExtractor import DeceptionFeatureExtractor as dfe
+from Extractors.HTMLDeceptionFeatureExtractor import HTMLDeceptionFeatureExtractor as hfe
+from Extractors.BaseExtractor import BaseExtractor as be
 
 class ExtractorSelector:
 
@@ -12,7 +13,7 @@ class ExtractorSelector:
         def __init__(self, extractorDict):
                 for category in extractorDict:
                         extractor = extractorDict[category]
-                        if isinstance(extractor, BaseExtractor):
+                        if isinstance(extractor, be):
                                 self.categoryDictionary[category] = set(extractor.indicators)
                         else:
                                 self.categoryDictionary[category] = set()
@@ -77,7 +78,7 @@ class ExtractorSelector:
                         else:
                                 return (extractorName, (bestExtractor,))        
                 else:
-                        return (None,  (DeceptionFeatureExtractor(),))
+                        return (None,  (hfe(),))
 
                 
 
