@@ -17,7 +17,7 @@ class GaussianSVM(object):
     #Use like this:
     #gSVM = GaussianSVM(costParam=your_chosen_number)
     def __init__(self, classList=None, featureMatrix=None,\
-                     pathToModel='./Classifiers/gaussianSVM_model.bak', costParam=5):
+                     pathToModel='./Classifiers/gaussianSVM_model.bak', costParam=1):
         super(GaussianSVM, self).__init__()
 
         #self.costParam = costParam
@@ -38,8 +38,9 @@ class GaussianSVM(object):
                 #c = Cost parameter of C-SVC
                 #v = 5 Cross-validation 'block' size
                 #b = 0 Create probability estimates for SVC type SVM
-                params = svm_parameter('-s 0 -t 2 -c %s -b 0'%str(costParam))
-                #params = svm_parameter('-s 0 -t 2 -c %s -b 0 -v 5'%str(costParam))
+                #g = 1/len(featureSet) - Implicitly set at the moment
+                #params = svm_parameter('-s 0 -t 2 -c %s -b 0'%str(costParam))
+                params = svm_parameter('-s 0 -t 2 -c %s -b 0 -v 5'%str(costParam))
                 self.model = svm_train(svmProb, params)
                 self.saveModel(pathToModel, self.model)
 
