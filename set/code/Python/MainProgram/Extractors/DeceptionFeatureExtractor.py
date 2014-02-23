@@ -4,11 +4,11 @@ sys.path.append("..")
 
 from Parsers.TextParser import TextParser
 from Parsers.HTMLParser_ import HTMLParser
-from BaseExtractor import BaseExtractor
+from BaseExtractor import BaseExtractor as be
 
-class DeceptionFeatureExtractor(BaseExtractor):
+class DeceptionFeatureExtractor(be):
         def __init__(self, documentName="currentWebsite"):
-                BaseExtractor.__init__(self, documentName)
+                be.__init__(self, documentName)
                 
                 pathToParser = os.getcwd()+"/Parsers"
                 self.textParser = TextParser(pathToParser)

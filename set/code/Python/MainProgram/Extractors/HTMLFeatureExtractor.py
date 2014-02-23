@@ -3,12 +3,12 @@ sys.path.append("..")
 
 from Extractors.HTMLScraper.WebsiteScraper import WebsiteScraper
 from Parsers.HTMLParser_ import HTMLParser
-from TextFeatureExtractor import TextFeatureExtractor
+from TextFeatureExtractor import TextFeatureExtractor as tfe
 
-class HTMLFeatureExtractor(TextFeatureExtractor):
+class HTMLFeatureExtractor(tfe):
         def __init__(self, documentName="currentWebsite", urlString=None,\
                      indicators=('http://', 'www', '.com', '.co.uk')):
-                TextFeatureExtractor.__init__(self, documentName, indicators)
+                tfe.__init__(self, documentName, indicators)
                 
                 self.website = None
                 self.htmlParser = HTMLParser()

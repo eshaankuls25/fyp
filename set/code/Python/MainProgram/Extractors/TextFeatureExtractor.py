@@ -6,13 +6,13 @@ from nltk.corpus import cmudict
 sys.path.append("..")
 
 from Utilities.Utils import downloadNLTKData
-from BaseExtractor import BaseExtractor
+from BaseExtractor import BaseExtractor as be
 
-class TextFeatureExtractor(BaseExtractor):
+class TextFeatureExtractor(be):
 
         def __init__(self, documentName,\
                      indicators=('From:', 'Date:', 'Message-ID', 'In-Reply-To:')):
-                BaseExtractor.__init__(self, documentName, indicators)
+                be.__init__(self, documentName, indicators)
                         
         #Normalized - between 0 and 1
         def lackOfApostrophes(self, textString):
