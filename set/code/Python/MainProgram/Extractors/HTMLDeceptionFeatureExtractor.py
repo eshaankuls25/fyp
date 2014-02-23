@@ -1,3 +1,4 @@
+import sys
 from io import StringIO
 from lxml.html import HtmlElement
 import lxml.html as lh
@@ -5,11 +6,11 @@ import lxml.html as lh
 sys.path.append("..")
 
 from Parsers.HTMLParser_ import HTMLParser
-from DeceptionFeatureExtractor import DeceptionFeatureExtractor
+from DeceptionFeatureExtractor import DeceptionFeatureExtractor as dfe
 
-class DeceptionFeatureExtractor(BaseExtractor):
+class HTMLDeceptionFeatureExtractor(dfe):
         def __init__(self, documentName="currentWebsite"):
-                DeceptionFeatureExtractor.__init__(self, documentName)
+                dfe.__init__(self, documentName)
 
         def numOfTagsInString(self, textString):
                 return len(self.htmlParser.getTagsFromString(textString))

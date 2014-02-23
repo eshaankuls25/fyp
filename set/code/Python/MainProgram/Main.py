@@ -5,15 +5,16 @@ from collections import OrderedDict
 from os.path import normpath, isfile, isdir
 from uuid import uuid4
 
-from Extractors.DeceptionFeatureExtractor import DeceptionFeatureExtractor
+from Extractors.DeceptionFeatureExtractor import DeceptionFeatureExtractor as dfe
+from Extractors.HTMLDeceptionFeatureExtractor import HTMLDeceptionFeatureExtractor as hfe
 from Extractors.HTMLFeatureExtractor import HTMLFeatureExtractor
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
-from Utilities.PreProcessor import PreProcessor
 from Utilities.ExtractorSelector import ExtractorSelector
 from Utilities.Utils import readFromFile, listFilesInDirWithExtension,\
      unpickleObject, unpickleHTMLScraperItem, listFilesInDir
 from Utilities.listen import startFakeSMTPServer
+import Utilities.PreProcessor
 
 from Parsers.HTMLParser_ import HTMLParser
 from Parsers.TextParser import TextParser
@@ -27,7 +28,7 @@ class Detector(object):
         def __init__(self, *args):
                 ###Defaults###
 
-                self.extractorDictionary = {'text':DeceptionFeatureExtractor(), 'html':HTMLDeceptionFeatureExtractor()}
+                self.extractorDictionary = {'text':dfe(), 'html':hfe()}
 
                 self.documentPaths = []
                 self.extractorSelector = None
@@ -132,8 +133,7 @@ class Detector(object):
                 documentString = readFromFile(filepath)
                 print "---\n", documentString, "\n---"
 
-                preProcessor = PreProcessor()
-                processedDocument = preProcessor.removeEscapeChars(documentString)
+                processedDocument = PreProcessor.removeEscapeChars(documentString)
 
                 parser = TextParser(os.getcwd()+"/Parsers")
                 email, isMultipart = parser.getEmailFromString(documentString)
@@ -149,7 +149,7 @@ class Detector(object):
                         print "---"
 
                 if index is not None:
-                        processedPayload = preProcessor.removeEscapeChars(payload)
+                        processedPayload = PreProcessor.removeEscapeChars(payload)
                         return self._selectExtractorAndProcess(processedDocument,\
                                                                documentClass,\
                                                                email.get("Message-Id"),\
