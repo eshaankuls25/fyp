@@ -22,15 +22,17 @@ class DeceptionFeatureExtractor(be):
 
         #not normalized (yet)
         def numberOfSentences(self, textString):
+                sentenceNumberLimiter = 200; #Unsure of average line count of email, must check
                 try:
                         tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-                        return len(tokenizer.tokenize(textString))
+                        return float(len(tokenizer.tokenize(textString)))/sentenceNumberLimiter
                 except NameError:
                         sys.stderr.write("\n\n'punkt' not available.\n")
                         return 0
                 
         def uniqueWordCount(self, textString):
-                return len(set(Counter(re.findall(r"[\w]+", textString.lower())).keys()))
+                allWords = re.findall(r"[\w]+", textString.lower()) 
+                return float(len(set(Counter(allWords).keys())))/len(allWords)
 
 
         #Imitation
@@ -41,7 +43,8 @@ class DeceptionFeatureExtractor(be):
 
         #Not normalized (yet)
         def numberOfChars(self, textString):
-                return len(textString)
+                charCountLimiter = 6000; #Unsure of average char count of email, must check
+                return float(len(textString))/charCountLimiter
 
         def numberOfPersonalPronouns(self, textString):
                 self.textParser.tagText("temp", textString)
@@ -50,17 +53,20 @@ class DeceptionFeatureExtractor(be):
                 for x, y in self.textParser.taggedText["temp"]:
                         if y == 'PRP':
                                 count+=1
-                return count
+                return float(count)/len(self.textParser.taggedText["temp"])
 
         #source: StackOverflow - http://stackoverflow.com/questions/106179/regular-expression-to-match-hostname-or-ip-address?lq=1 
         #Need to edit regex for use with Python. In the meantime, look below...
         def _numOfIPAddressLinks(self, textString):
+                maxIPCount = 3 #Unsure of how many IP addresses exist in the document, so not perfect
                 countExp = re.compile(r"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
-                return len(re.findall(countExp, textString))
+                return float(len(re.findall(countExp, textString)))/maxIPCount
 
         def numOfIPAddressLinks(self, textString):
-                return len(self.htmlParser.findIPAddressesInEmail(textString))
+                maxIPCount = 3 #Unsure of how many IP addresses exist in the document, so not perfect
+                return float(len(self.htmlParser.findIPAddressesInEmail(textString)))/maxIPCount
 
         def numOfURLsinString(self, textString):
-                return len(self.htmlParser.getEmailURLs(textString))
+                maxURLCount = 30 #Unsure of how many URLs exist in the document, so not perfect
+                return float(len(self.htmlParser.getEmailURLs(textString)))/maxURLCount
 

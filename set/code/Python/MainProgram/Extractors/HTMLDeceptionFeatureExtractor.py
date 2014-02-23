@@ -13,7 +13,8 @@ class HTMLDeceptionFeatureExtractor(dfe):
                 dfe.__init__(self, documentName)
 
         def numOfTagsInString(self, textString):
-                return len(self.htmlParser.getTagsFromString(textString))
+                maxTagCount = 100 #Unsure of how many HTML tags exist, so not perfect
+                return float(len(self.htmlParser.getTagsFromString(textString)))/maxTagCount
 
         def _getHREFAndURLTextPairsInString(self, textString):
                 tree = lh.fromstring(textString)

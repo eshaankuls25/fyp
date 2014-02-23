@@ -37,7 +37,7 @@ class HTMLFeatureExtractor(tfe):
 
         def numOfURLsInWebsite(self, textString):
                 if self.foundWebsite:
-                        maxURLCount = 30 #Unsure of how many URLs exist, in the document, so not perfect
+                        maxURLCount = 30 #Unsure of how many URLs exist in the document, so not perfect
                         return float(len(self.htmlParser.getWebsiteURLs(self.website)))/maxURLCount
                 else:
                         return 1
