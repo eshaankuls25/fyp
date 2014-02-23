@@ -20,7 +20,7 @@ class GaussianSVM(object):
                      pathToModel='./Classifiers/gaussianSVM_model.bak', costParam=5):
         super(GaussianSVM, self).__init__()
 
-        self.costParam = costParam
+        #self.costParam = costParam
 
         if classList is None or featureMatrix is None:
                 if isinstance(pathToModel, basestring) and isfile(pathToModel):
@@ -38,7 +38,8 @@ class GaussianSVM(object):
                 #c = Cost parameter of C-SVC
                 #v = 5 Cross-validation 'block' size
                 #b = 0 Create probability estimates for SVC type SVM
-                params = svm_parameter('-s 0 -t 2 -c %s -b 0 -v 5'%str(costParam))
+                params = svm_parameter('-s 0 -t 2 -c %s -b 0'%str(costParam))
+                #params = svm_parameter('-s 0 -t 2 -c %s -b 0 -v 5'%str(costParam))
                 self.model = svm_train(svmProb, params)
                 self.saveModel(pathToModel, self.model)
 
