@@ -1,7 +1,4 @@
 import os, sys
-    model = None
-    classes = None
-    featureMatrix = None
 from os.path import normpath, isfile
 sys.path.append("..")
 
@@ -10,6 +7,9 @@ from svmutil import *
 
 class GaussianSVM(object):
     """docstring for GaussianSVM"""
+    model = None
+    classes = None
+    featureMatrix = None
 
     #featureMatrix is an iterable (list, tuple etc.) of dictionaries/vectors:
     ##e.g. [featureSet1.getVector(), featureSet2.getVector(), fe5.getVector() ...]
