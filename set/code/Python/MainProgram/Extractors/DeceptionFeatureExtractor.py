@@ -53,7 +53,10 @@ class DeceptionFeatureExtractor(be):
                 for x, y in self.textParser.taggedText["temp"]:
                         if y == 'PRP':
                                 count+=1
-                return float(count)/len(self.textParser.taggedText["temp"])
+                taggedText = self.textParser.taggedText["temp"]
+                if len(taggedText) == 0:
+                        return 0
+                return float(count)/len(taggedText)
 
         #source: StackOverflow - http://stackoverflow.com/questions/106179/regular-expression-to-match-hostname-or-ip-address?lq=1 
         #Need to edit regex for use with Python. In the meantime, look below...
