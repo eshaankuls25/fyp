@@ -1,6 +1,7 @@
 import sys, shlex, os, getopt, uuid,\
        time, threading, multiprocessing
 import cPickle as pickle
+from math import ceil 
 from collections import OrderedDict
 
 from os.path import normpath, isfile, isdir
@@ -39,6 +40,7 @@ class Detector(object):
         def __init__(self, *args):
                 ###Defaults###
 
+                self.maxParallelCoreCount = int(ceil(multiprocessing.cpu_count()/2)) #Core count ranges from 1 to ceil(num_of_cores/2)
                 self.extractorDictionary = {'text':tfe(), 'html':tfe()}
 
                 self.documentPaths = []
@@ -112,7 +114,7 @@ class Detector(object):
                                                                  for label, document in self.documentPaths]
                         
                         documentList = [pickle.loads(item) for item in\
-                                        ListProcessor.map( ParallelExtractor, argsList, options=[('popen', multiprocessing.cpu_count())] )]
+                                        ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
 
                         for l in documentList:
                             featureMatrix.extend(l)
