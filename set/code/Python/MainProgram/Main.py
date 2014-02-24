@@ -44,7 +44,6 @@ class Detector(object):
                 self.maxParallelCoreCount = int(ceil(cpuCount/2)) if cpuCount <= 8\
                                             else int(ceil(0.75*cpuCount)) #Core count ranges from 1 to ceil(num_of_cores/2), if core count <= 8,
                                                                                 #else is approx. or exactly 3/4 of the total CPU count.
-                print self.maxParallelCoreCount
                 self.extractorDictionary = {'text':tfe(), 'html':tfe()}
 
                 self.documentPaths = []
@@ -184,7 +183,8 @@ class Detector(object):
                         documentClass = -1
                         documentPath = None
                         
-                        print "\n-------------------------\nSET Deception Detector:\n-------------------------\n"
+                        print "\n-------------------------\nSET Deception Detector:\n-------------------------"
+                        print "CPU Cores to be in use: %d\n" %self.maxParallelCoreCount
                         print "Press a number associated with the following options."
                         print "1) Classify document\n2) Train program with documents\n3) Exit"
                         #print "\n\nNOTE: New documents added to the './Emails' folder\nwill be processed in the background, ***AND then deleted***.\n"
