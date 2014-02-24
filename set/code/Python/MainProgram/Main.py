@@ -1,6 +1,6 @@
-import sys, shlex, os, getopt, uuid, time
+import sys, shlex, os, getopt, uuid,\
+       time, threading, multiprocessing
 import cPickle as pickle
-import threading
 from collections import OrderedDict
 
 from os.path import normpath, isfile, isdir
@@ -112,7 +112,7 @@ class Detector(object):
                                                                  for label, document in self.documentPaths]
                         
                         documentList = [pickle.loads(item) for item in\
-                                        ListProcessor.map( ParallelExtractor, argsList, options=[('popen', 2)] )]
+                                        ListProcessor.map( ParallelExtractor, argsList, options=[('popen', multiprocessing.cpu_count())] )]
 
                         for l in documentList:
                             featureMatrix.extend(l)
