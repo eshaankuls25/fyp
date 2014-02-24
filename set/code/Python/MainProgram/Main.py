@@ -1,4 +1,5 @@
 import sys, shlex, os, getopt, uuid, time
+import cPickle as pickle
 import threading
 from collections import OrderedDict
 
@@ -11,15 +12,17 @@ from Extractors.TextFeatureExtractor import TextFeatureExtractor as tfe
 from Extractors.HTMLFeatureExtractor import HTMLFeatureExtractor
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
-from Utilities.ExtractorSelector import ExtractorSelector
+import Utilities.PreProcessor as PreProcessor
+from Utilities import ParallelExtractor, ListProcessor
+from Utilities.Utils import downloadNLTKData
 from Utilities.Utils import readFromFile, listFilesInDirWithExtension,\
      unpickleObject, unpickleHTMLScraperItem, listFilesInDir
 from Utilities.listen import startFakeSMTPServer
-import Utilities.PreProcessor as PreProcessor
+from Utilities.ExtractorSelector import ExtractorSelector
+from Utilities.ParallelExtractor import _extractFromDocument
 
 from Parsers.HTMLParser_ import HTMLParser
 from Parsers.TextParser import TextParser
-from Utilities.Utils import downloadNLTKData
 
 from Classifiers.GaussianSVM import GaussianSVM
 from Classifiers.DecisionTree.DTree import DTree
@@ -105,16 +108,15 @@ class Detector(object):
         def extractAllDocuments(self):
                 featureMatrix = []
                 if self.documentPaths:  #List is not empty
-                        docNum = 1
-                        for label, document in self.documentPaths:
-                                print "\nDocument No. %d" %(docNum)
-                                """
-                                featureSetList = _extractFromDocument(self.extractorSelector, filepath=document, documentClass=label)
-                                print "Class: ", featureSetList[0].getClass(), "Vector: ", featureSetList[0].getVector()
-                                featureMatrix.extend(featureSetList)
-                                """
-                                featureMatrix.extend(_extractFromDocument(self.extractorSelector, filepath=document, documentClass=label))
-                                docNum+=1 if docNum <= sys.maxint else 0
+                        argsList = [(pickle.dumps(self.extractorSelector), document, label)\
+                                                                 for label, document in self.documentPaths]
+                        
+                        documentList = [pickle.loads(item) for item in\
+                                        ListProcessor.map( ParallelExtractor, argsList, options=[('popen', 2)] )]
+
+                        for l in documentList:
+                            featureMatrix.extend(l)
+                        
                 else:                   #No documents found
                         sys.stderr.write("Could not find any documents.\nPlease try again, or enter another file, or directory path.\n")
                         return
@@ -138,8 +140,12 @@ class Detector(object):
                 mkeys = self.matrixDict.keys()
                 mdict = self.matrixDict
                 
-                self.svms = {category: GaussianSVM(mdict[category][0], mdict[category][1]) for category in mkeys}
-                self.dTrees = {category: DTree(mdict[category][0], mdict[category][1], documentGroupName=category) for category in mkeys}
+                self.svms = {category: GaussianSVM(mdict[category][0],\
+                                                   mdict[category][1]) for category in mkeys}
+                
+                self.dTrees = {category: DTree(mdict[category][0],\
+                                               mdict[category][1],\
+                                               documentGroupName=category) for category in mkeys}
 
 
         def classifyDocument(self, classifierName, label, dictVector):
@@ -166,7 +172,7 @@ class Detector(object):
                 classificationThread.start()
 
         def startMainMenu(self):
-                time.sleep(1);
+                time.sleep(0.5);
                 while True:
                         option = -1
                         documentClass = -1
@@ -179,7 +185,10 @@ class Detector(object):
                         
                         while not isinstance(option, (int))\
                                    or (option < 1 or option > 3):
-                                option = int(raw_input("Please choose a valid option.\n"))
+                                try:
+                                    option = int(raw_input("Please choose a valid option.\n"))
+                                except ValueError:
+                                    option = -1
                                 
                         if option is 1:
 
@@ -220,86 +229,6 @@ class Detector(object):
                                 
                         elif option is 3:
                                 sys.exit(0)
-
-def _selectExtractorAndProcess(extractorSelector, processedText,\
-                               documentClass, email_ID=None, emailPayload=None):
-        featureSetList = []
-        selectedExtractorTuple = extractorSelector.\
-                                 determineBestExtractor(processedText.split())
-        extractorCategory = selectedExtractorTuple[0]
-
-        if extractorCategory is None:
-                documentName = "DEFAULT"
-                documentCategory = 'Text'
-        else:
-                documentName = "%s - %s" % (extractorCategory.upper(), str(uuid4()))
-                documentCategory = extractorCategory
-
-        if email_ID is None or emailPayload is None:
-                textString = processedText
-        else:
-                documentName = email_ID
-                textString = emailPayload
-
-        #Start parsing using the chosen extractor(s)
-        extractorTuple = selectedExtractorTuple[1]
-        for extractor in extractorTuple:
-                if isinstance(extractor, HTMLFeatureExtractor):
-                        urlList = HTMLParser().getEmailURLs(textString) #Get all urls in email
-                        if urlList != list():                           #If the list is not empty...
-                                extractor.scrapeWebsiteFromURL(urlList[0], documentName=None) #Extract data from first url
-                
-                featureSet = extractor.getFeatureSet(\
-                        documentName+": "+documentCategory,\
-                        extractor.__class__.__name__, textString, documentClass)
-
-                featureSetList.append(featureSet)
-        return featureSetList
-
-def _extractFromDocument(extractorSelector, filepath, documentClass, index=None):    
-        documentString = readFromFile(filepath)
-        print "---\n", documentString, "\n---"
-
-        processedDocument = PreProcessor.removeEscapeChars(documentString)
-
-        parser = TextParser(os.getcwd()+"/Parsers")
-        email, isMultipart = parser.getEmailFromString(documentString)
-        payload = email.get_payload()
-
-        if index is not None:
-                print "Email no. "+str(index)+": "
-
-                print "---"
-                for header in email.keys():
-                        print "\n"+header+": "+email.get(header)
-                print "\nPayload: "+payload
-                print "---"
-
-        if index is not None:
-                processedPayload = PreProcessor.removeEscapeChars(payload)
-                return _selectExtractorAndProcess(extractorSelector,\
-                                                  processedDocument,\
-                                                  documentClass,\
-                                                  email.get("Message-Id"),\
-                                                  processedPayload)
-        else:
-                return _selectExtractorAndProcess(extractorSelector,\
-                                                  processedDocument,\
-                                                  documentClass)
-                        
-                    
-def extractFromEmails(extractorSelector, documentClass):
-        featureSetList = []
-        filepathPrefix = "./Emails/"
-
-        i=0
-        for filepath in listFilesInDirWithExtension(filepathPrefix, ".eml"):
-                featureSetList.extend(_extractFromDocument(extractorSelector,\
-                                                           filepathPrefix+filepath,\
-                                                           documentClass))
-        i+=1
-        
-        return featureSetList
 
 def _classifyEmailsInFolder(extractorSelector, documentClass, maxQueueLength):
         currentQueueLength = 0

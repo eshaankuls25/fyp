@@ -70,13 +70,8 @@ class BaseExtractor():
                 try:
                         d = cmudict.dict()
                         return [len(list(y for y in x if y[-1].isdigit())) for x in d[word.lower()]][0]
-                except KeyError:
-                        sys.stderr.write('\n\nWord not in dictionary.\n')
+                except (KeyError, NameError):
                         return 0
-                except NameError:
-                        sys.stderr.write("\n\n'cmudict' not available.\n")
-                        return 0
-
         #Not normalized (yet)
         def _wordCountInString(self, textString, word):
                 #Using regular expression: [\w]+

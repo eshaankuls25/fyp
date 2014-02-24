@@ -1,4 +1,5 @@
 import sys
+import cPickle as pickle
 sys.path.append("..")
 
 from Extractors.TextFeatureExtractor import TextFeatureExtractor as tfe
@@ -6,7 +7,6 @@ from Extractors.TextFeatureExtractor import TextFeatureExtractor as tfe
 from Extractors.BaseExtractor import BaseExtractor as be
 
 class ExtractorSelector:
-
         categoryDictionary = {}
         extractorDictionary = {}
 
@@ -18,6 +18,8 @@ class ExtractorSelector:
                         else:
                                 self.categoryDictionary[category] = set()
                 self.extractorDictionary = extractorDict
+                #self.defaultExtractor = hfe()
+                self.defaultExtractor = tfe()
 
         def addExtractor(self, category, extractor):
                 assert category not in self.categoryDictionary
@@ -78,8 +80,17 @@ class ExtractorSelector:
                         else:
                                 return (extractorName, (bestExtractor,))        
                 else:
-                        #return (None,  (hfe(),))
-                        return (None,  (tfe(),))
+                        return (None,  (self.defaultExtractor,))
+                
+                """
+                if extractorName is not None:
+                        if isinstance(bestExtractor, (list, tuple)):
+                                return (extractorName, pickle.dumps(bestExtractor))
+                        else:
+                                return (extractorName, (pickle.dumps(bestExtractor), ))        
+                else:
+                        return (None,  (pickle.dumps(self.defaultExtractor), ))
+                """
 
                 
 
