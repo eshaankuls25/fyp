@@ -40,7 +40,11 @@ class Detector(object):
         def __init__(self, *args):
                 ###Defaults###
 
-                self.maxParallelCoreCount = int(ceil(multiprocessing.cpu_count()/2)) #Core count ranges from 1 to ceil(num_of_cores/2)
+                cpuCount = multiprocessing.cpu_count()
+                self.maxParallelCoreCount = int(ceil(cpuCount/2)) if cpuCount <= 8\
+                                            else int(ceil(0.75*cpuCount)) #Core count ranges from 1 to ceil(num_of_cores/2), if core count <= 8,
+                                                                                #else is approx. or exactly 3/4 of the total CPU count.
+                print self.maxParallelCoreCount
                 self.extractorDictionary = {'text':tfe(), 'html':tfe()}
 
                 self.documentPaths = []
