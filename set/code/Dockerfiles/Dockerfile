@@ -32,6 +32,14 @@ run 	apt-get install -y -q python-numpy
 #add readline support
 run 	apt-get install -y -q rlwrap
 
+run	apt-get install -y -q python-dev
+run	apt-get install -y -q libxml2-dev libxslt-dev
+
+# Runtime dependencies
+run	apt-get install -y -q iptables
+run	apt-get install -y -q lxc
+run	apt-get install -y -q aufs-tools
+
 #Install python packages
 run	apt-get install -y -q python-pip
 run	pip install s3cmd
@@ -40,15 +48,8 @@ run pip install virtualenv
 run pip install tldextract
 run pip install nltk
 run pip install chardet
-
-run	apt-get install -y -q python-dev
-run	apt-get install -y -q libxml2-dev libxslt-dev
-run	apt-get install -y -q scrapy-0.22
-
-# Runtime dependencies
-run	apt-get install -y -q iptables
-run	apt-get install -y -q lxc
-run	apt-get install -y -q aufs-tools
+run pip install execnet
+run pip install Scrapy
 
 # Install impacket
 #run 	mkdir ~/impacket
