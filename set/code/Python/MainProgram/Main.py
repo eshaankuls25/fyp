@@ -25,8 +25,8 @@ from Utilities.ParallelExtractor import _extractFromDocument
 from Parsers.HTMLParser_ import HTMLParser
 from Parsers.TextParser import TextParser
 
-from Classifiers.GaussianSVM import GaussianSVM
 from Classifiers.DecisionTree.DTree import DTree
+from Classifiers.SupportVectorMachine.SVM import SVM
 
 try:
     from Queue import Queue, Empty
@@ -145,7 +145,7 @@ class Detector(object):
                 mkeys = self.matrixDict.keys()
                 mdict = self.matrixDict
                 
-                self.svms = {category: GaussianSVM(mdict[category][0],\
+                self.svms = {category: SVM(mdict[category][0],\
                                                    mdict[category][1]) for category in mkeys}
                 
                 self.dTrees = {category: DTree(mdict[category][0],\
@@ -155,7 +155,7 @@ class Detector(object):
 
         def classifyDocument(self, classifierName, label, dictVector):
                 if self.svms is None or self.dTrees is None:    #SVM
-                        self.svms = {classifierName: GaussianSVM()} #Loads pre-computed model
+                        self.svms = {classifierName: SVM()} #Loads pre-computed model
                         return self.svms[classifierName].classifyDocument(label, dictVector)
                 else:                                           #SVM and decision tree
                         return(self.svms[classifierName].classifyDocument(label, dictVector),

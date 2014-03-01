@@ -16,13 +16,11 @@ class DeceptionFeatureExtractor(be):
         
         #Obfuscation
 
-        #Normalized - between 0 and 1
         def lackOfCommas(self, textString):
                 return self._lackOfCharInString(textString, ',')
 
-        #not normalized (yet)
         def numberOfSentences(self, textString):
-                sentenceNumberLimiter = 200; #Unsure of average line count of email, must check
+                sentenceNumberLimiter = 300; #Unsure of average line count of email, must check
                 try:
                         tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
                         return float(len(tokenizer.tokenize(textString)))/sentenceNumberLimiter
@@ -37,11 +35,9 @@ class DeceptionFeatureExtractor(be):
 
         #Imitation
 
-        #Normalized - between 0 and 1
         def lackOfFullStops(self, textString):
                 return self._lackOfCharInString(textString, '.')
 
-        #Not normalized (yet)
         def numberOfChars(self, textString):
                 charCountLimiter = 6000; #Unsure of average char count of email, must check
                 return float(len(textString))/charCountLimiter

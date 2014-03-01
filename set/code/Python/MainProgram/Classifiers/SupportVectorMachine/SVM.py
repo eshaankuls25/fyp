@@ -5,7 +5,7 @@ sys.path.append("..")
 #from Utilities.FeatureSet import FeatureSet
 from svmutil import *
 
-class GaussianSVM(object):
+class SVM(object):
     """docstring for GaussianSVM"""
     model = None
     classes = None
@@ -15,10 +15,11 @@ class GaussianSVM(object):
     ##e.g. [featureSet1.getVector(), featureSet2.getVector(), fe5.getVector() ...]
 
     #Use like this:
-    #gSVM = GaussianSVM(costParam=your_chosen_number)
+    #gSVM = SVM(costParam=your_chosen_number, modelType=2) #GaussianSVM
     def __init__(self, classList=None, featureMatrix=None,\
-                     pathToModel='./Classifiers/gaussianSVM_model.bak', costParam=1):
-        super(GaussianSVM, self).__init__()
+                     pathToModel='./Classifiers/svm_model.bak',
+                     modelType=2, costParam=1):
+        super(SVM, self).__init__()
 
         #self.costParam = costParam
 
@@ -36,11 +37,10 @@ class GaussianSVM(object):
                 #t = 2 Model type: Gaussian/RBF
                 #s = 0 C-SVC multi-class classifier
                 #c = Cost parameter of C-SVC
-                #v = 5 Cross-validation 'block' size
+                #v = 10 Cross-validation 'block' size
                 #b = 0 Create probability estimates for SVC type SVM
                 #g = 1/len(featureSet) - Implicitly set at the moment
-                #params = svm_parameter('-s 0 -t 2 -c %s -b 0'%str(costParam))
-                params = svm_parameter('-s 0 -t 2 -c %s -b 0 -v 5'%str(costParam))
+                params = svm_parameter('-s 0 -t %s -c %s -b 0 -v 10' %(str(modelType), str(costParam)) )
                 self.model = svm_train(svmProb, params)
                 self.saveModel(pathToModel, self.model)
 
