@@ -5,7 +5,7 @@ from Extractors.HTMLScraper.WebsiteScraper import WebsiteScraper
 from Parsers.HTMLParser_ import HTMLParser
 from TextFeatureExtractor import TextFeatureExtractor as tfe
 
-class HTMLFeatureExtractor(tfe):
+class GeneralFeatureExtractor(tfe): #Text and HTML
         def __init__(self, documentName="currentWebsite", urlString=None,\
                      indicators=('http://', 'www', '.com', '.co.uk')):
                 tfe.__init__(self, documentName, indicators)

@@ -2,8 +2,8 @@ import sys
 import cPickle as pickle
 sys.path.append("..")
 
-from Extractors.TextFeatureExtractor import TextFeatureExtractor as tfe
-#from Extractors.HTMLDeceptionFeatureExtractor import HTMLDeceptionFeatureExtractor as hfe
+from Extractors.GeneralFeatureExtractor import GeneralFeatureExtractor as gfe
+from Extractors.InitialFeatureExtractor import InitialFeatureExtractor as ife
 from Extractors.BaseExtractor import BaseExtractor as be
 
 class ExtractorSelector:
@@ -18,8 +18,8 @@ class ExtractorSelector:
                         else:
                                 self.categoryDictionary[category] = set()
                 self.extractorDictionary = extractorDict
-                #self.defaultExtractor = hfe()
-                self.defaultExtractor = tfe()
+                #self.defaultExtractor = ife()
+                self.defaultExtractor = gfe()
 
         def addExtractor(self, category, extractor):
                 assert category not in self.categoryDictionary

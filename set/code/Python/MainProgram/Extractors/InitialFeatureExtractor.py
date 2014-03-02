@@ -8,7 +8,7 @@ sys.path.append("..")
 from Parsers.HTMLParser_ import HTMLParser
 from DeceptionFeatureExtractor import DeceptionFeatureExtractor as dfe
 
-class HTMLDeceptionFeatureExtractor(dfe):
+class InitialFeatureExtractor(dfe): #HTML and Deception
         def __init__(self, documentName="currentWebsite"):
                 dfe.__init__(self, documentName)
 
