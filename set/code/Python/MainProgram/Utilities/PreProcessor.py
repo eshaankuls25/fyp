@@ -31,4 +31,4 @@ def convertString(textString):
 def convertToAscii(textString):
         #'NFKD' means that non-ASCII chars will be replaced with the ASCII equivalents
         return unicodedata.normalize('NFKD', textString).encode('ascii', 'ignore')
-                
+

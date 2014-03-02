@@ -23,13 +23,13 @@ class BaseExtractor():
                 elif params is not None:
                         parameters = [params]
 
-                if params is not None:
+                if params is not None: #More efficient (less if checks), but some duplicated code
                         for x, y in memberList:
-                                if x[0] != '_' and x != 'getFeatureSet' and x != 'scrapeWebsiteFromURL':
+                                if x[0] != '_' and x not in ('getFeatureSet', 'scrapeWebsiteFromURL'):
                                         self.featureSet.addFeature(x, getattr(self, x)(*parameters))
                 if params is None:
                         for x, y in memberList:
-                                if x[0] != '_' and x != 'getFeatureSet' and x != 'scrapeWebsiteFromURL':
+                                if x[0] != '_' and x not in ('getFeatureSet', 'scrapeWebsiteFromURL'):
                                         self.featureSet.addFeature(x, getattr(self, x)())        
 
                 return self.featureSet
@@ -72,6 +72,7 @@ class BaseExtractor():
                         return [len(list(y for y in x if y[-1].isdigit())) for x in d[word.lower()]][0]
                 except (KeyError, NameError):
                         return 0
+
         #Not normalized (yet)
         def _wordCountInString(self, textString, word):
                 #Using regular expression: [\w]+
@@ -80,7 +81,6 @@ class BaseExtractor():
                 return Counter(re.findall(r"[\w]+", textString.lower()))[word]
 
         
-
 
 
 

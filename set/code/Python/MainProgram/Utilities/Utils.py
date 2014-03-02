@@ -92,6 +92,7 @@ def downloadNLTKData(packageList):
         print 'ERROR: Operating System Not Supported'
         sys.exit()
 
+    #Set up nltk data directory, if it doesn't exist in PATH
     isDirectoryInPath = any((directory in item) for item in nltk.data.path)
     if not isDirectoryInPath: nltk.data.path.append(directory)
 

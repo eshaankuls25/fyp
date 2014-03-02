@@ -1,34 +1,29 @@
 import sys, shlex, os, getopt, uuid,\
        time, threading, multiprocessing
 import cPickle as pickle
-from math import ceil 
-from collections import OrderedDict
+from math           import ceil 
+from collections    import OrderedDict
 
-from os.path import normpath, isfile, isdir
-from uuid import uuid4
+from os.path        import normpath, isfile, isdir
+from uuid           import uuid4
 
-from Extractors.InitialFeatureExtractor import InitialFeatureExtractor as ife
-from Extractors.DeceptionFeatureExtractor import DeceptionFeatureExtractor as dfe
-from Extractors.GeneralFeatureExtractor import GeneralFeatureExtractor as gfe
-from Extractors.TextFeatureExtractor import TextFeatureExtractor as tfe
-from Extractors.BaseExtractor import BaseExtractor as be
+from    Extractors.InitialFeatureExtractor     import InitialFeatureExtractor      as ife
+from    Extractors.DeceptionFeatureExtractor   import DeceptionFeatureExtractor    as dfe
+from    Extractors.GeneralFeatureExtractor     import GeneralFeatureExtractor      as gfe
+from    Extractors.TextFeatureExtractor        import TextFeatureExtractor         as tfe
+from    Extractors.BaseExtractor               import BaseExtractor                as be
+from    Extractors.HTMLScraper.items           import HTMLScraperItem
 
-from Extractors.HTMLScraper.items import HTMLScraperItem
+from    Utilities                              import ParallelExtractor, ListProcessor
+from    Utilities.Utils                        import downloadNLTKData, readFromFile,\
+                                                                    listFilesInDir
+from    Utilities.listen                       import startFakeSMTPServer
+from    Utilities.ExtractorSelector            import ExtractorSelector
+from    Utilities.ParallelExtractor            import _extractFromDocument
+import  Utilities.PreProcessor as PreProcessor
 
-import Utilities.PreProcessor as PreProcessor
-from Utilities import ParallelExtractor, ListProcessor
-from Utilities.Utils import downloadNLTKData
-from Utilities.Utils import readFromFile, listFilesInDirWithExtension,\
-     unpickleObject, unpickleHTMLScraperItem, listFilesInDir
-from Utilities.listen import startFakeSMTPServer
-from Utilities.ExtractorSelector import ExtractorSelector
-from Utilities.ParallelExtractor import _extractFromDocument
-
-from Parsers.HTMLParser_ import HTMLParser
-from Parsers.TextParser import TextParser
-
-from Classifiers.DecisionTree.DTree import DTree
-from Classifiers.SupportVectorMachine.SVM import SVM
+from    Classifiers.DecisionTree.DTree         import DTree
+from    Classifiers.SupportVectorMachine.SVM   import SVM
 
 try:
     from Queue import Queue, Empty
@@ -47,7 +42,6 @@ class Detector(object):
                                             else int(ceil(0.75*cpuCount)) #Core count ranges from 1 to ceil(num_of_cores/2), if core count <= 8,
                                                                                 #else is approx. or exactly 3/4 of the total CPU count.
                 self.extractorDictionary = {'text':tfe(), 'html':tfe()}
-
                 self.documentPaths = []
                 self.extractorSelector = None
 
@@ -160,7 +154,7 @@ class Detector(object):
                         self.svms = {classifierName: SVM()} #Loads pre-computed model
                         return self.svms[classifierName].classifyDocument(label, dictVector)
                 else:                                           #SVM and decision tree
-                        return(self.svms[classifierName].classifyDocument(label, dictVector),
+                        return (self.svms[classifierName].classifyDocument(label, dictVector),
                                self.dTrees[classifierName].classifyDocument(dictVector))
                 
         def startFakeSMTPServerThread(self):

@@ -21,8 +21,6 @@ class SVM(object):
                      modelType=2, costParam=1):
         super(SVM, self).__init__()
 
-        #self.costParam = costParam
-
         if classList is None or featureMatrix is None:
                 if isinstance(pathToModel, basestring) and isfile(pathToModel):
                     self.model = self.loadModel(pathToModel)
@@ -37,10 +35,10 @@ class SVM(object):
                 #t = 2 Model type: Gaussian/RBF
                 #s = 0 C-SVC multi-class classifier
                 #c = Cost parameter of C-SVC
-                #v = 10 Cross-validation 'block' size
+                #v = 5 k-fold cross-validation 'block' size
                 #b = 0 Create probability estimates for SVC type SVM
                 #g = 1/len(featureSet) - Implicitly set at the moment
-                params = svm_parameter('-s 0 -t %s -c %s -b 0 -v 10' %(str(modelType), str(costParam)) )
+                params = svm_parameter('-s 0 -t %s -c %s -b 0 -v 5' %(str(modelType), str(costParam)) )
                 self.model = svm_train(svmProb, params)
                 self.saveModel(pathToModel, self.model)
 
