@@ -11,6 +11,8 @@ from Extractors.InitialFeatureExtractor import InitialFeatureExtractor as ife
 from Extractors.DeceptionFeatureExtractor import DeceptionFeatureExtractor as dfe
 from Extractors.GeneralFeatureExtractor import GeneralFeatureExtractor as gfe
 from Extractors.TextFeatureExtractor import TextFeatureExtractor as tfe
+from Extractors.BaseExtractor import BaseExtractor as be
+
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
 import Utilities.PreProcessor as PreProcessor
@@ -44,7 +46,7 @@ class Detector(object):
                 self.maxParallelCoreCount = int(ceil(cpuCount/2)) if cpuCount <= 8\
                                             else int(ceil(0.75*cpuCount)) #Core count ranges from 1 to ceil(num_of_cores/2), if core count <= 8,
                                                                                 #else is approx. or exactly 3/4 of the total CPU count.
-                self.extractorDictionary = {'text':gfe(), 'html':gfe()}
+                self.extractorDictionary = {'text':tfe(), 'html':tfe()}
 
                 self.documentPaths = []
                 self.extractorSelector = None

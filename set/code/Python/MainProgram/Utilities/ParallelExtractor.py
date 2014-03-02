@@ -6,9 +6,10 @@ import Utilities.PreProcessor as PreProcessor
 from Parsers.TextParser import TextParser
 from Parsers.HTMLParser_ import HTMLParser
 
-from Extractors.HTMLFeatureExtractor import HTMLFeatureExtractor
+from Extractors.InitialFeatureExtractor import InitialFeatureExtractor as ife
+from Extractors.DeceptionFeatureExtractor import DeceptionFeatureExtractor as dfe
+from Extractors.GeneralFeatureExtractor import GeneralFeatureExtractor as gfe
 from Extractors.TextFeatureExtractor import TextFeatureExtractor as tfe
-from Extractors.HTMLDeceptionFeatureExtractor import HTMLDeceptionFeatureExtractor as hfe
 from Extractors.BaseExtractor import BaseExtractor as be
 
 from Utilities.ExtractorSelector import ExtractorSelector
@@ -36,11 +37,10 @@ def _selectExtractorAndProcess(extractorSelector, processedText,\
             textString = emailPayload
 
     #Start parsing using the chosen extractor(s)
-    #extractorTuple = pickle.loads(selectedExtractorTuple[1])
     extractorTuple = selectedExtractorTuple[1]
     
     for extractor in extractorTuple:
-            if isinstance(extractor, HTMLFeatureExtractor):
+            if isinstance(extractor, gfe):
                     urlList = HTMLParser().getEmailURLs(textString) #Get all urls in email
                     if urlList != list():                           #If the list is not empty...
                             extractor.scrapeWebsiteFromURL(urlList[0], documentName=None) #Extract data from first url
