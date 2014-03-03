@@ -5,12 +5,11 @@ import lxml.html as lh
 #import lxml.html.clean as lhclean
 sys.path.append("..")
 
-from Parsers.HTMLParser_ import HTMLParser
 from DeceptionFeatureExtractor import DeceptionFeatureExtractor as dfe
 
 class InitialFeatureExtractor(dfe): #HTML and Deception
-        def __init__(self, documentName="currentWebsite"):
-                dfe.__init__(self, documentName)
+        def __init__(self, documentName="currentWebsite", indicators=[]):
+                dfe.__init__(self, documentName, indicators)
 
         def numOfTagsInString(self, textString):
                 maxTagCount = 100 #Unsure of how many HTML tags exist, so not perfect
@@ -18,10 +17,13 @@ class InitialFeatureExtractor(dfe): #HTML and Deception
 
         def _getHREFAndURLTextPairsInString(self, textString):
                 tree = lh.fromstring(textString)
+                
                 if isinstance(tree, HtmlElement):
                     return [(tree.get("href"), tree.text)]
+                
                 urls = tree.xpath("//a/@href")
                 textStrings = tree.xpath("//a/@href/text()")
+                
                 return zip(urls, textStrings)
 
         def proportionOfNonMatchingHRefPairs(self, textString):

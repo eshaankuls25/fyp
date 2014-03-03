@@ -1,23 +1,21 @@
 import sys, re, importlib
 
-from twisted.internet import reactor
-from twisted.internet.error import ConnectionRefusedError
+from twisted.internet           import reactor
+from twisted.internet.error     import ConnectionRefusedError
 
-from scrapy import log, signals
-from scrapy.crawler import Crawler
-from scrapy.settings import CrawlerSettings
-from CrawlerWorker import CrawlerWorker
-from scrapy.crawler import CrawlerProcess
-from scrapy.xlib.pydispatch import dispatcher
-from multiprocessing import Process
+from scrapy                     import log, signals
+from scrapy.crawler             import Crawler
+from scrapy.settings            import CrawlerSettings
+from CrawlerWorker              import CrawlerWorker
+from scrapy.crawler             import CrawlerProcess
+from scrapy.xlib.pydispatch     import dispatcher
+from multiprocessing            import Process
 
-sys.path.append("..")
+sys.path.append("../..")
 
-from Utilities.Utils import downloadNLTKData
-from spiders.SETSpider import SETSpider
-from Extractors.HTMLScraper.items import HTMLScraperItem
-from Parsers.HTMLParser_ import HTMLParser
-from multiprocessing import Queue
+from Utilities.Utils            import downloadNLTKData
+from spiders.SETSpider          import SETSpider
+from multiprocessing            import Queue
 
 #Use scrapy code here - items, spiders etc.
 #Source - Stack Overflow: http://stackoverflow.com/questions/14777910/scrapy-crawl-from-script-always-blocks-script-execution-after-scraping/19060485

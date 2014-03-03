@@ -7,8 +7,8 @@ from Parsers.HTMLParser_ import HTMLParser
 from BaseExtractor import BaseExtractor as be
 
 class DeceptionFeatureExtractor(be):
-        def __init__(self, documentName="currentWebsite"):
-                be.__init__(self, documentName)
+        def __init__(self, documentName="currentWebsite", indicators=[]):
+                be.__init__(self, documentName, indicators)
                 
                 pathToParser = os.getcwd()+"/Parsers"
                 self.textParser = TextParser(pathToParser)
@@ -39,7 +39,7 @@ class DeceptionFeatureExtractor(be):
                 return self._lackOfCharInString(textString, '.')
 
         def numberOfChars(self, textString):
-                charCountLimiter = 6000; #Unsure of average char count of email, must check
+                charCountLimiter = 10000; #Unsure of average char count of email, must check
                 return float(len(textString))/charCountLimiter
 
         def numberOfPersonalPronouns(self, textString):

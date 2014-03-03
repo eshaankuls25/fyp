@@ -20,8 +20,9 @@ from    Utilities.Utils                        import downloadNLTKData, readFrom
 from    Utilities.listen                       import startFakeSMTPServer
 from    Utilities.ExtractorSelector            import ExtractorSelector
 from    Utilities.ParallelExtractor            import _extractFromDocument
-import  Utilities.PreProcessor as PreProcessor
 
+import  Utilities.PreProcessor as PreProcessor
+from    Utilities.PreProcessor                 import stem, lemmatiseText
 from    Classifiers.DecisionTree.DTree         import DTree
 from    Classifiers.SupportVectorMachine.SVM   import SVM
 
@@ -109,7 +110,7 @@ class Detector(object):
         def extractAllDocuments(self):
                 featureMatrix = []
                 if self.documentPaths:  #List is not empty
-                        argsList = [(pickle.dumps(self.extractorSelector), document, label)\
+                        argsList = [(pickle.dumps(self.extractorSelector), lemmatiseText(document), label)\
                                                                  for label, document in self.documentPaths]
                         
                         documentList = [pickle.loads(item) for item in\

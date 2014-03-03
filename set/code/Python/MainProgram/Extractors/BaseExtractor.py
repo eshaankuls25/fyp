@@ -4,16 +4,23 @@ from nltk.corpus import cmudict
 sys.path.append("..")
 
 from Utilities.FeatureSet import FeatureSet
+from Parsers.TextParser import TextParser
+from Parsers.HTMLParser_ import HTMLParser
 
 class BaseExtractor():
         def __init__(self, documentName, indicators=None):
                 self.featureSet = None
                 self.documentName = documentName
+
+                pathToParser = os.getcwd()+"/Parsers"
+                self.textParser = TextParser(pathToParser)
+                self.htmlParser = HTMLParser()
+                
                 if isinstance(indicators, (list, tuple)): #If 'indicators' is a list or tuple
                         self.indicators = indicators
                 else:
                         self.indicators = []
-        
+                
         def getFeatureSet(self, documentName, documentCategory, params=None, documentClass=-1):
                 memberList = inspect.getmembers(self, predicate=inspect.ismethod)
                 self.featureSet = FeatureSet(documentName, documentCategory, documentClass)
