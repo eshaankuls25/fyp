@@ -52,8 +52,9 @@ class Detector(object):
 
                 ###Dependency checks###
 
-                if not (downloadNLTKData('punkt') and downloadNLTKData('cmudict')):
-                        raise RuntimeError("\n\nCould not download the required nltk dependencies\n('punkt' or 'cmudict' dictionaries).\n")                
+                if not (downloadNLTKData('punkt') and downloadNLTKData('cmudict')
+                        and downloadNLTKData('wordnet')):
+                        raise RuntimeError("\n\nCould not download the required nltk dependencies.\n")                
 
                 ###User arguments###
                 #Text must be delimited by semi-colon, in 
