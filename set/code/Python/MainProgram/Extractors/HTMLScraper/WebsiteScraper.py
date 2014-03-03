@@ -11,7 +11,7 @@ from scrapy.crawler             import CrawlerProcess
 from scrapy.xlib.pydispatch     import dispatcher
 from multiprocessing            import Process
 
-sys.path.append("../..")
+sys.path.append("..")
 
 from Utilities.Utils            import downloadNLTKData
 from spiders.SETSpider          import SETSpider

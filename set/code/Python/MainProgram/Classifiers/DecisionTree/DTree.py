@@ -7,7 +7,10 @@ import DecisionTree
 
 class DTree(object):
     """docstring for DTree"""
-    def __init__(self, classList, featureMatrix, filePath=None, documentGroupName=None):
+    def __init__(self, classList, featureMatrix,\
+                 filePath=None, documentGroupName=None):
+        print "\n-------------------------\nDecision Tree:\n-------------------------\n"
+        
         self.dt = None
         self.rootNode = None
         self._decisionTreePath = None
@@ -40,6 +43,7 @@ class DTree(object):
                 i+=1
                 
         self.createDTree()
+        dt.show_training_data()
 
     def createDTree(self):
         self.dt = DecisionTree.DecisionTree( training_datafile = self._decisionTreePath,

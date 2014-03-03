@@ -6,7 +6,7 @@ sys.path.append("..")
 from svmutil import *
 
 class SVM(object):
-    """docstring for GaussianSVM"""
+    """docstring for SVM"""
     model = None
     classes = None
     featureMatrix = None
@@ -20,7 +20,8 @@ class SVM(object):
                      pathToModel='./Classifiers/svm_model.bak',
                      modelType=2, costParam=1):
         super(SVM, self).__init__()
-
+        print "\n-------------------------\nSVM:\n-------------------------\n"
+        
         if classList is None or featureMatrix is None:
                 if isinstance(pathToModel, basestring) and isfile(pathToModel):
                     self.model = self.loadModel(pathToModel)

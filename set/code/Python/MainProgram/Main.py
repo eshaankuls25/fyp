@@ -25,6 +25,7 @@ import  Utilities.PreProcessor as PreProcessor
 from    Utilities.PreProcessor                 import stem, lemmatiseText
 from    Classifiers.DecisionTree.DTree         import DTree
 from    Classifiers.SupportVectorMachine.SVM   import SVM
+from    Classifiers.NaiveBayes                 import NaiveBayes
 
 try:
     from Queue import Queue, Empty
@@ -49,6 +50,7 @@ class Detector(object):
                 self.matrixDict = OrderedDict()
                 self.svms = None
                 self.dTrees = None
+                self.naiveBayes = None
 
                 ###Dependency checks###
 
@@ -142,9 +144,14 @@ class Detector(object):
         def trainClassifiers(self):
                 mkeys = self.matrixDict.keys()
                 mdict = self.matrixDict
+
+                print "\n-------------------------\nTRAINING...\n-------------------------\n"
+
+                self.naiveBayes = {category: NaiveBayes(mdict[category][0],\
+                                                        mdict[category][1]) for category in mkeys}
                 
                 self.svms = {category: SVM(mdict[category][0],\
-                                                   mdict[category][1]) for category in mkeys}
+                                           mdict[category][1]) for category in mkeys}
                 
                 self.dTrees = {category: DTree(mdict[category][0],\
                                                mdict[category][1],\
@@ -152,12 +159,15 @@ class Detector(object):
 
 
         def classifyDocument(self, classifierName, label, dictVector):
-                if self.svms is None or self.dTrees is None:    #SVM
+                if self.svms is None or self.dTrees is None\
+                   or self.naiveBayes is None:              #SVM
                         self.svms = {classifierName: SVM()} #Loads pre-computed model
                         return self.svms[classifierName].classifyDocument(label, dictVector)
-                else:                                           #SVM and decision tree
-                        return (self.svms[classifierName].classifyDocument(label, dictVector),
-                               self.dTrees[classifierName].classifyDocument(dictVector))
+                    
+                else:                                       #SVM, NaiveBayes, and decision tree
+                        return (self.naiveBayes[classifierName].classifyDocument(label, dictVector),
+                                self.svms[classifierName].classifyDocument(label, dictVector),
+                                self.dTrees[classifierName].classifyDocument(dictVector))
                 
         def startFakeSMTPServerThread(self):
             smtpThread = threading.Thread(target=startFakeSMTPServer, name='smtp-watcher',
