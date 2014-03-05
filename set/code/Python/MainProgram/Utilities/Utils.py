@@ -3,7 +3,7 @@ import cPickle as pickle
 from subprocess import Popen, PIPE
 from threading import Thread
 
-from os.path import isdir, isfile
+from os.path import isdir, isfile, normpath
 
 sys.path.append("..")
 
@@ -196,6 +196,29 @@ def listFilesInDirWithExtension(directoryPath, extension):
         elif file_.endswith(extension):
             fileList.append(possiblePath)
     return fileList
+
+def writeWekaArffFile(title, attributeList, featureMatrix):
+    assert (isinstance(featureMatrix, list) and\
+       isinstance(featureMatrix[0], (list, tuple)) and\
+       isinstance(featureMatrix[1], (list, tuple)))
+    header = "@RELATION setdata\n\n"
+    classList = featureMatrix[0]
+    vectors = featureMatrix[1]
+    for attribute in attributeList:
+        header += "@ATTRIBUTE %s NUMERIC\n" %attribute
+
+    header += "@ATTRIBUTE class\t{"
+    header+=''.join(["%s,"%(c) for c in classList]) #Classes
+    header += "}\n\n"
+
+    header += "@DATA\n"
+    for vector, label in zip(vectors, classList):
+        header += ''.join(["%s,"%(vector[feature]) for feature in vector])
+        header += "%s\n"%(label)
+        
+    filepath = normpath(os.path.join(os.getcwd(), "%s.arff"%(title)))
+    writeToFile(filepath, header, "w")
+    
 
 "Source: Jython - https://fisheye3.atlassian.com/browse/jython/trunk/jython/Lib/subprocess.py?r=6636#to566"
 def _cmdline2list(cmdline):

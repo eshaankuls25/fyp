@@ -39,7 +39,7 @@ class SVM(object):
                 #v = 5 k-fold cross-validation 'block' size
                 #b = 0 Create probability estimates for SVC type SVM
                 #g = 1/len(featureSet) - Implicitly set at the moment
-                params = svm_parameter('-s 0 -t %s -c %s -b 0 -v 5' %(str(modelType), str(costParam)) )
+                params = svm_parameter('-s 0 -t %s -c %s -b 0' %(str(modelType), str(costParam)) )
                 self.model = svm_train(svmProb, params)
                 self.saveModel(pathToModel, self.model)
 

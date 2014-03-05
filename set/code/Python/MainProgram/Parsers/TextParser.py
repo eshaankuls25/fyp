@@ -7,6 +7,7 @@ from os.path            import normpath
 
 sys.path.append("..")
 from Utilities.Utils    import readFromFile
+import  Utilities.PreProcessor as PreProcessor
 
 
 class TextParser:

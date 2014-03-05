@@ -43,7 +43,7 @@ class DTree(object):
                 i+=1
                 
         self.createDTree()
-        dt.show_training_data()
+        self.dt.show_training_data()
 
     def createDTree(self):
         self.dt = DecisionTree.DecisionTree( training_datafile = self._decisionTreePath,

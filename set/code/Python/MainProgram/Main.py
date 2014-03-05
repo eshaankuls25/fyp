@@ -16,7 +16,7 @@ from    Extractors.HTMLScraper.items           import HTMLScraperItem
 
 from    Utilities                              import ParallelExtractor, ListProcessor
 from    Utilities.Utils                        import downloadNLTKData, readFromFile,\
-                                                                    listFilesInDir
+                                                                    listFilesInDir, writeWekaArffFile
 from    Utilities.listen                       import startFakeSMTPServer
 from    Utilities.ExtractorSelector            import ExtractorSelector
 from    Utilities.ParallelExtractor            import _extractFromDocument
@@ -113,7 +113,7 @@ class Detector(object):
         def extractAllDocuments(self):
                 featureMatrix = []
                 if self.documentPaths:  #List is not empty
-                        argsList = [(pickle.dumps(self.extractorSelector), lemmatiseText(document), label)\
+                        argsList = [(pickle.dumps(self.extractorSelector), document, label)\
                                                                  for label, document in self.documentPaths]
                         
                         documentList = [pickle.loads(item) for item in\
@@ -144,6 +144,8 @@ class Detector(object):
         def trainClassifiers(self):
                 mkeys = self.matrixDict.keys()
                 mdict = self.matrixDict
+
+                [writeWekaArffFile("set_%s"%category, mdict[category][1][0].keys(), mdict[category]) for category in mkeys]
 
                 print "\n-------------------------\nTRAINING...\n-------------------------\n"
 
