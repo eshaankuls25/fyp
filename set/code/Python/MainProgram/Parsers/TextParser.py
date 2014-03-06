@@ -1,17 +1,18 @@
 import os, sys
-from nltk.tag.stanford  import POSTagger
-from nltk.internals     import config_java
-from nltk.util          import ngrams
-from email.parser       import Parser
-from os.path            import normpath
+from nltk.tag.stanford          import POSTagger
+from nltk.internals             import config_java
+from nltk.util                  import ngrams
+from email.parser               import Parser
+from os.path                    import normpath
+from collections                import Counter
 
 sys.path.append("..")
-from Utilities.Utils    import readFromFile
-import  Utilities.PreProcessor as PreProcessor
+from    Utilities.Utils         import readFromFile
+import  Utilities.PreProcessor  as PreProcessor
 
 
 class TextParser:
-        taggedText = {}
+        taggedText = Counter()
         tagCriteria = ('DT', 'EX', 'JJ', 'MD', 'NN',
                        'POS', 'PRP', 'RB', 'VB', 'VBD',
                        'VBG', '#', '$', "'", ',')
@@ -35,16 +36,28 @@ class TextParser:
                 print "Tagger model path: " + taggerModelPath
                 print "---" 
 
-        def tagTextFile(self, documentName, textFilePath):
+        def tagTextFile(self, documentName, textFilePath, useCriteria=False):
                 tempTaggedText = self.stanfordTagger.tag(readFromFile(textFilePath).split())
                 finalList = []
-                
-                for x, y in tempTaggedText:
-                        if y in self.tagCriteria:
+
+                if useCriteria:
+                        for x, y in tempTaggedText:
+                                if y in self.tagCriteria:
+                                        finalList.append((x, y))
+                else:
+                        for x, y in tempTaggedText:
                                 finalList.append((x, y))
                                 
 
                 self.taggedText[documentName] = finalList
+
+        def getTagCountVector(self, textString):
+                splitString = textString.split()
+                numberOfWords = len(splitString)
+                tempTaggedText = self.stanfordTagger.tag(splitString)
+                counterObject = Counter([y for x, y in tempTaggedText]) #Get tags
+                return {k:float(counterObject[k])/numberOfWords for k in counterObject}
+                
 
         def tagText(self, documentName, textString):
                 tempTaggedText = self.stanfordTagger.tag(textString.split())

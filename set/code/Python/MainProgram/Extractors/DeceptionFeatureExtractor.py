@@ -1,18 +1,11 @@
 import sys, os, re, nltk.data
 from collections import *
 sys.path.append("..")
-
-from Parsers.TextParser import TextParser
-from Parsers.HTMLParser_ import HTMLParser
 from BaseExtractor import BaseExtractor as be
 
 class DeceptionFeatureExtractor(be):
         def __init__(self, documentName="currentWebsite", indicators=[]):
-                be.__init__(self, documentName, indicators)
-                
-                pathToParser = os.getcwd()+"/Parsers"
-                self.textParser = TextParser(pathToParser)
-                self.htmlParser = HTMLParser()
+                be.__init__(self, documentName, indicators)    
         
         #Obfuscation
 

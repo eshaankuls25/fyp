@@ -20,6 +20,8 @@ from    Utilities.Utils                        import downloadNLTKData, readFrom
 from    Utilities.listen                       import startFakeSMTPServer
 from    Utilities.ExtractorSelector            import ExtractorSelector
 from    Utilities.ParallelExtractor            import _extractFromDocument
+from    Utilities.FeatureSet                   import FeatureSet
+from    Parsers.TextParser                     import TextParser
 
 import  Utilities.PreProcessor as PreProcessor
 from    Utilities.PreProcessor                 import stem, lemmatiseText
@@ -113,6 +115,7 @@ class Detector(object):
         def extractAllDocuments(self):
                 featureMatrix = []
                 if self.documentPaths:  #List is not empty
+                        """
                         argsList = [(pickle.dumps(self.extractorSelector), document, label)\
                                                                  for label, document in self.documentPaths]
                         
@@ -121,6 +124,15 @@ class Detector(object):
 
                         for l in documentList:
                             featureMatrix.extend(l)
+                        """
+                        i = 0
+                        tp = TextParser("./Parsers/")
+                        for label, document in self.documentPaths:
+                            print "Document %d\n"%i
+                            featureSet = FeatureSet("tagged", "tagged", label) 
+                            featureSet.setVector(tp.getTagCountVector(readFromFile(document)))
+                            featureMatrix.extend([featureSet])
+                            i+=1
                         
                 else:                   #No documents found
                         sys.stderr.write("Could not find any documents.\nPlease try again, or enter another file, or directory path.\n")

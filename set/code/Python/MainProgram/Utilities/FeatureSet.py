@@ -36,3 +36,6 @@ class FeatureSet:
     def getVector(self):
         #return np.array(self._vector.values())
         return {k:v for k, v in enumerate(self._vector.values())}
+
+    def setVector(self, vectorDict):
+        self._vector = vectorDict
