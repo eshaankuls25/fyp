@@ -118,13 +118,12 @@ class Detector(object):
                 featureMatrix = []
                 tp = TextParser("./Parsers/")
                 if self.documentPaths:  #List is not empty
+                        """
                         exDict = self.extractorSelector.extractorDictionary
-
-                        
                         for label, document in self.documentPaths:
                             for ex in exDict:
                                 exDict[ex].setFunctionArgTuple( (getTagVec, [tp, readFromFile(document)]) )
-                        
+                        """
                         
                         argsList = [(pickle.dumps(self.extractorSelector), document, label)\
                                                                  for label, document in self.documentPaths]
@@ -134,6 +133,7 @@ class Detector(object):
                         
                         for l in documentList:
                             featureMatrix.extend(l)
+                            
                         """
                         i = 0
                         for label, document in self.documentPaths:

@@ -8,15 +8,15 @@ from Parsers.TextParser import TextParser
 from Parsers.HTMLParser_ import HTMLParser
 
 class BaseExtractor():
-        def __init__(self, documentName, indicators=None):
+        def __init__(self, documentName, indicators=None, functionToCall=None, paramList=None):
                 self.featureSet = None
                 self.documentName = documentName
 
                 pathToParser = os.getcwd()+"/Parsers"
                 self.textParser = TextParser(pathToParser)
                 self.htmlParser = HTMLParser()
-                self.functionToCall = None
-                self.paramList = None
+                self.functionToCall = functionToCall
+                self.paramList = paramList
                 
                 if isinstance(indicators, (list, tuple)): #If 'indicators' is a list or tuple
                         self.indicators = indicators
