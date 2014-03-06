@@ -14,6 +14,8 @@ from    Extractors.TextFeatureExtractor        import TextFeatureExtractor      
 from    Extractors.BaseExtractor               import BaseExtractor                as be
 from    Extractors.HTMLScraper.items           import HTMLScraperItem
 
+from    Extractors.POSFeatureExtractor         import _getTagCountVector           as getTagVec
+
 from    Utilities                              import ParallelExtractor, ListProcessor
 from    Utilities.Utils                        import downloadNLTKData, readFromFile,\
                                                                     listFilesInDir, writeWekaArffFile
@@ -114,25 +116,34 @@ class Detector(object):
 
         def extractAllDocuments(self):
                 featureMatrix = []
+                tp = TextParser("./Parsers/")
                 if self.documentPaths:  #List is not empty
-                        """
+                        exDict = self.extractorSelector.extractorDictionary
+
+                        
+                        for label, document in self.documentPaths:
+                            for ex in exDict:
+                                exDict[ex].setFunctionArgTuple( (getTagVec, [tp, readFromFile(document)]) )
+                        
+                        
                         argsList = [(pickle.dumps(self.extractorSelector), document, label)\
                                                                  for label, document in self.documentPaths]
                         
                         documentList = [pickle.loads(item) for item in\
                                         ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
-
+                        
                         for l in documentList:
                             featureMatrix.extend(l)
                         """
                         i = 0
-                        tp = TextParser("./Parsers/")
                         for label, document in self.documentPaths:
                             print "Document %d\n"%i
                             featureSet = FeatureSet("tagged", "tagged", label) 
                             featureSet.setVector(tp.getTagCountVector(readFromFile(document)))
                             featureMatrix.extend([featureSet])
                             i+=1
+                        """
+                        
                         
                 else:                   #No documents found
                         sys.stderr.write("Could not find any documents.\nPlease try again, or enter another file, or directory path.\n")

@@ -208,7 +208,7 @@ def writeWekaArffFile(title, attributeList, featureMatrix):
         header += "@ATTRIBUTE %s NUMERIC\n" %attribute
 
     header += "@ATTRIBUTE class\t{"
-    header+=''.join(["%s,"%(c) for c in classList]) #Classes
+    header+=''.join(["%s,"%(c) for c in set(classList)]) #Classes
     header += "}\n\n"
 
     header += "@DATA\n"

@@ -15,6 +15,8 @@ class BaseExtractor():
                 pathToParser = os.getcwd()+"/Parsers"
                 self.textParser = TextParser(pathToParser)
                 self.htmlParser = HTMLParser()
+                self.functionToCall = None
+                self.paramList = None
                 
                 if isinstance(indicators, (list, tuple)): #If 'indicators' is a list or tuple
                         self.indicators = indicators
@@ -25,6 +27,11 @@ class BaseExtractor():
                 memberList = inspect.getmembers(self, predicate=inspect.ismethod)
                 self.featureSet = FeatureSet(documentName, documentCategory, documentClass)
 
+                if self.functionToCall is not None\
+                   and self.paramList is not None:
+                        self.featureSet.setVector(self.functionToCall(*self.paramList))
+                        return self.featureSet
+
                 if isinstance(params, (list, tuple)):
                         parameters = params
                 elif params is not None:
@@ -32,14 +39,28 @@ class BaseExtractor():
 
                 if params is not None: #More efficient (less if checks), but some duplicated code
                         for x, y in memberList:
-                                if x[0] != '_' and x not in ('getFeatureSet', 'scrapeWebsiteFromURL'):
+                                if x[0] != '_' and x not in ('getFeatureSet', 'setFunctionArgTuple', 'scrapeWebsiteFromURL'):
                                         self.featureSet.addFeature(x, getattr(self, x)(*parameters))
                 if params is None:
                         for x, y in memberList:
-                                if x[0] != '_' and x not in ('getFeatureSet', 'scrapeWebsiteFromURL'):
+                                if x[0] != '_' and x not in ('getFeatureSet', 'setFunctionArgTuple', 'scrapeWebsiteFromURL'):
                                         self.featureSet.addFeature(x, getattr(self, x)())        
 
                 return self.featureSet
+
+        def _setFunctionToCall(self, functionObject):
+                self.functionToCall = functionObject
+
+        def _setFunctionParams(self, params):
+                if isinstance(params, (list, tuple)):
+                        self.paramList = params
+                elif params is not None:
+                        self.paramList = [params]
+                        
+        def setFunctionArgTuple(self, functionArgTuple):
+              if functionArgTuple is not None:
+                        self._setFunctionToCall(functionArgTuple[0])
+                        self._setFunctionParams(functionArgTuple[1])
 
         ###Utility Functions###
 
