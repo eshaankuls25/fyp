@@ -116,7 +116,7 @@ class Detector(object):
 
         def extractAllDocuments(self):
                 featureMatrix = []
-                tp = TextParser("./Parsers/")
+                #tp = TextParser("./Parsers/")
                 if self.documentPaths:  #List is not empty
                         """
                         exDict = self.extractorSelector.extractorDictionary
