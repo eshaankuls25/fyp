@@ -4,7 +4,7 @@ from nltk.internals             import config_java
 from nltk.util                  import ngrams
 from email.parser               import Parser
 from os.path                    import normpath
-from collections                import Counter
+from collections                import Counter, OrderedDict
 
 sys.path.append("..")
 from    Utilities.Utils         import readFromFile
@@ -13,6 +13,12 @@ import  Utilities.PreProcessor  as PreProcessor
 
 class TextParser:
         taggedText = Counter()
+        tagList = ['CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR',
+                   'JJS', 'LS', 'MD', 'NN', 'NNS', 'NNP', 'NNPS',
+                   'PDT', 'POS', 'PRP', 'RB', 'RBR', 'RBS', 'RP',
+                   'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG', 'VBN',
+                   'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB'] #Penn treebank tags
+        
         tagCriteria = ('DT', 'EX', 'JJ', 'MD', 'NN',
                        'POS', 'PRP', 'RB', 'VB', 'VBD',
                        'VBG', '#', '$', "'", ',')
@@ -55,8 +61,18 @@ class TextParser:
                 splitString = textString.split()
                 numberOfWords = len(splitString)
                 tempTaggedText = self.stanfordTagger.tag(splitString)
-                counterObject = Counter([y for x, y in tempTaggedText]) #Get tags
-                return {k:float(counterObject[k])/numberOfWords for k in counterObject}
+                counterVector = Counter([y for x, y in tempTaggedText if y in self.tagList]) #Get tags
+
+                resultantVector = OrderedDict()
+
+                for k in self.tagList:
+                        if k in counterVector:
+                                resultantVector[k] = float(counterVector[k])/numberOfWords
+                        else:
+                                resultantVector[k] = 0
+                
+                #print resultantVector
+                return resultantVector
                 
 
         def tagText(self, documentName, textString):
