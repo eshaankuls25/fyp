@@ -47,7 +47,7 @@ class Detector(object):
                 self.maxParallelCoreCount = int(ceil(cpuCount/2)) if cpuCount <= 8\
                                             else int(ceil(0.75*cpuCount)) #Core count ranges from 1 to ceil(num_of_cores/2), if core count <= 8,
                                                                                 #else is approx. or exactly 3/4 of the total CPU count.
-                self.extractorDictionary = {'text':tfe(), 'html':tfe()}
+                self.extractorDictionary = {'text':gfe(), 'html':gfe()}
                 self.documentPaths = []
                 self.extractorSelector = None
 

@@ -15,7 +15,7 @@ sys.path.append("..")
 
 from Utilities.Utils            import downloadNLTKData
 from spiders.SETSpider          import SETSpider
-from multiprocessing            import Queue
+from multiprocessing            import Queue, Manager
 
 #Use scrapy code here - items, spiders etc.
 #Source - Stack Overflow: http://stackoverflow.com/questions/14777910/scrapy-crawl-from-script-always-blocks-script-execution-after-scraping/19060485
@@ -26,7 +26,8 @@ class WebsiteScraper():
                 self.domainList = domainList
                 self.urlList = urlList
                 self.documentName = documentName
-                self.scrapeResults = Queue()
+                self.manager = Manager()
+                self.scrapeResults = self.manager.Queue()
                 if startScrapyScan is True:
                         item = self._createCrawler()
                         return tuple(item)[0]
