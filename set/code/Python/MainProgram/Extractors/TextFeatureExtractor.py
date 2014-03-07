@@ -37,7 +37,7 @@ class TextFeatureExtractor(ife):
         def proportionOfLongWords(self, textString):
                 threshold = 7
                 freqDist = FreqDist(textString)
-                wordSet = set(textString)
+                wordSet = Counter(re.findall(r"[\w]+", textString.lower())).keys()
                 
                 return float(len([word for word in wordSet \
                                   if len(word) > threshold and freqDist[word] > threshold]))/len(wordSet)                    
