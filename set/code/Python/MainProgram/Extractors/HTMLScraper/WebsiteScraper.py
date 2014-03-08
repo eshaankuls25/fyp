@@ -17,6 +17,8 @@ from Utilities.Utils            import downloadNLTKData
 from spiders.SETSpider          import SETSpider
 from multiprocessing            import Queue, Manager
 
+queue = Queue()
+
 #Use scrapy code here - items, spiders etc.
 #Source - Stack Overflow: http://stackoverflow.com/questions/14777910/scrapy-crawl-from-script-always-blocks-script-execution-after-scraping/19060485
 class WebsiteScraper():
@@ -26,8 +28,6 @@ class WebsiteScraper():
                 self.domainList = domainList
                 self.urlList = urlList
                 self.documentName = documentName
-                self.manager = Manager()
-                self.scrapeResults = self.manager.Queue()
                 if startScrapyScan is True:
                         item = self._createCrawler()
                         return tuple(item)[0]
@@ -39,14 +39,14 @@ class WebsiteScraper():
                 #Check Multiprocessing rules fow windows here:
                 #Source: http://docs.python.org/2/library/multiprocessing.html#windows
                 if sys.platform == 'win32':
-                        crawlerWorker = Process(target=_runCrawler, args=(spider, self.scrapeResults))
+                        crawlerWorker = Process(target=_runCrawler, args=(spider, queue))
                 elif sys.platform.startswith('linux') or sys.platform == 'darwin':
-                        crawlerWorker = CrawlerWorker(spider, self.scrapeResults)
+                        crawlerWorker = CrawlerWorker(spider, queue)
                 else:
                     raise RuntimeError('ERROR: Operating System Not Supported')  
 
                 crawlerWorker.start()
-                for item in self.scrapeResults.get():
+                for item in queue.get():
                         yield item
                 
    
