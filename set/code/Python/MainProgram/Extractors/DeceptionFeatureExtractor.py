@@ -52,7 +52,7 @@ class DeceptionFeatureExtractor(be):
                 return float(count)/len(taggedText)
 
         def numberOfPersonalPronouns(self, textString):
-                self._numberOfTag(textString, 'PRP')
+                return self._numberOfTag(textString, 'PRP')
 
         #source: StackOverflow - http://stackoverflow.com/questions/7907303/finding-ip-addresses-using-regular-expression-in-python
         def numOfIPAddressLinks(self, textString):
