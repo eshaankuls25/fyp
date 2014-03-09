@@ -7,7 +7,8 @@ from nltk.corpus import brown
 
 class DeceptionFeatureExtractor(be):
         def __init__(self, documentName="currentWebsite", indicators=[]):
-                be.__init__(self, documentName, indicators)    
+                be.__init__(self, documentName, indicators)
+                self.ipAddrRegex = re.compile(r"\((\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))\b\)")
         
         #Obfuscation
 
@@ -42,6 +43,8 @@ class DeceptionFeatureExtractor(be):
                 if isinstance(tagTuple, basestring):
                         tagTuple = (tagTuple,)
 
+                print tagTuple
+
                 count = 0
                 for x, y in self.textParser.taggedText["temp"]:
                         if y in tagTuple:
@@ -55,12 +58,12 @@ class DeceptionFeatureExtractor(be):
                 return self._numberOfTag(textString, 'PRP')
 
         #source: StackOverflow - http://stackoverflow.com/questions/7907303/finding-ip-addresses-using-regular-expression-in-python
-        def numOfIPAddressLinks(self, textString):
-                maxIPCount = 3 #Unsure of how many IP addresses exist in the document, so not perfect
-                results = re.finditer(r"\((\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))\b\)", textString)
-                return float(len(results))/maxIPCount
-
         def _numOfIPAddressLinks(self, textString):
+                maxIPCount = 3 #Unsure of how many IP addresses exist in the document, so not perfect
+                results = re.findall(self.ipAddrRegex, textString)
+                return float( len(results) )/maxIPCount
+
+        def numOfIPAddressLinks(self, textString):
                 maxIPCount = 3 #Unsure of how many IP addresses exist in the document, so not perfect
                 return float(len(self.htmlParser.findIPAddressesInEmail(textString)))/maxIPCount
 
