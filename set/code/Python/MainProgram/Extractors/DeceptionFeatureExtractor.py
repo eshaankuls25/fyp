@@ -90,6 +90,8 @@ class DeceptionFeatureExtractor(be):
         def numberOfVerbs(self, textString):
                 return self._numberOfTag(textString, ('VB', 'VBD', 'VBG',\
                                                'VBN', 'VBP', 'VBZ'))
+
+        """
         def incorrectWords(self, textString):
                 count = 0
                 correctWords = brown.words() #Brown corpus
@@ -100,5 +102,6 @@ class DeceptionFeatureExtractor(be):
                                 count+=1
 
                 return float(count)/len(allWords)
+        """
 
                 
