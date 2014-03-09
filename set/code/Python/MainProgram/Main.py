@@ -19,6 +19,7 @@ from    Extractors.POSFeatureExtractor         import _getTagCountVector        
 from    Utilities                              import ParallelExtractor, ListProcessor
 from    Utilities.Utils                        import downloadNLTKData, readFromFile,\
                                                                     listFilesInDir, writeWekaArffFile
+from    Utilities.PreProcessor                 import convertString
 from    Utilities.listen                       import startFakeSMTPServer
 from    Utilities.ExtractorSelector            import ExtractorSelector
 from    Utilities.ParallelExtractor            import _extractFromDocument
@@ -125,7 +126,7 @@ class Detector(object):
                                 exDict[ex].setFunctionArgTuple( (getTagVec, [tp, readFromFile(document)]) )
                         """
                         
-                        argsList = [(pickle.dumps(self.extractorSelector), document, label)\
+                        argsList = [(pickle.dumps(self.extractorSelector), convertString(document), label)\
                                                                  for label, document in self.documentPaths]
                         
                         documentList = [pickle.loads(item) for item in\
