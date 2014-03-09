@@ -1,7 +1,9 @@
 import sys, os, re, nltk.data
+from nltk.corpus import cmudict
 from collections import *
 sys.path.append("..")
 from BaseExtractor import BaseExtractor as be
+from nltk.corpus import brown
 
 class DeceptionFeatureExtractor(be):
         def __init__(self, documentName="currentWebsite", indicators=[]):
@@ -25,7 +27,6 @@ class DeceptionFeatureExtractor(be):
                 allWords = re.findall(r"[\w]+", textString.lower()) 
                 return float(len(set(Counter(allWords).keys())))/len(allWords)
 
-
         #Imitation
 
         def lackOfFullStops(self, textString):
@@ -35,26 +36,31 @@ class DeceptionFeatureExtractor(be):
                 charCountLimiter = 10000; #Unsure of average char count of email, must check
                 return float(len(textString))/charCountLimiter
 
-        def numberOfPersonalPronouns(self, textString):
+        def _numberOfTag(self, textString, tagTuple):
                 self.textParser.tagText("temp", textString)
+
+                if isinstance(tagTuple, basestring):
+                        tagTuple = (tagTuple,)
 
                 count = 0
                 for x, y in self.textParser.taggedText["temp"]:
-                        if y == 'PRP':
+                        if y in tagTuple:
                                 count+=1
                 taggedText = self.textParser.taggedText["temp"]
                 if len(taggedText) == 0:
                         return 0
                 return float(count)/len(taggedText)
 
-        #source: StackOverflow - http://stackoverflow.com/questions/106179/regular-expression-to-match-hostname-or-ip-address?lq=1 
-        #Need to edit regex for use with Python. In the meantime, look below...
-        def _numOfIPAddressLinks(self, textString):
-                maxIPCount = 3 #Unsure of how many IP addresses exist in the document, so not perfect
-                countExp = re.compile(r"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
-                return float(len(re.findall(countExp, textString)))/maxIPCount
+        def numberOfPersonalPronouns(self, textString):
+                self._numberOfTag(textString, 'PRP')
 
+        #source: StackOverflow - http://stackoverflow.com/questions/7907303/finding-ip-addresses-using-regular-expression-in-python
         def numOfIPAddressLinks(self, textString):
+                maxIPCount = 3 #Unsure of how many IP addresses exist in the document, so not perfect
+                results = re.finditer(r"\((\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))\b\)", textString)
+                return float(len(results))/maxIPCount
+
+        def _numOfIPAddressLinks(self, textString):
                 maxIPCount = 3 #Unsure of how many IP addresses exist in the document, so not perfect
                 return float(len(self.htmlParser.findIPAddressesInEmail(textString)))/maxIPCount
 
@@ -62,3 +68,37 @@ class DeceptionFeatureExtractor(be):
                 maxURLCount = 30 #Unsure of how many URLs exist in the document, so not perfect
                 return float(len(self.htmlParser.getEmailURLs(textString)))/maxURLCount
 
+        def numberOfSecurityTerms(self, textString):
+                urgencyTerms = {'reward', 'refund', 'limited',\
+                                   'time', 'have', 'must', 'definitely',\
+                                   'immediate', 'need'}
+                commandTerms = {'confirm', 'validate', 'click', 'provide', 'select', 'write'}
+                threatTerms = {'risk', 'loss', 'protection', 'lock', 'frozen', 'expire', 'closed'}
+                otherTerms = {'attached', 'details'}
+
+                allWords = re.findall(r"[\w]+", textString.lower())
+                allTerms = urgencyTerms | commandTerms | threatTerms | otherTerms #union
+
+                return float(sum([1 if word in allTerms else 0 for word in allWords]))/len(allWords)
+
+        def numberOfAdjectives(self, textString):
+                return self._numberOfTag(textString, ('JJ', 'JJR', 'JJS'))
+
+        def numberOfAdverbs(self, textString):
+                return self._numberOfTag(textString, 'RB')
+
+        def numberOfVerbs(self, textString):
+                return self._numberOfTag(textString, ('VB', 'VBD', 'VBG',\
+                                               'VBN', 'VBP', 'VBZ'))
+        def incorrectWords(self, textString):
+                count = 0
+                correctWords = brown.words() #Brown corpus
+                allWords = re.findall(r"[\w]+", textString.lower())
+                
+                for word in allWords:
+                        if word not in correctWords:
+                                count+=1
+
+                return float(count)/len(allWords)
+
+                
