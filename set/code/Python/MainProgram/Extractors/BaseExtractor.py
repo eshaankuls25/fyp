@@ -52,7 +52,8 @@ class BaseExtractor():
                         for x, y in memberList:
                                 if x[0] != '_' and x not in ('getFeatureSet', 'setFunctionArgTuple', 'scrapeWebsiteFromURL'):
                                         self.featureSet.addFeature(x, getattr(self, x)())        
-
+                self.tagged = False
+                
                 return self.featureSet
                         
         def setFunctionArgTuple(self, functionArgTuple):
