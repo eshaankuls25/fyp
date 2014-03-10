@@ -54,15 +54,6 @@ class BaseExtractor():
                                         self.featureSet.addFeature(x, getattr(self, x)())        
 
                 return self.featureSet
-
-        def _setFunctionToCall(self, functionObject):
-                self.functionToCall = functionObject
-
-        def _setFunctionParams(self, params):
-                if isinstance(params, (list, tuple)):
-                        self.paramList = params
-                elif params is not None:
-                        self.paramList = [params]
                         
         def setFunctionArgTuple(self, functionArgTuple):
               if functionArgTuple is not None:
@@ -126,7 +117,16 @@ class BaseExtractor():
                 taggedText = self.textParser.taggedText["temp"]
                 if len(taggedText) == 0:
                         return 0
-                return float(count)/len(taggedText) 
+                return float(count)/len(taggedText)
+
+        def _setFunctionToCall(self, functionObject):
+                self.functionToCall = functionObject
+
+        def _setFunctionParams(self, params):
+                if isinstance(params, (list, tuple)):
+                        self.paramList = params
+                elif params is not None:
+                        self.paramList = [params]
 
         
 

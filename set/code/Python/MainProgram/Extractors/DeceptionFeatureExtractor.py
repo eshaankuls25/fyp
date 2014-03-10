@@ -37,7 +37,7 @@ class DeceptionFeatureExtractor(be):
                 charCountLimiter = 10000; #Unsure of average char count of email, must check
                 return float(len(textString))/charCountLimiter
 
-        def numberOfPersonalPronouns(self):
+        def numberOfPersonalPronouns(self, textString):
                 return self._numberOfTag('PRP')
 
         #source: StackOverflow - http://stackoverflow.com/questions/7907303/finding-ip-addresses-using-regular-expression-in-python
@@ -67,13 +67,13 @@ class DeceptionFeatureExtractor(be):
 
                 return float(sum([1 if word in allTerms else 0 for word in allWords]))/len(allWords)
 
-        def numberOfAdjectives(self):
+        def numberOfAdjectives(self, textString):
                 return self._numberOfTag(('JJ', 'JJR', 'JJS'))
 
-        def numberOfAdverbs(self):
+        def numberOfAdverbs(self, textString):
                 return self._numberOfTag('RB')
 
-        def numberOfVerbs(self):
+        def numberOfVerbs(self, textString):
                 return self._numberOfTag(('VB', 'VBD', 'VBG',\
                                                'VBN', 'VBP', 'VBZ'))
 
