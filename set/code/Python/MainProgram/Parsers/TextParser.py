@@ -25,7 +25,7 @@ class TextParser:
         stanfordTagger = None
         #config_java("C:\Program Files\Java\jdk1.6.0_37\\bin\java.exe") 
 
-        def __init__(self, pathToParser=None, javaHeapOptions='-Xmx4g -XX:-UseGCOverheadLimit'):
+        def __init__(self, pathToParser=None, javaHeapOptions='-Xmx4g -XX:+UseParallelGC -XX:-UseGCOverheadLimit'):
 
                 if pathToParser is None:
                         taggerLibraryPath = normpath(os.path.join(os.getcwd(), "sp/jar/stanford-postagger.jar"))
@@ -43,8 +43,11 @@ class TextParser:
                 print "---" 
 
         def tagTextFile(self, documentName, textFilePath, useCriteria=False):
-                tempTaggedText = self.stanfordTagger.tag(readFromFile(textFilePath).split())
-                finalList = []
+                tempTaggedText, finalList = [], []
+                textFile = readFromFile(textFilePath)
+                
+                for line in textFile.splitlines():
+                        tempTaggedText.extend(self.stanfordTagger.tag(line.split()))
 
                 if useCriteria:
                         for x, y in tempTaggedText:
@@ -75,12 +78,18 @@ class TextParser:
                 return resultantVector
                 
 
-        def tagText(self, documentName, textString):
-                tempTaggedText = self.stanfordTagger.tag(textString.split())
-                finalList = []
+        def tagText(self, documentName, textString, useCriteria=False):
+                tempTaggedText, finalList = [], []
                 
-                for x, y in tempTaggedText:
-                        if y in self.tagCriteria:
+                for line in textString.splitlines():
+                        tempTaggedText.extend(self.stanfordTagger.tag(line.split()))
+                
+                if useCriteria:
+                        for x, y in tempTaggedText:
+                                if y in self.tagCriteria:
+                                        finalList.append((x, y))
+                else:
+                        for x, y in tempTaggedText:
                                 finalList.append((x, y))
                                 
 
