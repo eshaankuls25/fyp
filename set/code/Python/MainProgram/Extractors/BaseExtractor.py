@@ -38,14 +38,15 @@ class BaseExtractor():
                 elif (not self.tagged) and isinstance(params, basestring):
                         self.textParser.tagText("temp", params)
                         self.tagged = True
+                        parameters = None
                 elif params is not None:
                         parameters = [params]
 
-                if params is not None: #More efficient (less if checks), but some duplicated code
+                if parameters is not None: #More efficient (less if checks), but some duplicated code
                         for x, y in memberList:
                                 if x[0] != '_' and x not in ('getFeatureSet', 'setFunctionArgTuple', 'scrapeWebsiteFromURL'):
                                         self.featureSet.addFeature(x, getattr(self, x)(*parameters))
-                if params is None:
+                if parameters is None:
                         for x, y in memberList:
                                 if x[0] != '_' and x not in ('getFeatureSet', 'setFunctionArgTuple', 'scrapeWebsiteFromURL'):
                                         self.featureSet.addFeature(x, getattr(self, x)())        
