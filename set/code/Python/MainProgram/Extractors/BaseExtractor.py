@@ -35,12 +35,14 @@ class BaseExtractor():
 
                 if isinstance(params, (list, tuple)):
                         parameters = params
-                elif (not self.tagged) and isinstance(params, basestring):
-                        self.textParser.tagText("temp", params)
-                        self.tagged = True
-                        parameters = None
                 elif params is not None:
                         parameters = [params]
+                else:
+                        parameters = None
+
+                if (not self.tagged) and isinstance(params, basestring):
+                        self.textParser.tagText("temp", params)
+                        self.tagged = True
 
                 if parameters is not None: #More efficient (less if checks), but some duplicated code
                         for x, y in memberList:
