@@ -33,16 +33,16 @@ class BaseExtractor():
                         self.featureSet.setVector(self.functionToCall(*self.paramList))
                         return self.featureSet
 
+                 if (not self.tagged) and isinstance(params, basestring):
+                        self.textParser.tagText("temp", params)
+                        self.tagged = True
+
                 if isinstance(params, (list, tuple)):
                         parameters = params
                 elif params is not None:
                         parameters = [params]
                 else:
                         parameters = None
-
-                if (not self.tagged) and isinstance(params, basestring):
-                        self.textParser.tagText("temp", params)
-                        self.tagged = True
 
                 if parameters is not None: #More efficient (less if checks), but some duplicated code
                         for x, y in memberList:
