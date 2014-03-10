@@ -33,7 +33,7 @@ class BaseExtractor():
                         self.featureSet.setVector(self.functionToCall(*self.paramList))
                         return self.featureSet
 
-                 if (not self.tagged) and isinstance(params, basestring):
+                if (not self.tagged) and isinstance(params, basestring):
                         self.textParser.tagText("temp", params)
                         self.tagged = True
 
