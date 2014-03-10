@@ -129,6 +129,9 @@ class Detector(object):
                         
                         argsList = [(pickle.dumps(self.extractorSelector), convertString(document), label)\
                                                                  for label, document in self.documentPaths]
+
+                        if len(argsList) < self.maxParallelCoreCount:
+                            self.maxParallelCoreCount = len(argsList)                       
                         
                         documentList = [pickle.loads(item) for item in\
                                         ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
