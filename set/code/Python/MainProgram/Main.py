@@ -127,31 +127,23 @@ class Detector(object):
 
                         ###PARALLEL###
                         
-                        #argsList = [(pickle.dumps(self.extractorSelector), convertString(document), label)\
-                        #                                         for label, document in self.documentPaths]
+                        argsList = [(pickle.dumps(self.extractorSelector), convertString(document), label)\
+                                                                 for label, document in self.documentPaths]
                         
-                        #documentList = [pickle.loads(item) for item in\
-                        #                ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
+                        documentList = [pickle.loads(item) for item in\
+                                        ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
 
                         ###SEQUENTIAL###
-                        
+
+                        """
                         argsList = [(self.extractorSelector, convertString(document), label)\
                                     for label, document in self.documentPaths]
 
                         documentList = [pickle.loads(_extractFromDocument(arg[0], *arg[1:])) for arg in argsList]
+                        """
                         
                         for l in documentList:
                             featureMatrix.extend(l)
-                            
-                        """
-                        i = 0
-                        for label, document in self.documentPaths:
-                            print "Document %d\n"%i
-                            featureSet = FeatureSet("tagged", "tagged", label) 
-                            featureSet.setVector(tp.getTagCountVector(readFromFile(document)))
-                            featureMatrix.extend([featureSet])
-                            i+=1
-                        """
                         
                         
                 else:                   #No documents found

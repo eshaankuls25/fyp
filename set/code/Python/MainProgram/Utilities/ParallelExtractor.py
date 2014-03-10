@@ -1,21 +1,21 @@
 import sys
-import cPickle as pickle
-from uuid           import uuid4
+import cPickle                                  as pickle
+from uuid                                       import uuid4
 
 sys.path.append("..")
-import Utilities.PreProcessor as PreProcessor
-from Parsers.TextParser import TextParser
-from Parsers.HTMLParser_ import HTMLParser
+import Utilities.PreProcessor                   as PreProcessor
+from Parsers.TextParser                         import TextParser
+from Parsers.HTMLParser_                        import HTMLParser
 
-from Extractors.InitialFeatureExtractor import InitialFeatureExtractor as ife
-from Extractors.DeceptionFeatureExtractor import DeceptionFeatureExtractor as dfe
-from Extractors.GeneralFeatureExtractor import GeneralFeatureExtractor as gfe
-from Extractors.TextFeatureExtractor import TextFeatureExtractor as tfe
-from Extractors.BaseExtractor import BaseExtractor as be
+from Extractors.InitialFeatureExtractor         import InitialFeatureExtractor as ife
+from Extractors.DeceptionFeatureExtractor       import DeceptionFeatureExtractor as dfe
+from Extractors.GeneralFeatureExtractor         import GeneralFeatureExtractor as gfe
+from Extractors.TextFeatureExtractor            import TextFeatureExtractor as tfe
+from Extractors.BaseExtractor                   import BaseExtractor as be
 
-from Utilities.ExtractorSelector import ExtractorSelector
-from Utilities.Utils import readFromFile
-from Utilities.FeatureSet import FeatureSet
+from Utilities.ExtractorSelector                import ExtractorSelector
+from Utilities.Utils                            import readFromFile
+from Utilities.FeatureSet                       import FeatureSet
 
 def _selectExtractorAndProcess(extractorSelector, processedText,\
                            documentClass, email_ID=None, emailPayload=None):
