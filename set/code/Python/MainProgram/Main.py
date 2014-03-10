@@ -124,17 +124,21 @@ class Detector(object):
                             for ex in exDict:
                                 exDict[ex].setFunctionArgTuple( (getTagVec, [tp, readFromFile(document)]) )
                         """
-                        
-                        #argsList = [(pickle.dumps(self.extractorSelector), convertString(document), label)\
-                        #                                         for label, document in self.documentPaths]
-                        
-                        #documentList = [pickle.loads(item) for item in\
-                        #                ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
 
-                        argsList = [(self.extractorSelector, convertString(document), label)\
+                        ###PARALLEL###
+                        
+                        argsList = [(pickle.dumps(self.extractorSelector), convertString(document), label)\
                                                                  for label, document in self.documentPaths]
+                        
+                        documentList = [pickle.loads(item) for item in\
+                                        ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
 
-                        documentList = [_extractFromDocument(arg[0], *arg[1:]) for arg in argsList]
+                        ###SEQUENTIAL###
+                        
+                        #argsList = [(self.extractorSelector, convertString(document), label)\
+                        #                                         for label, document in self.documentPaths]
+
+                        #documentList = [_extractFromDocument(arg[0], *arg[1:]) for arg in argsList]
                         
                         for l in documentList:
                             featureMatrix.extend(l)
