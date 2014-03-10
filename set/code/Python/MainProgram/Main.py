@@ -5,7 +5,6 @@ from math           import ceil
 from collections    import OrderedDict
 
 from os.path        import normpath, isfile, isdir
-from uuid           import uuid4
 
 from    Extractors.InitialFeatureExtractor     import InitialFeatureExtractor      as ife
 from    Extractors.DeceptionFeatureExtractor   import DeceptionFeatureExtractor    as dfe
@@ -126,11 +125,16 @@ class Detector(object):
                                 exDict[ex].setFunctionArgTuple( (getTagVec, [tp, readFromFile(document)]) )
                         """
                         
-                        argsList = [(pickle.dumps(self.extractorSelector), convertString(document), label)\
-                                                                 for label, document in self.documentPaths]
+                        #argsList = [(pickle.dumps(self.extractorSelector), convertString(document), label)\
+                        #                                         for label, document in self.documentPaths]
                         
-                        documentList = [pickle.loads(item) for item in\
-                                        ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
+                        #documentList = [pickle.loads(item) for item in\
+                        #                ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
+
+                        argsList = [(self.extractorSelector, convertString(document), label)\
+                                                                 for label, document in self.documentPaths]
+
+                        documentList = [_extractFromDocument(arg[0], *arg[1:]) for arg in argsList]
                         
                         for l in documentList:
                             featureMatrix.extend(l)
