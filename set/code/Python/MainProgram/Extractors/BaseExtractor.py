@@ -11,6 +11,7 @@ class BaseExtractor():
         def __init__(self, documentName, indicators=None, functionToCall=None, paramList=None):
                 self.featureSet = None
                 self.documentName = documentName
+                self.tagged = False
 
                 pathToParser = os.getcwd()+"/Parsers"
                 self.textParser = TextParser(pathToParser)
@@ -34,6 +35,9 @@ class BaseExtractor():
 
                 if isinstance(params, (list, tuple)):
                         parameters = params
+                elif (not self.tagged) and isinstance(params, basestring):
+                        self.textParser.tagText("temp", params)
+                        self.tagged = True
                 elif params is not None:
                         parameters = [params]
 
@@ -107,6 +111,19 @@ class BaseExtractor():
                 #\w - word character class
                 #r - represents that the following string is in rawstring notation
                 return Counter(re.findall(r"[\w]+", textString.lower()))[word]
+
+        def _numberOfTag(self, tagTuple):
+                if isinstance(tagTuple, basestring):
+                        tagTuple = (tagTuple,)
+
+                count = 0
+                for x, y in self.textParser.taggedText["temp"]:
+                        if y in tagTuple:
+                                count+=1
+                taggedText = self.textParser.taggedText["temp"]
+                if len(taggedText) == 0:
+                        return 0
+                return float(count)/len(taggedText) 
 
         
 

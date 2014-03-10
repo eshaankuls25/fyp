@@ -37,25 +37,8 @@ class DeceptionFeatureExtractor(be):
                 charCountLimiter = 10000; #Unsure of average char count of email, must check
                 return float(len(textString))/charCountLimiter
 
-        def _numberOfTag(self, textString, tagTuple):
-                self.textParser.tagText("temp", textString)
-
-                if isinstance(tagTuple, basestring):
-                        tagTuple = (tagTuple,)
-
-                print tagTuple
-
-                count = 0
-                for x, y in self.textParser.taggedText["temp"]:
-                        if y in tagTuple:
-                                count+=1
-                taggedText = self.textParser.taggedText["temp"]
-                if len(taggedText) == 0:
-                        return 0
-                return float(count)/len(taggedText)
-
-        def numberOfPersonalPronouns(self, textString):
-                return self._numberOfTag(textString, 'PRP')
+        def numberOfPersonalPronouns(self):
+                return self._numberOfTag('PRP')
 
         #source: StackOverflow - http://stackoverflow.com/questions/7907303/finding-ip-addresses-using-regular-expression-in-python
         def _numOfIPAddressLinks(self, textString):
@@ -84,14 +67,14 @@ class DeceptionFeatureExtractor(be):
 
                 return float(sum([1 if word in allTerms else 0 for word in allWords]))/len(allWords)
 
-        def numberOfAdjectives(self, textString):
-                return self._numberOfTag(textString, ('JJ', 'JJR', 'JJS'))
+        def numberOfAdjectives(self):
+                return self._numberOfTag(('JJ', 'JJR', 'JJS'))
 
-        def numberOfAdverbs(self, textString):
-                return self._numberOfTag(textString, 'RB')
+        def numberOfAdverbs(self):
+                return self._numberOfTag('RB')
 
-        def numberOfVerbs(self, textString):
-                return self._numberOfTag(textString, ('VB', 'VBD', 'VBG',\
+        def numberOfVerbs(self):
+                return self._numberOfTag(('VB', 'VBD', 'VBG',\
                                                'VBN', 'VBP', 'VBZ'))
 
         """
