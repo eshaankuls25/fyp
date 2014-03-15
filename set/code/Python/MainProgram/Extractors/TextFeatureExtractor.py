@@ -58,3 +58,4 @@ class TextFeatureExtractor(ife):
 
         def htmlInDocument(self, textString):
                 #Use lxml.html.fromstring(textString)
+                pass
