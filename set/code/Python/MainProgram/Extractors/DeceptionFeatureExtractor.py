@@ -90,4 +90,4 @@ class DeceptionFeatureExtractor(be):
                 return float(count)/len(allWords)
         """
 
-                
+        

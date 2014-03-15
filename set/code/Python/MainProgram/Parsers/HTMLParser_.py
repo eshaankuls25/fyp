@@ -1,9 +1,8 @@
-import os, sys, re, tldextract
+import os, sys, re, tldextract, lxml.html
 from urlparse import urlparse
-
 from collections import Counter
-sys.path.append("..")
 
+sys.path.append("..")
 from Extractors.HTMLScraper.items import HTMLScraperItem
 
 class HTMLParser:
@@ -71,5 +70,18 @@ class HTMLParser:
                 urlList = self.getEmailURLs(textString)
                 domainList = [self.getURLDomain(url) for url in urlList]
                 return (domainList, urlList)
+
+        def getFormTags(self, textString):
+                return lxml.html.fromstring(textString).forms
+
+        def getNumberOfSubDomains(self, textString):
+                domains = self.getURLsWithDomains(textString)[0]
+                subDomainCount = [len(domain.split('.')) for domain in domains]
+                return sum(subDomainCount)
+
+        def getNumberOfDomains(self, textString):
+                domains = self.getURLsWithDomains(textString)[0]
+                return len(domains)
+                
 
 

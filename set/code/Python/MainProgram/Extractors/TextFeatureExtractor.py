@@ -49,3 +49,12 @@ class TextFeatureExtractor(ife):
         def numberOfBigrams(self, textString):
                 #Unsure of average bigram length. Need to check
                 return float(len(self.textParser.ngram(textString, n=2)))/2000
+
+        def getNumberOfSubDomains(self, textString):
+                return self.htmlParser.getNumberOfSubDomains(textString)
+
+        def getNumberOfDomains(self, textString):
+                return self.htmlParser.getNumberOfDomains(textString)
+
+        def htmlInDocument(self, textString):
+                #Use lxml.html.fromstring(textString)
