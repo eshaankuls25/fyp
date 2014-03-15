@@ -92,7 +92,7 @@ class HTMLParser:
 
         def htmlInDocument(self, textString):
                 possibleHTML = lxml.html.fromstring(textString)
-                if l.find(".//*") is None:
+                if possibleHTML.find(".//*") is None:
                         return 0
                 else:
                         return 1

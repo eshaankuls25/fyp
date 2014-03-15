@@ -135,14 +135,16 @@ class Detector(object):
                         
                         documentList = [pickle.loads(item) for item in\
                                         ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
-
+                        
                         ###SEQUENTIAL###
 
                         """
+
                         argsList = [(self.extractorSelector, convertString(document), label)\
                                     for label, document in self.documentPaths]
 
                         documentList = [pickle.loads(_extractFromDocument(arg[0], *arg[1:])) for arg in argsList]
+                        
                         """
                         
                         for l in documentList:
