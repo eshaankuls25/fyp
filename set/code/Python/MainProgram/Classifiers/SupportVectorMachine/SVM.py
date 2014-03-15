@@ -17,7 +17,7 @@ class SVM(object):
     #Use like this:
     #gSVM = SVM(costParam=your_chosen_number, modelType=2) #GaussianSVM
     def __init__(self, classList=None, featureMatrix=None,\
-                     pathToModel='./Classifiers/svm_model.bak',
+                     pathToModel='./Classifiers/SupportVectorMachine/svm_model.bak',
                      modelType=2, costParam=1):
         super(SVM, self).__init__()
         print "\n-------------------------\nSVM:\n-------------------------\n"
