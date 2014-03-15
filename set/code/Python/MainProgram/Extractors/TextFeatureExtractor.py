@@ -51,10 +51,12 @@ class TextFeatureExtractor(ife):
                 return float(len(self.textParser.ngram(textString, n=2)))/2000
 
         def getNumberOfSubDomains(self, textString):
-                return self.htmlParser.getNumberOfSubDomains(textString)
+                limiter = 4
+                return float(self.htmlParser.getNumberOfSubDomains(textString))/limiter
 
         def getNumberOfDomains(self, textString):
-                return self.htmlParser.getNumberOfDomains(textString)
+                limiter = 6
+                return float(self.htmlParser.getNumberOfDomains(textString))/limiter
 
         def isHtmlInDocument(self, textString):
                 return self.htmlParser.htmlInDocument(textString)
