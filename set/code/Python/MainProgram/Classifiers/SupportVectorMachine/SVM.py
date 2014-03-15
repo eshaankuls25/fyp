@@ -61,7 +61,7 @@ class SVM(object):
 
     """
     def updateModel(self, classList, featureMatrix,\
-                    pathToModel='./Classifiers/gaussianSVM_model.bak'):
+                    pathToModel='./Classifiers/SupportVectorMachine/svm_model.bak'):
         if isinstance(pathToModel, basestring) and isfile(pathToModel):
             self.model = self.loadModel(pathToModel)
             #Need to train new documents/emails, as they come in. SVM model is not evolving...
