@@ -56,6 +56,6 @@ class TextFeatureExtractor(ife):
         def getNumberOfDomains(self, textString):
                 return self.htmlParser.getNumberOfDomains(textString)
 
-        def htmlInDocument(self, textString):
-                #Use lxml.html.fromstring(textString)
-                pass
+        def isHtmlInDocument(self, textString):
+                return self.htmlParser.htmlInDocument(textString)
+        

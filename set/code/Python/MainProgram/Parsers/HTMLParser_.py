@@ -64,24 +64,38 @@ class HTMLParser:
         #To get correct domains from a URL
         def getURLDomain(self, urlString):
                 return tldextract.extract(urlString).domain
-                #return '.'.join(tldextract.extract(textString)[:2]) - Domain and Subdomain joined together
+
+        def getURLSubDomain(self, urlString):
+                return tldextract.extract(urlString).subdomain
 
         def getURLsWithDomains(self, textString):
                 urlList = self.getEmailURLs(textString)
                 domainList = [self.getURLDomain(url) for url in urlList]
                 return (domainList, urlList)
 
-        def getFormTags(self, textString):
-                return lxml.html.fromstring(textString).forms
-
-        def getNumberOfSubDomains(self, textString):
-                domains = self.getURLsWithDomains(textString)[0]
-                subDomainCount = [len(domain.split('.')) for domain in domains]
-                return sum(subDomainCount)
+        def getURLSubDomains(self, textString):
+                urlList = self.getEmailURLs(textString)
+                subDomainList = [self.getURLSubDomain(url) for url in urlList]
+                return subDomainList
 
         def getNumberOfDomains(self, textString):
                 domains = self.getURLsWithDomains(textString)[0]
                 return len(domains)
+
+        def getNumberOfSubDomains(self, textString):
+                subDomains = self.getURLSubDomains(textString)
+                subDomainCount = [len(subDomain.split('.')) for subDomain in subDomains]
+                return sum(subDomainCount)
+
+        def getFormTags(self, textString):
+                return lxml.html.fromstring(textString).forms
+
+        def htmlInDocument(self, textString):
+                possibleHTML = lxml.html.fromstring(textString)
+                if l.find(".//*") is None:
+                        return 0
+                else:
+                        return 1
                 
 
 
