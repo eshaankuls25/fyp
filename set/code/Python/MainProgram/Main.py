@@ -47,7 +47,7 @@ class Detector(object):
                 self.maxParallelCoreCount = int(ceil(float(cpuCount)/2)) if cpuCount <= 8\
                                             else int(ceil(0.75*cpuCount)) #Core count ranges from 1 to ceil(num_of_cores/2), if core count <= 8,
                                                                                 #else is approx. or exactly 3/4 of the total CPU count.
-                self.extractorDictionary = {'text':tfe(), 'html':tfe()}
+                self.extractorDictionary = {'text':gfe(), 'html':gfe()}
                 self.documentPaths = []
                 self.extractorSelector = None
 
@@ -126,6 +126,8 @@ class Detector(object):
                         """
 
                         ###PARALLEL###
+
+                        
                         
                         argsList = [(pickle.dumps(self.extractorSelector), convertString(document), label)\
                                                                  for label, document in self.documentPaths]
@@ -135,6 +137,8 @@ class Detector(object):
                         
                         documentList = [pickle.loads(item) for item in\
                                         ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
+
+                        
                         
                         ###SEQUENTIAL###
 
@@ -144,8 +148,9 @@ class Detector(object):
                                     for label, document in self.documentPaths]
 
                         documentList = [pickle.loads(_extractFromDocument(arg[0], *arg[1:])) for arg in argsList]
+
+                        """                        
                         
-                        """
                         
                         for l in documentList:
                             featureMatrix.extend(l)

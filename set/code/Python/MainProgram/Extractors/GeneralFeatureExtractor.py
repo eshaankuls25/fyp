@@ -14,6 +14,7 @@ class GeneralFeatureExtractor(tfe): #Text and HTML (via Scrapy)
                 self.scraper = WebsiteScraper(documentName=self.documentName, startScrapyScan=False)
                 self.foundWebsite = False
                 self.numOfURLs = None
+                self.htmlResponse = None
                 
                 if urlString is not None:
                         self.scrapeWebsiteFromURL(urlString)
@@ -28,11 +29,13 @@ class GeneralFeatureExtractor(tfe): #Text and HTML (via Scrapy)
                         urlList, self.documentName)                
                 self.foundWebsite = True
                 self.numOfURLs = float(len(self.htmlParser.getWebsiteURLs(self.website)))
+                self.htmlResponse = self.htmlParser.getResponseAttribute(self.website, 'all')
+                
 
         def lengthOfWebsiteBodyText(self, textString):
                 if self.foundWebsite:
                         bodyLength = len(self.htmlParser.getResponseAttribute(self.website, 'body'))
-                        responseLength = len(self.htmlParser.getResponseAttribute(self.website, 'all'))
+                        responseLength = len(self.htmlResponse)
                         return float(bodyLength)/responseLength
                 else:
                         return 0
@@ -60,21 +63,31 @@ class GeneralFeatureExtractor(tfe): #Text and HTML (via Scrapy)
 
         def containsFormTag(self, textString):
                 if self.foundWebsite:
-                        htmlResponse = self.htmlParser.getResponseAttribute(self.website, 'all')
-                        if len(self.htmlParser.getFormTags(htmlResponse)) > 0:
+                        if len(self.htmlParser.getFormTags(self.htmlResponse)) > 0:
                                 return 1
                 return 0
 
         def containsJavascript(self, textString):
                 if self.foundWebsite:
                         if (('function' and '(){') or\
-                            '<script>' or '</script>') in self.getTagsFromItem(self.website):
+                            '<script>' or '</script>') in self.htmlParser.getTagsFromItem(self.website):
                                 return 1
                 return 0
 
         def getNumberOfDomains(self, textString):
                 if self.foundWebsite:
-                        htmlResponse = self.htmlParser.getResponseAttribute(self.website, 'all')
-                        return float(self.htmlParser.getNumberOfSubDomains(htmlResponse))/self.numOfURLs
+                        if self.numOfURLs == 0:
+                                return 0
+                        else:
+                                return float(self.htmlParser.getNumberOfDomains(self.htmlResponse))/self.numOfURLs
+                return 0
+
+        def getNumberOfSubDomains(self, textString):
+                if self.foundWebsite:
+                        if self.numOfURLs == 0:
+                                return 0
+                        else:
+                                return float(self.htmlParser.getNumberOfSubDomains(self.htmlResponse))/self.numOfURLs
+                return 0
                 
                         
