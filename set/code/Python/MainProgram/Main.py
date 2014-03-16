@@ -47,9 +47,10 @@ class Detector(object):
                 self.maxParallelCoreCount = int(ceil(float(cpuCount)/2)) if cpuCount <= 8\
                                             else int(ceil(0.75*cpuCount)) #Core count ranges from 1 to ceil(num_of_cores/2), if core count <= 8,
                                                                                 #else is approx. or exactly 3/4 of the total CPU count.
-                self.extractorDictionary = {'text':gfe(), 'html':gfe()}
+                self.extractorDictionary = {'text':tfe(), 'html':tfe()}
                 self.documentPaths = []
                 self.extractorSelector = None
+                self.isParallel = True
 
                 self.matrixDict = OrderedDict()
                 self.svms = None
@@ -65,29 +66,29 @@ class Detector(object):
                 ###User arguments###
                 #Text must be delimited by semi-colon, in 
                 #each file passed into the program
-                options, extras = getopt.getopt(args, 'd:i:', ['documentlist=', 'indicatorlist='])
+                options, extras = getopt.getopt(args, 'd:p:', ['documentlist=', 'parallel='])
                 
                 for opt, arg in options:
                         path = normpath(arg)
                 
                         if opt in ('-d', '--documentlist'):
                                 documentListString = readFromFile(path)
+                                
+                                for ch in ('\n', '\t', ' '): #Removes unnecessary characters
+                                    if ch in documentListString:
+                                        documentListString = documentListString.replace(ch, '')
+                                
+                                
                                 self.documentPaths = self._getDocumentPaths(documentListString)
-                        if opt in ('-i', '--indicatorlist'):
-                                indicatorListString = readFromFile(path)
-                                #For separating indicator to groups - one for each category
-                                indicatorGroupsList = indicatorListString.split(';')
-
-                                #For separating indicator words/phrases
-                                if len(categoryList) == len(indicatorGroupsList):
-                                        self.indicatorDictionary = {categoryList[x] : indicatorGroupsList[x].split(',') \
-                                                               for x in len(range(categoryList))}
-                                else:
-                                        raise RuntimeError("\nTotal number of categories, is not equal to the number of indicator groups.\n")
-
-                                #self.extractorDictionary = {category:None for category in self.extractorDictionary}
-                                        ###Must add FeatureExtractor instances, somehow...
-                
+                        if opt in ('-p', '--parallel'):
+                                if isinstance(arg, basestring) and len(arg) == 1:
+                                    option = int(arg)
+                                    
+                                    if option == 0:
+                                        self.isParallel = False
+                                    elif option == 1:
+                                        self.isParallel = True
+                                
         
                 self.extractorSelector = self._createExtractor(self.extractorDictionary)
 
@@ -125,31 +126,26 @@ class Detector(object):
                                 exDict[ex].setFunctionArgTuple( (getTagVec, [tp, readFromFile(document)]) )
                         """
 
-                        ###PARALLEL###
+                        if self.isParallel:
 
-                                                
+                            ###PARALLEL###
+                            argsList = [(pickle.dumps(self.extractorSelector), convertString(document), label)\
+                                                                     for label, document in self.documentPaths]
+
+                            if len(argsList) < self.maxParallelCoreCount:
+                                self.maxParallelCoreCount = len(argsList)                       
+                            
+                            documentList = [pickle.loads(item) for item in\
+                                            ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
+
+                        else:
                         
-                        argsList = [(pickle.dumps(self.extractorSelector), convertString(document), label)\
-                                                                 for label, document in self.documentPaths]
+                            ###SEQUENTIAL###
+                            argsList = [(self.extractorSelector, convertString(document), label)\
+                                        for label, document in self.documentPaths]
 
-                        if len(argsList) < self.maxParallelCoreCount:
-                            self.maxParallelCoreCount = len(argsList)                       
-                        
-                        documentList = [pickle.loads(item) for item in\
-                                        ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
-
-                        
-                        
-                        ###SEQUENTIAL###
-
-                        """
-
-                        argsList = [(self.extractorSelector, convertString(document), label)\
-                                    for label, document in self.documentPaths]
-
-                        documentList = [pickle.loads(_extractFromDocument(arg[0], *arg[1:])) for arg in argsList]
-
-                        """                       
+                            documentList = [pickle.loads(_extractFromDocument(arg[0], *arg[1:])) for arg in argsList]
+                
                         
                         for l in documentList:
                             featureMatrix.extend(l)
@@ -227,7 +223,8 @@ class Detector(object):
                         documentPath = None
                         
                         print "\n-------------------------\nSET Deception Detector:\n-------------------------"
-                        print "CPU Cores to be in use: %d\n" %self.maxParallelCoreCount
+                        if self.isParallel:
+                            print "CPU Cores to be in use: %d\n" %self.maxParallelCoreCount
                         print "Press a number associated with the following options."
                         print "1) Classify document\n2) Train program with documents\n3) Exit"
                         #print "\n\nNOTE: New documents added to the './Emails' folder\nwill be processed in the background, ***AND then deleted***.\n"
@@ -252,7 +249,7 @@ class Detector(object):
                                 while (not isinstance(documentPath, basestring)) or (not isfile(documentPath)):
                                         documentPath = normpath(raw_input("Please enter a valid filepath.\n"))
 
-                                featureSetList = _extractFromDocument(documentPath, documentClass)
+                                featureSetList = pickle.loads(_extractFromDocument(self.extractorSelector, documentPath, documentClass))
                                 for featureSet in featureSetList:
                                         print self.classifyDocument(featureSet.documentCategory,\
                                                               documentClass, featureSet.getVector())
@@ -260,20 +257,25 @@ class Detector(object):
                         elif option is 2:
 
                                 documentPaths = None
-                                path = None
+                                paths = None
                                 if len(sys.argv) is 1: #No arguments passed
                                         message = "\nNow enter the directory path or filepath of the document(s) "\
-                                                  +"to classify, using the following format:\n[class integer],[directory path];\n"\
+                                                  +"to use for training, using the following format:\n[class integer],[directory path];\n"\
                                          +"----------------------------\nYou can enter in as many of these lines, as you'd like.\n"
                                         
-                                        while not isinstance(path, basestring) or not (isfile(path) or isdir(path)):
+                                        while not isinstance(paths, basestring) or not (isfile(paths) or isdir(paths)):
                                                 documentPaths = normpath(raw_input(message))
                                                 try:
-                                                        path = documentPaths.split(',')[1].split(';')[0]
+                                                        paths = documentPaths.split(',')[1].split(';')[0]
                                                 except IndexError:
-                                                        path = None
+                                                        paths = None
+
+                                        for ch in ('\n', '\t', ' '): #Removes unnecessary characters
+                                            if ch in documentPaths:
+                                                documentPaths = documentPaths.replace(ch, '')
+                                                        
                                         self.documentPaths = self._getDocumentPaths(documentPaths) #If entering in the document list, on the fly...
-                                detector.extractAllDocuments()		
+                                detector.extractAllDocuments()      
                                 detector.trainClassifiers()
                                 
                         elif option is 3:

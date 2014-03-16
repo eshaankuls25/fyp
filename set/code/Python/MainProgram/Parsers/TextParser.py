@@ -37,10 +37,12 @@ class TextParser:
                 self.stanfordTagger = POSTagger(taggerModelPath,
                         taggerLibraryPath, java_options=javaHeapOptions)
 
+                """
                 print "---"
                 print "Tagger library path: " + taggerLibraryPath
                 print "Tagger model path: " + taggerModelPath
-                print "---" 
+                print "---"
+                """
 
         def tagTextFile(self, documentName, textFilePath, useCriteria=False):
                 tempTaggedText, finalList = [], []
