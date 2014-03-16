@@ -26,10 +26,12 @@ class GeneralFeatureExtractor(tfe): #Text and HTML (via Scrapy)
                 if documentName is not None:
                         self.documentName = documentName           
                 self.website = self.scraper.startCrawler(domainList,\
-                        urlList, self.documentName)                
-                self.foundWebsite = True
-                self.numOfURLs = float(len(self.htmlParser.getWebsiteURLs(self.website)))
-                self.htmlResponse = self.htmlParser.getResponseAttribute(self.website, 'all')
+                        urlList, self.documentName)
+                
+                if self.website != None: #If website was found...
+                        self.foundWebsite = True
+                        self.numOfURLs = float(len(self.htmlParser.getWebsiteURLs(self.website)))
+                        self.htmlResponse = self.htmlParser.getResponseAttribute(self.website, 'all')
                 
 
         def lengthOfWebsiteBodyText(self, textString):

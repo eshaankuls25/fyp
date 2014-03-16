@@ -29,8 +29,13 @@ class WebsiteScraper():
                 self.urlList = urlList
                 self.documentName = documentName
                 if startScrapyScan is True:
-                        item = self._createCrawler()
-                        return tuple(item)[0]
+                        itemGenerator = self._createCrawler()
+                        retrievedItem = tuple(itemGenerator) #Because item is a generator, needs to be 'unpacked'
+
+                        if len(retrievedItem) != 0:
+                                return retrievedItem[0]
+                        else:
+                                return None
         
 
         def _createCrawler(self):
@@ -57,8 +62,13 @@ class WebsiteScraper():
                         self.urlList = urlList
                 if documentName is not None:
                         self.documentName = documentName
-                item = self._createCrawler()
-                return tuple(item)[0]
+                itemGenerator = self._createCrawler()
+                retrievedItem = tuple(itemGenerator) #Because item is a generator, needs to be 'unpacked'
+
+                if len(retrievedItem) != 0:
+                        return retrievedItem[0]
+                else:
+                        return None
 
 def _runCrawler(spider, results):
         settings_module = importlib.import_module('Extractors.HTMLScraper.settings')
