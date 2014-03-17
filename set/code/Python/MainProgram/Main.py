@@ -77,9 +77,9 @@ class Detector(object):
                                 for ch in ('\n', '\t', ' '): #Removes unnecessary characters
                                     if ch in documentListString:
                                         documentListString = documentListString.replace(ch, '')
-                                
-                                
+
                                 self.documentPaths = self._getDocumentPaths(documentListString)
+                                
                         if opt in ('-p', '--parallel'):
                                 if isinstance(arg, basestring) and len(arg) == 1:
                                     option = int(arg)
@@ -102,11 +102,13 @@ class Detector(object):
                                          +"Follow this format:\n[class integer],[directory path];\n"\
                                          +"----------------------------\nYou can enter in as many of these lines, as you'd like.\n")
                         sys.exit(1)
+                
                 for label, path in documentClassAndPaths:
                         if isdir(path):
                                 documentPaths.extend([(int(label), os.path.join(path, document)) for document in listFilesInDir(path)])
                         elif isfile(path):
                                 documentPaths.append((int(label), path))
+                
                 print "\n-------------------------\nPaths: ", documentFilePaths
                 print "Documents: ", documentPaths if len(documentPaths) <= 20 else "More than 20 documents.", "\n-------------------------\n"
 
@@ -117,18 +119,16 @@ class Detector(object):
 
         def extractAllDocuments(self):
                 featureMatrix = []
-                #tp = TextParser("./Parsers/")
                 if self.documentPaths:  #List is not empty
                         """
+                        tp = TextParser("./Parsers/")
                         exDict = self.extractorSelector.extractorDictionary
                         for label, document in self.documentPaths:
                             for ex in exDict:
                                 exDict[ex].setFunctionArgTuple( (getTagVec, [tp, readFromFile(document)]) )
                         """
 
-                        if self.isParallel:
-
-                            ###PARALLEL###
+                        if self.isParallel: #Parallel execution
                             argsList = [(pickle.dumps(self.extractorSelector), convertString(document), label)\
                                                                      for label, document in self.documentPaths]
 
@@ -138,9 +138,7 @@ class Detector(object):
                             documentList = [pickle.loads(item) for item in\
                                             ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
 
-                        else:
-                        
-                            ###SEQUENTIAL###
+                        else:               #Sequential execution
                             argsList = [(self.extractorSelector, convertString(document), label)\
                                         for label, document in self.documentPaths]
 
@@ -151,7 +149,7 @@ class Detector(object):
                             featureMatrix.extend(l)
                         
                         
-                else:                   #No documents found
+                else:   #No documents found
                         sys.stderr.write("Could not find any documents.\nPlease try again, or enter another file, or directory path.\n")
                         return
                 
@@ -191,11 +189,11 @@ class Detector(object):
 
         def classifyDocument(self, classifierName, label, dictVector):
                 if self.svms is None or self.dTrees is None\
-                   or self.naiveBayes is None:              #SVM
-                        self.svms = {classifierName: SVM()} #Loads pre-computed model
+                   or self.naiveBayes is None:              #Use SVM Classifier
+                        self.svms = {classifierName: SVM()} #Loads pre-computed SVM model
                         return self.svms[classifierName].classifyDocument(label, dictVector)
                     
-                else:                                       #SVM, NaiveBayes, and decision tree
+                else:   #Display results of SVM, Naive Bayes, and Decision Tree classification
                         return (self.naiveBayes[classifierName].classifyDocument(label, dictVector),
                                 self.svms[classifierName].classifyDocument(label, dictVector),
                                 self.dTrees[classifierName].classifyDocument(dictVector))
@@ -229,7 +227,7 @@ class Detector(object):
                                 except ValueError:
                                     option = -1
                                 
-                        if option is 1:
+                        if option is 1:     #Classify a document
 
                                 while not isinstance(documentClass, (int))\
                                        or (documentClass not in (0, 1)):
@@ -247,11 +245,11 @@ class Detector(object):
                                 for featureSet in featureSetList:
                                         print self.classifyDocument(featureSet.documentCategory, documentClass, featureSet.getVector())
                                 
-                        elif option is 2:
+                        elif option is 2:   #Train classifiers with data from documents
 
                                 documentPaths = None
                                 paths = None
-                                if len(sys.argv) is 1: #No arguments passed
+                                if len(sys.argv) is 1: #No arguments passed to program
                                         message = "\nNow enter the directory path or filepath of the document(s) "\
                                                   +"to use for training, using the following format:\n[class integer],[directory path];\n"\
                                          +"----------------------------\nYou can enter in as many of these lines, as you'd like.\n"
@@ -271,13 +269,13 @@ class Detector(object):
                                 detector.extractAllDocuments()      
                                 detector.trainClassifiers()
                                 
-                        elif option is 3:
+                        elif option is 3:   #Quit program
                                 sys.exit(0)
                 
                 
 if __name__ == "__main__":
-        detector = Detector(*sys.argv[1:])
-        detector.startFakeSMTPServerThread()
-        detector.startMainMenu()
+        detector = Detector(*sys.argv[1:])      #Initialise program
+        detector.startFakeSMTPServerThread()    #Start Fake SMTP Server
+        detector.startMainMenu()                #Start rest of program
 
         
