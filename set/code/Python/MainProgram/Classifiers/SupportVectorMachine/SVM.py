@@ -43,9 +43,13 @@ class SVM(object):
                 self.model = svm_train(svmProb, params)
                 self.saveModel(pathToModel, self.model)
 
+        """
+
         print "\n--------------\nSupport Vectors:\n",\
               "--------------\nCoefficients: ", self.model.get_sv_coef(),\
-              "\nVectors: ", self.model.get_SV() 
+              "\nVectors: ", self.model.get_SV()
+
+        """
 
     def saveModel(self, filename, model):
         try:
@@ -58,27 +62,30 @@ class SVM(object):
             return svm_load_model(filename)
         except IOError:
             sys.stderr.write("\nCould not load model.\n")
-
-    """
-    def updateModel(self, classList, featureMatrix,\
-                    pathToModel='./Classifiers/SupportVectorMachine/svm_model.bak'):
-        if isinstance(pathToModel, basestring) and isfile(pathToModel):
-            self.model = self.loadModel(pathToModel)
-            #Need to train new documents/emails, as they come in. SVM model is not evolving...
-            #Could mention this for future work, as cannot do this, right now.
-    """        
         
 
     def classifyDocument(self, classes, vectors):
         print "\nExpected Class(es): ", classes, " Vector(s): ", vectors, "\n"    
         if isinstance(vectors, dict) and isinstance(classes, int):
-            p_classes, p_acc, p_vals = svm_predict([classes], [vectors], self.model, options="-b 1")
+            p_classes, p_acc, p_vals = svm_predict([classes], [vectors], self.model) #options="-b 1"
+
+            if p_classes == 1.0:
+                return "\nClassified as non-deceptive."
+            else:
+                return "\nClassified as deceptive."
         elif isinstance(vectors, list) and isinstance(classes, list):
-            p_classes, p_acc, p_vals = svm_predict(classes, vectors, self.model, options="-b 1")        
+            p_classes, p_acc, p_vals = svm_predict(classes, vectors, self.model)
+            docCount = 1
+            for label in p_classes:
+                if label == 1.0:
+                    return "\nDocument %d: Classified as non-deceptive."%docCount
+                else:
+                    return "\nDocument %d: Classified as deceptive."%docCount
+                docCount+=1
+            
         else:
             sys.stderr.write("Vector is not of the correct type.\nIt must be of type 'dict'.\n"\
                              +"Otherwise, a list of features, and a list of their labels, must be provided.\n")
             return
-        return {'classes':p_classes, 'accuracy':p_acc, 'values':p_vals}
 
         

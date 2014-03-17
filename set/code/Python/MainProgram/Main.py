@@ -199,21 +199,15 @@ class Detector(object):
                         return (self.naiveBayes[classifierName].classifyDocument(label, dictVector),
                                 self.svms[classifierName].classifyDocument(label, dictVector),
                                 self.dTrees[classifierName].classifyDocument(dictVector))
-                
+
+        
         def startFakeSMTPServerThread(self):
             smtpThread = threading.Thread(target=startFakeSMTPServer, name='smtp-watcher',
                         args=())
 
             smtpThread.daemon = True
             smtpThread.start()
-                
-
-        def startClassificationThread(self, documentClass):
-                classificationThread = threading.Thread(target=_classifyEmailsInFolder,\
-                                                        name='email-watcher',args=(self.extractorSelector, documentClass, 10))
-
-                classificationThread.daemon = True
-                classificationThread.start()
+            
 
         def startMainMenu(self):
                 time.sleep(0.5);
@@ -227,7 +221,6 @@ class Detector(object):
                             print "CPU Cores to be in use: %d\n" %self.maxParallelCoreCount
                         print "Press a number associated with the following options."
                         print "1) Classify document\n2) Train program with documents\n3) Exit"
-                        #print "\n\nNOTE: New documents added to the './Emails' folder\nwill be processed in the background, ***AND then deleted***.\n"
                         
                         while not isinstance(option, (int))\
                                    or (option < 1 or option > 3):
@@ -251,8 +244,7 @@ class Detector(object):
 
                                 featureSetList = pickle.loads(_extractFromDocument(self.extractorSelector, documentPath, documentClass))
                                 for featureSet in featureSetList:
-                                        print self.classifyDocument(featureSet.documentCategory,\
-                                                              documentClass, featureSet.getVector())
+                                        print self.classifyDocument(featureSet.documentCategory, documentClass, featureSet.getVector())
                                 
                         elif option is 2:
 
@@ -280,26 +272,6 @@ class Detector(object):
                                 
                         elif option is 3:
                                 sys.exit(0)
-
-def _classifyEmailsInFolder(extractorSelector, documentClass, maxQueueLength):
-        currentQueueLength = 0
-        maxQueueLength = maxQueueLength if maxQueueLength > 1 else 1
-
-        while True:
-        
-                while currentQueueLength < maxQueueLength:
-                        emailList = listFilesInDirWithExtension(filepathPrefix, ".eml")
-                        for filepath in emailList:
-                                io_q.put(_extractFromDocument(extractorSelector,\
-                                                              filepathPrefix+filepath,\
-                                                              documentClass,\
-                                                              index=-1))
-                                os.remove(filepath)
-                                currentQueueLength += 1
-
-                [self.svms[model].updateModel([documentClass], [io_q.get()]) for model in self.svms]
-                currentQueueLength -= 1
-                #Delete email, when not in access. Otherwise wait/locked out...
                 
                 
 if __name__ == "__main__":
