@@ -75,8 +75,7 @@ class TextParser:
                                 resultantVector[k] = float(counterVector[k])/numberOfWords
                         else:
                                 resultantVector[k] = 0
-                
-                #print resultantVector
+
                 return resultantVector
                 
 
@@ -92,8 +91,7 @@ class TextParser:
                                         finalList.append((x, y))
                 else:
                         for x, y in tempTaggedText:
-                                finalList.append((x, y))
-                                
+                                finalList.append((x, y))                
 
                 self.taggedText[documentName] = finalList
 

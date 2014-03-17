@@ -47,7 +47,7 @@ class Detector(object):
                 self.maxParallelCoreCount = int(ceil(float(cpuCount)/2)) if cpuCount <= 8\
                                             else int(ceil(0.75*cpuCount)) #Core count ranges from 1 to ceil(num_of_cores/2), if core count <= 8,
                                                                                 #else is approx. or exactly 3/4 of the total CPU count.
-                self.extractorDictionary = {'text':tfe(), 'html':tfe()}
+                self.extractorDictionary = {'text':gfe(), 'html':gfe()}
                 self.documentPaths = []
                 self.extractorSelector = None
                 self.isParallel = True
@@ -232,9 +232,10 @@ class Detector(object):
                         if option is 1:
 
                                 while not isinstance(documentClass, (int))\
-                                       or documentClass < 0:
+                                       or (documentClass not in (0, 1)):
                                         try:
-                                                documentClass = int(raw_input("Please enter a class integer, equal to or greater than 0.\n"))
+                                                documentClass = int(raw_input("Please enter a valid class.\n0 = You consider the document to "+\
+                                                                              "be deceptive.\n1 = You consider the document to be non-deceptive.\n"))
                                         except ValueError:
                                                 documentClass = None  
 

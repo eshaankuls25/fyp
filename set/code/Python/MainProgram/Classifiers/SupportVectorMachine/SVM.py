@@ -65,7 +65,7 @@ class SVM(object):
         
 
     def classifyDocument(self, classes, vectors):
-        print "\nExpected Class(es): ", classes, " Vector(s): ", vectors, "\n"    
+        #print "\nExpected Class(es): ", classes, " Vector(s): ", vectors, "\n"    
         if isinstance(vectors, dict) and isinstance(classes, int):
             p_classes, p_acc, p_vals = svm_predict([classes], [vectors], self.model) #options="-b 1"
 
