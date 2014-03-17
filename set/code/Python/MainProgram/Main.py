@@ -210,7 +210,7 @@ class Detector(object):
             
 
         def startMainMenu(self):
-                time.sleep(0.5);
+                time.sleep(0.5); #Wait for Fake SMTP Server to start...
                 while True:
                         option = -1
                         documentClass = -1
