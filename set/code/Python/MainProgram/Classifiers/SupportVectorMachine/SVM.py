@@ -73,8 +73,12 @@ class SVM(object):
                 return "\nClassified as non-deceptive."
             else:
                 return "\nClassified as deceptive."
+
+            print p_classes
+            
         elif isinstance(vectors, list) and isinstance(classes, list):
             p_classes, p_acc, p_vals = svm_predict(classes, vectors, self.model)
+            
             docCount = 1
             for label in p_classes:
                 if label == 1.0:

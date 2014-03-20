@@ -97,7 +97,13 @@ class Detector(object):
                 try:
                         documentFilePaths = documentListString.split(';')[:-1]
                         documentClassAndPaths = [pair.split(',') for pair in documentFilePaths]
-                except AttributeError, IndexError:
+
+                        for label, path in documentClassAndPaths:
+                            convertedLabel = int(label)
+                            if (not isinstance(convertedLabel, int)) or (convertedLabel not in (0, 1)):
+                                raise ValueError
+                        
+                except (AttributeError, IndexError, ValueError):
                         sys.stderr.write("\nYour document list has been formatted incorrectly.\n"\
                                          +"Follow this format:\n[class integer],[directory path];\n"\
                                          +"----------------------------\nYou can enter in as many of these lines, as you'd like.\n")
@@ -154,10 +160,10 @@ class Detector(object):
                         return
                 
                 for featureSet in featureMatrix:
-                        category = featureSet.documentCategory
+                        category = featureSet.documentCategory #category = FeatureExtractor name, e.g. 'TextFeatureExtractor'
 
                         if category not in self.matrixDict:
-                                self.matrixDict[category] = [[],[]]
+                                self.matrixDict[category] = [[],[]] #[[classes/labels][associated vectors]]
 
                         self.matrixDict[category][0].append(featureSet.getClass())
                         self.matrixDict[category][1].append(featureSet.getVector())
@@ -172,6 +178,7 @@ class Detector(object):
                 mkeys = self.matrixDict.keys()
                 mdict = self.matrixDict
 
+                #category = FeatureExtractor name
                 [writeWekaArffFile("set_%s"%category, mdict[category][1][0].keys(), mdict[category]) for category in mkeys]
 
                 print "\n-------------------------\nTRAINING...\n-------------------------\n"
