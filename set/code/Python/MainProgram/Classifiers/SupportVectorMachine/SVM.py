@@ -64,14 +64,15 @@ class SVM(object):
         
 
     def classifyDocument(self, classes, vectors):
-        print "\n-----------------------------\nSVM Classification:\n-----------------------------\n"
+
+        prefixString = "\n-----------------------------\nSVM Classification:\n-----------------------------\n"
         
         if isinstance(vectors, dict) and isinstance(classes, int):
             p_classes, p_acc, p_vals = svm_predict([classes], [vectors], self.model) #options="-b 1"
             if p_classes == 1.0:
-                return "\nClassified as non-deceptive."
+                return prefixString + "\nClassified as non-deceptive."
             else:
-                return "\nClassified as deceptive."
+                return prefixString + "\nClassified as deceptive."
 
             print p_classes
             
@@ -81,9 +82,9 @@ class SVM(object):
             docCount = 1
             for label in p_classes:
                 if label == 1.0:
-                    return "\nDocument %d: Classified as non-deceptive."%docCount
+                    return prefixString + "\nDocument %d: Classified as non-deceptive."%docCount
                 else:
-                    return "\nDocument %d: Classified as deceptive."%docCount
+                    return prefixString + "\nDocument %d: Classified as deceptive."%docCount
                 docCount+=1
             
         else:

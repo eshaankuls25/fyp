@@ -78,13 +78,13 @@ class DTree(object):
         classes = sorted(list( classification.keys() ),\
             key=lambda x: classification[x], reverse=True)
 
-        classResult = ''.join(["\nClassification:\n",\
+        classResult = ''.join(["\n-----------------------------\nDecision Tree Classification:\n-----------------------------\n",\
             "     "  + str.ljust("class name", 30) + "probability\n",\
             "     ----------                    -----------\n"])
 
         for cl in classes:
             if cl is not 'solution_path':
-                classResult += ''.join("      %s%s\n" %(str.ljust(cl, 30),\
+                classResult += ''.join("     %s%s\n" %(str.ljust(cl, 30),\
                                                       str(classification[cl])))
         return {'solution_path': classification['solution_path'],
                 'no_of_nodes': self.rootNode.how_many_nodes(),
@@ -92,8 +92,6 @@ class DTree(object):
 
     #Some code is from DecisionTree.py's examples
     def classifyDocument(self, vectors):
-
-        print "\n-----------------------------\nDecision Tree Classification:\n-----------------------------\n"
 
         if isinstance(vectors, dict):
             return self._classify(vectors)['class_result']
