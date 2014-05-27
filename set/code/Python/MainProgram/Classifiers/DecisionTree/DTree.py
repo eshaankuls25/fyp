@@ -1,4 +1,5 @@
-import os, sys
+import os, sys, csv
+from os.path import isfile
 sys.path.append("..")
 
 from Utilities.FeatureSet import FeatureSet
@@ -7,48 +8,58 @@ import DecisionTree
 
 class DTree(object):
     """docstring for DTree"""
-    def __init__(self, classList, featureMatrix,\
+    def __init__(self, classList=None, featureMatrix=None,\
                  filePath=None, documentGroupName=None):
-        print "\n-------------------------\nDecision Tree:\n-------------------------\n"
         
         self.dt = None
         self.rootNode = None
         self._decisionTreePath = None
-        self.classes = classList
-        self.featureMatrix = featureMatrix
                       
-        _filePathSuffix = "/Classifiers/DecisionTree/training_data.csv"
         if documentGroupName is not None:
-             _filePathSuffix = "/Classifiers/DecisionTree/training_data_%s.csv" %documentGroupName
-
+            _filePathSuffix = "/Classifiers/DecisionTree/training_data_%s.csv" %documentGroupName
+        else:
+            _filePathSuffix = "/Classifiers/DecisionTree/training_data.csv"
+            
         if filePath is not None:
             self._decisionTreePath = filePath
         else:    
             self._decisionTreePath = os.getcwd() + _filePathSuffix
-            
-            i = 1
-            for label, vector in zip(classList, featureMatrix):
-                
-                if i == 1:
-                    index = '"",'
-                    classLabel = "%s%s,"  %(index, '"class_name"')
-                    delimitedFeatures = classLabel + ''.join(['"feature_%s",' %feature for feature in vector.keys()])
-                    writeToFile(self._decisionTreePath, "%s\n" %delimitedFeatures[:-1], "w")
-                
-                index = '"%d",' %i
-                classLabel = "%s%s,"  %(index, str(label))
-                
-                delimitedFeatures = classLabel + ''.join(["%f," %feature for feature in vector.values()])
-                writeToFile(self._decisionTreePath, "%s\n" %delimitedFeatures[:-1], "a")
-                i+=1
-                
+
+            if not isfile(self._decisionTreePath):
+                sys.stderr.write("\nFile at path: '%s' does not exist.\n"\
+                                 +"It is required for the application to run.\n"\
+                                 +"The application will now exit.\n")
+                sys.exit(1)
+
+            if classList is not None and featureMatrix is not None:
+                self.classes = classList
+                self.featureMatrix = featureMatrix
+        
+                i = 1
+                for label, vector in zip(classList, featureMatrix):
+                    
+                    if i == 1:
+                        index = '"",'
+                        classLabel = "%s%s,"  %(index, '"class_name"')
+                        delimitedFeatures = classLabel + ''.join(['"feature_%s",' %feature for feature in vector.keys()])
+                        writeToFile(self._decisionTreePath, "%s\n" %delimitedFeatures[:-1], "w")
+                    
+                    index = '"%d",' %i
+                    classLabel = "%s%s,"  %(index, str(label))
+                    
+                    delimitedFeatures = classLabel + ''.join(["%f," %feature for feature in vector.values()])
+                    writeToFile(self._decisionTreePath, "%s\n" %delimitedFeatures[:-1], "a")
+                    i+=1
+
         self.createDTree()
-        self.dt.show_training_data()
+        #self.dt.show_training_data()
 
     def createDTree(self):
+        processedData = csv.reader(open(self._decisionTreePath)) #Open CSV file of vectors
+        columnNames = processedData.next()                       #Get field headings
         self.dt = DecisionTree.DecisionTree( training_datafile = self._decisionTreePath,
                                 csv_class_column_index = 1,
-                                csv_columns_for_features = [x for x in range(2+len(self.featureMatrix[0])) if x > 1 ],
+                                csv_columns_for_features = [x for x in range(len(columnNames)) if x >= 2 ],
                                 entropy_threshold = 0.01,
                                 max_depth_desired = 8,
                                 symbolic_to_numeric_cardinality_threshold = 10,
@@ -60,8 +71,7 @@ class DTree(object):
     
         self.rootNode = self.dt.construct_decision_tree_classifier()
 
-    #Some code is from DecisionTree.py's examples
-    def classifyDocument(self, featureVector):
+    def _classify(self, featureVector):
         featureList = ['feature_%s = %0.2f' %(k, v) for k, v in featureVector.items()]
         classification = self.dt.classify(self.rootNode, featureList)
 
@@ -69,8 +79,8 @@ class DTree(object):
             key=lambda x: classification[x], reverse=True)
 
         classResult = ''.join(["\nClassification:\n",\
-            "     "  + str.ljust("class name", 30) + "probability",\
-            "     ----------                    -----------"])
+            "     "  + str.ljust("class name", 30) + "probability\n",\
+            "     ----------                    -----------\n"])
 
         for cl in classes:
             if cl is not 'solution_path':
@@ -78,4 +88,26 @@ class DTree(object):
                                                       str(classification[cl])))
         return {'solution_path': classification['solution_path'],
                 'no_of_nodes': self.rootNode.how_many_nodes(),
-                'class_result': classResult} 
+                'class_result': classResult}        
+
+    #Some code is from DecisionTree.py's examples
+    def classifyDocument(self, vectors):
+
+        print "\n-----------------------------\nDecision Tree Classification:\n-----------------------------\n"
+
+        if isinstance(vectors, dict):
+            return self._classify(vectors)['class_result']
+            
+        elif isinstance(vectors, (list, tuple)):
+            docCount = 1
+            resultsList = []
+            for v in vectors:
+                
+                resultsList.append("\nDocument %d result\n"+
+                                   self._classify(vectors)['class_result'])
+                docCount+=1
+            return resultsList            
+        else:
+            sys.stderr.write("Vector is not of the correct type.\nIt must be of type 'dict'.\n"\
+                             +"Otherwise, a list of features, and a list of their labels, must be provided.\n")
+            return 

@@ -20,7 +20,6 @@ class SVM(object):
                      pathToModel='./Classifiers/SupportVectorMachine/svm_model.bak',
                      modelType=2, costParam=1):
         super(SVM, self).__init__()
-        print "\n-------------------------\nSVM:\n-------------------------\n"
         
         if classList is None or featureMatrix is None:
                 if isinstance(pathToModel, basestring) and isfile(pathToModel):
@@ -65,10 +64,10 @@ class SVM(object):
         
 
     def classifyDocument(self, classes, vectors):
-        #print "\nExpected Class(es): ", classes, " Vector(s): ", vectors, "\n"    
+        print "\n-----------------------------\nSVM Classification:\n-----------------------------\n"
+        
         if isinstance(vectors, dict) and isinstance(classes, int):
             p_classes, p_acc, p_vals = svm_predict([classes], [vectors], self.model) #options="-b 1"
-
             if p_classes == 1.0:
                 return "\nClassified as non-deceptive."
             else:

@@ -138,8 +138,8 @@ class Detector(object):
                             argsList = [(pickle.dumps(self.extractorSelector), convertString(document), label)\
                                                                      for label, document in self.documentPaths]
 
-                            if len(argsList) < self.maxParallelCoreCount:
-                                self.maxParallelCoreCount = len(argsList)                       
+                            if len(argsList) < self.maxParallelCoreCount: #Less documents than available cores...
+                                self.maxParallelCoreCount = len(argsList) #Reduce core count == no. of documents                      
                             
                             documentList = [pickle.loads(item) for item in\
                                             ListProcessor.map( ParallelExtractor, argsList, options=[('popen', self.maxParallelCoreCount )] )]
@@ -196,9 +196,11 @@ class Detector(object):
 
         def classifyDocument(self, classifierName, label, dictVector):
                 if self.svms is None or self.dTrees is None\
-                   or self.naiveBayes is None:              #Use SVM Classifier
-                        self.svms = {classifierName: SVM()} #Loads pre-computed SVM model
-                        return self.svms[classifierName].classifyDocument(label, dictVector)
+                   or self.naiveBayes is None:                  
+                        self.svms = {classifierName: SVM()}     #Loads pre-computed SVM model
+                        self.dTrees = {classifierName: DTree(documentGroupName=classifierName)} #Loads pre-computed Decision Tree CSV
+                        return (self.svms[classifierName].classifyDocument(label, dictVector),
+                                self.dTrees[classifierName].classifyDocument(dictVector))
                     
                 else:   #Display results of SVM, Naive Bayes, and Decision Tree classification
                         return (self.naiveBayes[classifierName].classifyDocument(label, dictVector),
@@ -250,7 +252,9 @@ class Detector(object):
 
                                 featureSetList = pickle.loads(_extractFromDocument(self.extractorSelector, documentPath, documentClass))
                                 for featureSet in featureSetList:
-                                        print self.classifyDocument(featureSet.documentCategory, documentClass, featureSet.getVector())
+                                        for each_classification in self.classifyDocument(\
+                                            featureSet.documentCategory, documentClass, featureSet.getVector()):
+                                            print each_classification
                                 
                         elif option is 2:   #Train classifiers with data from documents
 
