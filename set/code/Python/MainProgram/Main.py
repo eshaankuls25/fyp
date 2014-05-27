@@ -197,7 +197,7 @@ class Detector(object):
         def classifyDocument(self, classifierName, label, dictVector):
                 if self.svms is None or self.dTrees is None\
                    or self.naiveBayes is None:                  
-                        self.svms = {classifierName: SVM()}     #Loads pre-computed SVM model
+                        self.svms = {classifierName: SVM()}                                     #Loads pre-computed SVM model
                         self.dTrees = {classifierName: DTree(documentGroupName=classifierName)} #Loads pre-computed Decision Tree CSV
                         return (self.svms[classifierName].classifyDocument(label, dictVector),
                                 self.dTrees[classifierName].classifyDocument(dictVector))
