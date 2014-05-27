@@ -80,11 +80,11 @@ class DTree(object):
 
         classResult = ''.join(["\nClassification:\n",\
             "     "  + str.ljust("class name", 30) + "probability\n",\
-            "     ----------                    -----------\n"])
+            "     ----------                    -----------"])
 
         for cl in classes:
             if cl is not 'solution_path':
-                classResult += ''.join("      %s%s" %(str.ljust(cl, 30),\
+                classResult += '\n'.join("      %s%s" %(str.ljust(cl, 30),\
                                                       str(classification[cl])))
         return {'solution_path': classification['solution_path'],
                 'no_of_nodes': self.rootNode.how_many_nodes(),

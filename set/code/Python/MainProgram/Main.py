@@ -240,21 +240,36 @@ class Detector(object):
 
                                 while not isinstance(documentClass, (int))\
                                        or (documentClass not in (0, 1)):
+                                        inputMessage = raw_input("Please enter a valid class.\n0 = You consider the document to "+\
+                                                                              "be deceptive.\n1 = You consider the document to be non-deceptive.\nPress 'b' or 'back' to exit data entry.\n")
+                                        if inputMessage in ('b', 'back'):
+                                            documentClass = None
+                                            break
+                                        
                                         try:
-                                                documentClass = int(raw_input("Please enter a valid class.\n0 = You consider the document to "+\
-                                                                              "be deceptive.\n1 = You consider the document to be non-deceptive.\n"))
+                                                documentClass = int(inputMessage)
                                         except ValueError:
-                                                documentClass = None  
+                                                documentClass = None
 
-                                documentPath = normpath(raw_input("Now enter the filepath of the document to classify.\n"))
-                                while (not isinstance(documentPath, basestring)) or (not isfile(documentPath)):
-                                        documentPath = normpath(raw_input("Please enter a valid filepath.\n"))
+                                if documentClass is not None:
+                                    inputMessage = raw_input("Now enter the filepath of the document to classify.\nPress 'b' or 'back' to exit data entry.\n")
+                                    documentPath = normpath(inputMessage)
+                                    
+                                    while (not isinstance(documentPath, basestring)) or (not isfile(documentPath)):
 
-                                featureSetList = pickle.loads(_extractFromDocument(self.extractorSelector, documentPath, documentClass))
-                                for featureSet in featureSetList:
-                                        for each_classification in self.classifyDocument(\
-                                            featureSet.documentCategory, documentClass, featureSet.getVector()):
-                                            print each_classification
+                                            if inputMessage in ('b', 'back'):
+                                                documentPath = None
+                                                break
+
+                                            inputMessage = raw_input("Please enter a valid filepath.\nPress 'b' or 'back' to exit data entry.\n")
+                                            documentPath = normpath(inputMessage)
+
+                                    if documentPath is not None:
+                                        featureSetList = pickle.loads(_extractFromDocument(self.extractorSelector, documentPath, documentClass))
+                                        for featureSet in featureSetList:
+                                                for each_classification in self.classifyDocument(\
+                                                    featureSet.documentCategory, documentClass, featureSet.getVector()):
+                                                    print each_classification
                                 
                         elif option is 2:   #Train classifiers with data from documents
 
@@ -263,20 +278,27 @@ class Detector(object):
                                 if len(sys.argv) is 1: #No arguments passed to program
                                         message = "\nNow enter the directory path or filepath of the document(s) "\
                                                   +"to use for training, using the following format:\n[class integer],[directory path];\n"\
-                                         +"----------------------------\nYou can enter in as many of these lines, as you'd like.\n"
+                                         +"----------------------------\nYou can enter in as many of these lines, as you'd like.\nPress 'b' or 'back' to exit data entry.\n"
                                         
                                         while not isinstance(paths, basestring) or not (isfile(paths) or isdir(paths)):
-                                                documentPaths = normpath(raw_input(message))
+                                                inputMessage = raw_input(message)
+
+                                                if inputMessage in ('b', 'back'):
+                                                    documentPaths = None
+                                                    break
+                                                
+                                                documentPaths = normpath(inputMessage)
                                                 try:
                                                         paths = documentPaths.split(',')[1].split(';')[0]
                                                 except IndexError:
                                                         paths = None
 
-                                        for ch in ('\n', '\t', ' '): #Removes unnecessary characters
-                                            if ch in documentPaths:
-                                                documentPaths = documentPaths.replace(ch, '')
-                                                        
-                                        self.documentPaths = self._getDocumentPaths(documentPaths) #If entering in the document list, on the fly...
+                                        if documentPaths is not None:
+                                            for ch in ('\n', '\t', ' '): #Removes unnecessary characters
+                                                if ch in documentPaths:
+                                                    documentPaths = documentPaths.replace(ch, '')
+                                                            
+                                            self.documentPaths = self._getDocumentPaths(documentPaths) #If entering in the document list, on the fly...
                                 detector.extractAllDocuments()      
                                 detector.trainClassifiers()
                                 
