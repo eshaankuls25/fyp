@@ -87,6 +87,11 @@ class DTree(object):
             if cl is not 'solution_path':
                 classResult += ''.join("     %s%s\n" %(str.ljust(cl, 30),\
                                                       str(classification[cl])))
+        if classification[cl] == 1.0:
+            classResult += "\nClassified as non-deceptive (class_name=1)."
+        else:
+            classResult += "\nClassified as deceptive (class_name=0)."
+            
         return {'solution_path': classification['solution_path'],
                 'no_of_nodes': self.rootNode.how_many_nodes(),
                 'class_result': classResult}        

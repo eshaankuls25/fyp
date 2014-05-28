@@ -25,7 +25,7 @@ class SVM(object):
                 if isinstance(pathToModel, basestring) and isfile(pathToModel):
                     self.model = self.loadModel(pathToModel)
                 else:
-                    sys.stderr.write("\nPath to model is incorrect.\n")
+                    sys.stderr.write("\nPath to SVM model is incorrect.\n")
                     sys.exit(1)
         else:
                 self.classes = classList
@@ -65,14 +65,15 @@ class SVM(object):
 
     def classifyDocument(self, classes, vectors):
 
-        prefixString = "\n-----------------------------\nSVM Classification:\n-----------------------------\n"
+        print "\n-----------------------------\nSVM Classification:\n-----------------------------\n"
         
         if isinstance(vectors, dict) and isinstance(classes, int):
             p_classes, p_acc, p_vals = svm_predict([classes], [vectors], self.model) #options="-b 1"
-            if p_classes == 1.0:
-                return prefixString + "\nClassified as non-deceptive."
+
+            if p_classes[0] == 1.0:
+                return "\nClassified as non-deceptive (class_name=1)."
             else:
-                return prefixString + "\nClassified as deceptive."
+                return "\nClassified as deceptive (class_name=0)."
 
             print p_classes
             
@@ -82,9 +83,9 @@ class SVM(object):
             docCount = 1
             for label in p_classes:
                 if label == 1.0:
-                    return prefixString + "\nDocument %d: Classified as non-deceptive."%docCount
+                    return "\nDocument %d: Classified as non-deceptive (class_name=1)."%docCount
                 else:
-                    return prefixString + "\nDocument %d: Classified as deceptive."%docCount
+                    return "\nDocument %d: Classified as deceptive (class_name=0)."%docCount
                 docCount+=1
             
         else:

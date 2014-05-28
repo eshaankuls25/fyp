@@ -195,16 +195,16 @@ class Detector(object):
 
 
         def classifyDocument(self, classifierName, label, dictVector):
-                if self.svms is None or self.dTrees is None\
-                   or self.naiveBayes is None:                  
+                if self.svms is None or self.dTrees is None:                 
                         self.svms = {classifierName: SVM()}                                     #Loads pre-computed SVM model
                         self.dTrees = {classifierName: DTree(documentGroupName=classifierName)} #Loads pre-computed Decision Tree CSV
                         return (self.svms[classifierName].classifyDocument(label, dictVector),
                                 self.dTrees[classifierName].classifyDocument(dictVector))
                     
-                else:   #Display results of SVM, Naive Bayes, and Decision Tree classification
-                        return (self.naiveBayes[classifierName].classifyDocument(label, dictVector),
-                                self.svms[classifierName].classifyDocument(label, dictVector),
+                else:   #Display results of SVM and Decision Tree
+                        #self.naiveBayes[classifierName].classifyDocument(label, dictVector)
+                    
+                        return (self.svms[classifierName].classifyDocument(label, dictVector),
                                 self.dTrees[classifierName].classifyDocument(dictVector))
 
         
