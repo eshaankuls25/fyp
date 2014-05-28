@@ -54,7 +54,7 @@ def _selectExtractorAndProcess(extractorSelector, processedText,\
 
 def _extractFromDocument(extractorSelector, filepath, documentClass, index=None):   
     documentString = readFromFile(filepath)
-    print "---\n", documentString, "\n---"
+    print "\n---------\nDocument:\n---------\n", documentString, "\n---------"
     processedDocument = PreProcessor.removeEscapeChars(documentString)
 
     if index is not None:
@@ -64,11 +64,11 @@ def _extractFromDocument(extractorSelector, filepath, documentClass, index=None)
             
             print "Email no. "+str(index)+": "
 
-            print "---"
+            print "---------"
             for header in email.keys():
                     print "\n"+header+": "+email.get(header)
             print "\nPayload: "+payload
-            print "---"
+            print "---------"
 
             processedPayload = PreProcessor.removeEscapeChars(payload)
             return _selectExtractorAndProcess(extractorSelector,\
