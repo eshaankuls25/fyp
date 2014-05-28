@@ -79,13 +79,15 @@ class DTree(object):
         classes = sorted(list( classification.keys() ),\
             key=lambda x: classification[x], reverse=True)
 
-        classResult = ''.join(["\n-----------------------------\nDecision Tree Classification:\n-----------------------------\n",\
-            "     "  + str.ljust("class name", 30) + "probability\n",\
-            "     ----------                    -----------\n"])
+        classResult = ''.join(["\n-----------------------------\n",\
+                               "Decision Tree Classification:",\
+                               "\n-----------------------------\n\n",\
+                               str.ljust("class name", 30) + "probability\n",\
+                               "----------                    -----------\n"])
 
         for cl in classes:
             if cl is not 'solution_path':
-                classResult += ''.join("     %s%s\n" %(str.ljust(cl, 30),\
+                classResult += ''.join("%s%s\n" %(str.ljust(cl, 30),\
                                                       str(classification[cl])))
         if classification[cl] == 1.0:
             classResult += "\nClassified as non-deceptive (class_name=1)."
