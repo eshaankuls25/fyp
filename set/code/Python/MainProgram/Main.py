@@ -6,11 +6,14 @@ from collections    import OrderedDict
 
 from os.path        import normpath, isfile, isdir
 
+from    Extractors.BaseExtractor               import BaseExtractor                as be
 from    Extractors.InitialFeatureExtractor     import InitialFeatureExtractor      as ife
 from    Extractors.DeceptionFeatureExtractor   import DeceptionFeatureExtractor    as dfe
-from    Extractors.GeneralFeatureExtractor     import GeneralFeatureExtractor      as gfe
 from    Extractors.TextFeatureExtractor        import TextFeatureExtractor         as tfe
-from    Extractors.BaseExtractor               import BaseExtractor                as be
+
+from    Extractors.GeneralFeatureExtractor     import GeneralFeatureExtractor      as gfe
+from    Extractors.FinalFeatureExtractor       import FinalFeatureExtractor        as ffe
+
 from    Extractors.HTMLScraper.items           import HTMLScraperItem
 
 from    Extractors.POSFeatureExtractor         import _getTagCountVector           as getTagVec
@@ -47,7 +50,7 @@ class Detector(object):
                 self.maxParallelCoreCount = int(ceil(float(cpuCount)/2)) if cpuCount <= 8\
                                             else int(ceil(0.75*cpuCount)) #Core count ranges from 1 to ceil(num_of_cores/2), if core count <= 8,
                                                                                 #else is approx. or exactly 3/4 of the total CPU count.
-                self.extractorDictionary = {'text':gfe(), 'html':gfe()}
+                self.extractorDictionary = {'text':ffe(), 'html':ffe()}
                 self.documentPaths = []
                 self.extractorSelector = None
                 self.isParallel = True

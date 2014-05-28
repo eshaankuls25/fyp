@@ -7,11 +7,13 @@ import Utilities.PreProcessor                   as PreProcessor
 from Parsers.TextParser                         import TextParser
 from Parsers.HTMLParser_                        import HTMLParser
 
-from Extractors.InitialFeatureExtractor         import InitialFeatureExtractor as ife
-from Extractors.DeceptionFeatureExtractor       import DeceptionFeatureExtractor as dfe
-from Extractors.GeneralFeatureExtractor         import GeneralFeatureExtractor as gfe
-from Extractors.TextFeatureExtractor            import TextFeatureExtractor as tfe
 from Extractors.BaseExtractor                   import BaseExtractor as be
+from Extractors.InitialFeatureExtractor         import InitialFeatureExtractor      as ife
+from Extractors.DeceptionFeatureExtractor       import DeceptionFeatureExtractor    as dfe
+from Extractors.TextFeatureExtractor            import TextFeatureExtractor         as tfe
+
+from Extractors.GeneralFeatureExtractor         import GeneralFeatureExtractor      as gfe
+from Extractors.FinalFeatureExtractor           import FinalFeatureExtractor        as ffe
 
 from Utilities.ExtractorSelector                import ExtractorSelector
 from Utilities.Utils                            import readFromFile
