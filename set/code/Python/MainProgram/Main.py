@@ -273,12 +273,18 @@ class Detector(object):
                                 
                         elif option is 2:   #Train classifiers with data from documents
 
+                                inputMessage = None
                                 documentPaths = None
                                 paths = None
-                                if len(sys.argv) is 1: #No arguments passed to program
+                                
+                                if len(sys.argv) is 1 or\
+                                   (len(sys.argv) == 3 and '-p' in sys.argv): #No arguments passed to program
+                                                                              # OR Parallel/Sequential processing selection argument
                                         message = "\nNow enter the directory path or filepath of the document(s) "\
-                                                  +"to use for training, using the following format:\n[class integer],[directory path];\n"\
-                                         +"----------------------------\nYou can enter in as many of these lines, as you'd like.\nPress 'b' or 'back' to exit data entry.\n"
+                                                  +"to use for training, using the following format:\n[class integer],[directory/file path];\n"\
+                                         +"----------------------------\nThe class integer represents the expected classification of the associated document/file:\n"\
+                                         +"deceptive = 0, non-deceptive = 1.\n"\
+                                         +"\nYou can enter in as many of these lines, as you'd like.\nPress 'b' or 'back' to exit data entry.\n"
                                         
                                         while not isinstance(paths, basestring) or not (isfile(paths) or isdir(paths)):
                                                 inputMessage = raw_input(message)
@@ -289,18 +295,20 @@ class Detector(object):
                                                 
                                                 documentPaths = normpath(inputMessage)
                                                 try:
-                                                        paths = documentPaths.split(',')[1].split(';')[0]
+                                                        paths = documentPaths.split(',')[1].split(';')[0] #Separate classes and file/directory paths
                                                 except IndexError:
                                                         paths = None
 
-                                        if documentPaths is not None:
+                                        if documentPaths is not None: #If file/directory paths exist...
                                             for ch in ('\n', '\t', ' '): #Removes unnecessary characters
                                                 if ch in documentPaths:
                                                     documentPaths = documentPaths.replace(ch, '')
                                                             
                                             self.documentPaths = self._getDocumentPaths(documentPaths) #If entering in the document list, on the fly...
-                                detector.extractAllDocuments()      
-                                detector.trainClassifiers()
+
+                                if inputMessage not in ('b', 'back'): #If not leaving data entry...
+                                    detector.extractAllDocuments()      
+                                    detector.trainClassifiers()
                                 
                         elif option is 3:   #Quit program
                                 sys.exit(0)
