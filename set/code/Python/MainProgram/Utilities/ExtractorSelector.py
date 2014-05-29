@@ -22,8 +22,8 @@ class ExtractorSelector:
                         else:
                                 self.categoryDictionary[category] = set()
                 self.extractorDictionary = extractorDict
-                #self.defaultExtractor = gfe()
-                self.defaultExtractor = ffe()
+                self.defaultExtractor = gfe()
+                #self.defaultExtractor = ffe()
 
         def addExtractor(self, category, extractor):
                 assert category not in self.categoryDictionary

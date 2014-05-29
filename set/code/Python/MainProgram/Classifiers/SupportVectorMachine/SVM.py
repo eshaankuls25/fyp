@@ -7,9 +7,6 @@ from svmutil import *
 
 class SVM(object):
     """docstring for SVM"""
-    model = None
-    classes = None
-    featureMatrix = None
 
     #featureMatrix is an iterable (list, tuple etc.) of dictionaries/vectors:
     ##e.g. [featureSet1.getVector(), featureSet2.getVector(), fe5.getVector() ...]
@@ -17,13 +14,27 @@ class SVM(object):
     #Use like this:
     #gSVM = SVM(costParam=your_chosen_number, modelType=2) #GaussianSVM
     def __init__(self, classList=None, featureMatrix=None,\
-                     pathToModel='./Classifiers/SupportVectorMachine/svm_model.bak',
-                     modelType=2, costParam=1):
+                     pathToModel=None, modelType=2, costParam=1, documentGroupName=None):
         super(SVM, self).__init__()
+
+        self.model = None
+        self.classes = None
+        self.featureMatrix = None
+        self._svmModelPath = None
+
+        if documentGroupName is not None: #If Classifier name provided, use it...
+            _filePathSuffix = "/Classifiers/SupportVectorMachine/svm_model_%s.bak" %documentGroupName
+        else:
+            _filePathSuffix = "/Classifiers/SupportVectorMachine/svm_model.bak"
+
+        if pathToModel is not None: #If SVM model filename provided, use it, as training data...
+            self._svmModelPath = pathToModel
+        else:    
+            self._svmModelPath = os.getcwd() + _filePathSuffix
         
         if classList is None or featureMatrix is None:
-                if isinstance(pathToModel, basestring) and isfile(pathToModel):
-                    self.model = self.loadModel(pathToModel)
+                if isinstance(self._svmModelPath, basestring) and isfile(self._svmModelPath):
+                    self.model = self.loadModel(self._svmModelPath)
                 else:
                     sys.stderr.write("\nPath to SVM model is incorrect.\n")
                     sys.exit(1)
@@ -40,7 +51,7 @@ class SVM(object):
                 #g = 1/len(featureSet) - Implicitly set at the moment
                 params = svm_parameter('-s 0 -t %s -c %s -b 0' %(str(modelType), str(costParam)) )
                 self.model = svm_train(svmProb, params)
-                self.saveModel(pathToModel, self.model)
+                self.saveModel(self._svmModelPath, self.model)
 
         """
 

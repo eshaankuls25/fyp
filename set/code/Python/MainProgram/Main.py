@@ -50,7 +50,7 @@ class Detector(object):
                 self.maxParallelCoreCount = int(ceil(float(cpuCount)/2)) if cpuCount <= 8\
                                             else int(ceil(0.75*cpuCount)) #Core count ranges from 1 to ceil(num_of_cores/2), if core count <= 8,
                                                                                 #else is approx. or exactly 3/4 of the total CPU count.
-                self.extractorDictionary = {'text':ffe(), 'html':ffe()}
+                self.extractorDictionary = {'text':gfe(), 'html':gfe()}
                 self.documentPaths = []
                 self.extractorSelector = None
                 self.isParallel = True
@@ -186,11 +186,14 @@ class Detector(object):
 
                 print "\n-------------------------\nTRAINING...\n-------------------------\n"
 
+                """
                 self.naiveBayes = {category: NaiveBayes(mdict[category][0],\
                                                         mdict[category][1]) for category in mkeys}
+                """
                 
                 self.svms = {category: SVM(mdict[category][0],\
-                                           mdict[category][1]) for category in mkeys}
+                                           mdict[category][1],\
+                                           documentGroupName=category) for category in mkeys}
                 
                 self.dTrees = {category: DTree(mdict[category][0],\
                                                mdict[category][1],\
@@ -199,7 +202,7 @@ class Detector(object):
 
         def classifyDocument(self, classifierName, label, dictVector):
                 if self.svms is None or self.dTrees is None:                 
-                        self.svms = {classifierName: SVM()}                                     #Loads pre-computed SVM model
+                        self.svms = {classifierName: SVM(documentGroupName=classifierName)}                                     #Loads pre-computed SVM model
                         self.dTrees = {classifierName: DTree(documentGroupName=classifierName)} #Loads pre-computed Decision Tree CSV
                         return (self.svms[classifierName].classifyDocument(label, dictVector),
                                 self.dTrees[classifierName].classifyDocument(dictVector))
