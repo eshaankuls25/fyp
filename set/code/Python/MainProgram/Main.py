@@ -110,11 +110,16 @@ class Detector(object):
                         sys.stderr.write("\nYour document list has been formatted incorrectly.\n"\
                                          +"Follow this format:\n[class integer],[directory path];\n"\
                                          +"----------------------------\nYou can enter in as many of these lines, as you'd like.\n")
-                        sys.exit(1)
+                        return None
                 
                 for label, path in documentClassAndPaths:
                         if isdir(path):
-                                documentPaths.extend([(int(label), os.path.join(path, document)) for document in listFilesInDir(path)])
+                            
+                            for document in listFilesInDir(path):
+                                doc = (int(label), os.path.join(path, document))
+                                if doc not in documentPaths:
+                                    documentPaths.append(doc)
+                                    
                         elif isfile(path):
                                 documentPaths.append((int(label), path))
                 
@@ -312,7 +317,8 @@ class Detector(object):
                                                             
                                             self.documentPaths = self._getDocumentPaths(documentPaths) #If entering in the document list, on the fly...
 
-                                if inputMessage not in ('b', 'back'): #If not leaving data entry...
+                                if inputMessage not in ('b', 'back')\
+                                   and self.documentPaths is not None: #If not leaving data entry...
                                     detector.extractAllDocuments()      
                                     detector.trainClassifiers()
                                 
